@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/require.php";
-require_once "includes/checkauth.php";
+require "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('cdr_csv_view')) {
 	//access granted
 }
@@ -33,12 +33,12 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 require_once "v_cdr_import.php";
-require "includes/lib_cdr.php";
-	
+require "lib_cdr.php";
+
 $order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
@@ -405,6 +405,6 @@ if (count($_REQUEST)>0) {
 	echo "</div>";
 	echo "<br><br>";
 
-require "includes/require.php";
-require_once "includes/footer.php";
+require "resources/require.php";
+require_once "resources/footer.php";
 ?>

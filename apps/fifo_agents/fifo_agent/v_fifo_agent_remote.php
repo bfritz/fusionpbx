@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (if_group("agent") || if_group("admin") || if_group("superadmin")) {
 	//access granted
 }
@@ -35,7 +35,7 @@ else {
 }
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 echo "<div align='right'>\n";
 echo "	<input type='button' class='btn' name='' alt='reload' onclick=\"var f = document.getElementById('iframe1');f.src = f.src;\" value='Reload'>\n";
@@ -48,5 +48,5 @@ echo "</div>\n";
 	echo "</iframe>\n";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

@@ -27,8 +27,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('flashphoner_view')) {
 	//access granted
 }
@@ -36,7 +36,7 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 unset ($prep_statement);
 
@@ -61,5 +61,5 @@ if (count($_SESSION['user']['extension']) < 1) {
 }
 
 //show the footer
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

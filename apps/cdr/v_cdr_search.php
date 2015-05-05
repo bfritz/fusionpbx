@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('calls_active_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('call_active_view')) {
 	//access granted
 }
 else {
@@ -57,7 +57,7 @@ if (count($_POST)>0) {
 else {
 
 	echo "\n";    
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -154,7 +154,7 @@ else {
 	echo "</div>";
 
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 } //end if not post
 ?>

@@ -26,8 +26,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('ticket_view')) {
 	//access granted
 }
@@ -35,8 +35,8 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 if (isset($_REQUEST['show_closed'])) { 
 	$show_closed = true; 
@@ -90,6 +90,6 @@ unset ($prep_statement);
 include "ticket_list.php";
 
 //include the footer
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 ?>

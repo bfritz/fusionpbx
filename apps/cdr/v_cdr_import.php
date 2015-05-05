@@ -24,13 +24,13 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/require.php";
+require "resources/require.php";
 if(php_sapi_name() == 'cli') {
 	//allow access for command line interface
 }
 else {
 	//require authentication
-	require_once "includes/checkauth.php";
+	require_once "resources/check_auth.php";
 	if (permission_exists('cdr_csv_view')) {
 		//access granted
 	}
@@ -40,7 +40,7 @@ else {
 	}
 }
 
-require "includes/lib_cdr.php";
+require "lib_cdr.php";
 
 //---- begin import cdr records -----------------------------------------------------------------------------------
 

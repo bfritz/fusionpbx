@@ -27,8 +27,8 @@
 */
 
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 
 if (permission_exists('ticket_view') || permission_exists('ticket_update')) {
 	//access granted
@@ -38,7 +38,7 @@ else {
 	exit;
 }
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 $domain_name = $_SESSION['domains'][$domain_uuid]['domain_name'];
 
@@ -260,6 +260,6 @@ include "update_complete.php";
 
 end:
 //show the footer
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 ?>

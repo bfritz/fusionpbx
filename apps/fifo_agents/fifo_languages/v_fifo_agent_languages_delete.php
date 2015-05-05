@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (if_group("admin") || if_group("superadmin")) {
 	//access granted
 }
@@ -47,13 +47,13 @@ if (strlen($id)>0) {
 	unset($sql);
 }
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_agent_languages.php\">\n";
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 return;
 
 ?>

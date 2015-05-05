@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('sip_profiles_edit')) {
 	//access granted
 }
@@ -38,14 +38,14 @@ $fd = fopen($_SESSION['switch']['conf']['dir']."/sip_profiles/".$_GET['f'], "r")
 $v_content = fread($fd, filesize($_SESSION['switch']['conf']['dir']."/sip_profiles/".$_GET['f']));
 fclose($fd);
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 ?>
 
 <script language="Javascript">
 function sf() { document.forms[0].savetopath.focus(); }
 </script>
-<script language="Javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/includes/edit_area/edit_area_full.js"></script>
+<script language="Javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/edit_area/edit_area_full.js"></script>
 <script language="Javascript" type="text/javascript">
 	// initialisation
 	editAreaLoader.init({
@@ -125,5 +125,5 @@ function sf() { document.forms[0].savetopath.focus(); }
 
 <?php
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

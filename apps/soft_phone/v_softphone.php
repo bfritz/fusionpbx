@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (if_group("admin") || if_group("superadmin")) {
 	//access granted
 }
@@ -33,7 +33,7 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 
 //notes
@@ -180,7 +180,7 @@ function ajaxFunction()
 
 	var api_cmd = document.getElementById('api_cmd').value;
 	//alert('cmd:'. api_cmd);
-	xmlhttp.open("GET","<?php echo PROJECT_PATH; ?>/includes/cmd.php?cmd="+escape(api_cmd)+"&rdr=false",true);
+	xmlhttp.open("GET","<?php echo PROJECT_PATH; ?>/resources/cmd.php?cmd="+escape(api_cmd)+"&rdr=false",true);
 	xmlhttp.send(null);
 }
 
@@ -273,5 +273,5 @@ function pa_hangup () {
 </script>
 <?php
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

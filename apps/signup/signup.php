@@ -24,10 +24,10 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/recaptchalib.php";
-//require_once "includes/email_address_validator.php";
-include "config.php";
+require_once "resources/require.php";
+require_once "resources/recaptchalib.php";
+//require_once "resources/email_address_validator.php";
+include "app_config.php";
 include "v_fields.php";
 
 # the response from reCAPTCHA
@@ -118,8 +118,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "password, ";
 	$sql .= "salt, ";
 	$sql .= "user_email, ";
-	$sql .= "user_add_date, ";
-	$sql .= "user_add_user ";
+	$sql .= "add_date, ";
+	$sql .= "add_user ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
@@ -160,19 +160,19 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$db->exec(check_sql($sql));
 	unset($sql);
 
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"3;url=".PROJECT_PATH."/index.php\">\n";
 	echo "<div align='center'>Add Complete</div>";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	// This should probably be an exit or die() call;
 	return;
 }
 
 showform:
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 include "user_template.php";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

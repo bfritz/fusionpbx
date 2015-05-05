@@ -35,14 +35,13 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action invoice_uuid
 	if (isset($_REQUEST["id"])) {
 		$invoice_uuid = check_str($_REQUEST["id"]);
+		$type = check_str($_REQUEST["type"]);
 	}
 
 //get the invoice details
@@ -156,6 +155,7 @@ else {
 		$to_address_region = $row["address_region"];
 		$to_address_postal_code = $row["address_postal_code"];
 		$to_address_country = $row["address_country"];
+		$to_address_description = $row["address_description"];
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
@@ -174,7 +174,14 @@ else {
 	$pdf->SetFont('Arial','',9);
 	$pdf->Cell(40,5,$to_address_street.' '.$to_address_extended);
 	$pdf->Ln();
-	$pdf->Cell(40,5,$to_address_locality.', '.$to_address_region.' '.$to_address_country.' '.$to_address_postal_code);
+	if (strtolower($to_address_country) == 'portugal') {
+		$pdf->Cell(40,5,$to_address_postal_code.' '.$to_address_locality.' '.$to_address_region.' '.$to_address_country);
+	}
+	else {
+		$pdf->Cell(40,5,$to_address_locality.', '.$to_address_region.' '.$to_address_country.' '.$to_address_postal_code);
+	}
+	$pdf->Ln();
+	$pdf->Cell(40,5,$to_address_description);
 	$pdf->Ln();
 	$pdf->Ln();
 	$pdf->Ln();
@@ -183,14 +190,19 @@ else {
 	$pdf->SetY(10);
 	$pdf->Cell(150,10,'');
 	$pdf->SetFont('Arial','',23);
-	$pdf->Cell(40,10,$text['label-invoice']);
+	if ($type == "quote") {
+		$pdf->Cell(40,10,$text['label-quote']);	
+	}
+	else {
+		$pdf->Cell(40,10,$text['label-invoice']);
+	}
 	$pdf->Ln();
 	$pdf->SetFont('Arial','',9);
 	$pdf->Cell(150,5,'');
 	$pdf->Cell(40,5,$text['label-invoice_date'].' '.$invoice_date);
 	$pdf->Ln();
 	$pdf->Cell(150,5,'');
-	$pdf->Cell(40,5,$text['label-invoice_date'].' '.$invoice_number);
+	$pdf->Cell(40,5,$text['label-invoice_number'].' '.$invoice_number);
 	$pdf->Ln();
 	$pdf->Ln();
 	$pdf->Ln();
@@ -298,7 +310,7 @@ else {
 	$pdf->Cell($w[0],6,'','',0,'L','');
 	$pdf->Cell($w[1],6,'','',0,'L','');
 	$pdf->Cell($w[2],6,'','',0,'R','');
-	$pdf->Cell($w[3],6,$text['label-invoice_total'].' '.number_format($total,2),'',0,'R','');
+	$pdf->Cell($w[3],6,$text['label-invoice_total'].' $'.number_format($total,2).' USD','',0,'R','');
 	$pdf->Ln();
 
 	if (strlen($invoice_note) > 0) {

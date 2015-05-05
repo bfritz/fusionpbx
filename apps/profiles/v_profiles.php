@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('sip_profiles_view')) {
 	//access granted
 }
@@ -37,7 +37,7 @@ else {
 if ($_GET['a'] == "default" && permission_exists('sip_profiles_edit')) {
 
 	//get the contents of the sip profile
-	$sip_profile = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/sip_profiles/'.$_GET['f']);
+	$sip_profile = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/templates/conf/sip_profiles/'.$_GET['f']);
 
 	//write the default config fget
 	$fd = fopen($_SESSION['switch']['conf']['dir']."/sip_profiles/".$_GET['f'], "w");
@@ -63,7 +63,7 @@ if ($_GET['a'] == "del" && permission_exists('sip_profiles_edit')) {
 	}
 }
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 $c = 0;
 $row_style["0"] = "row_style0";
@@ -151,7 +151,7 @@ if (strlen($save_msg) > 0) {
 			if (permission_exists('sip_profiles_edit')) {
 				echo "		  <td valign='middle'><a href='v_profile_edit.php?type=profile&f=".$file."' alt='edit'>$v_link_label_edit</a></td>\n";
 			}
-			if (permission_exists('sip_profiles_delete')) {
+			if (permission_exists('sip_profile_delete')) {
 				echo "		  <td><a href='v_profiles.php?type=profile&a=del&f=".$file."'  alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a></td>\n";
 			}
 			echo "		</tr>\n";
@@ -190,5 +190,5 @@ if ($v_path_show) {
 
 <?php 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>
