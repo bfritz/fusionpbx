@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 require_once "resources/header.php";
 require_once "resources/paging.php";
@@ -49,13 +47,7 @@ require_once "resources/paging.php";
 	$order = $_GET["order"];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "		<br />";
-
-	echo "<table width='100%' border='0'>\n";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title']."</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
@@ -67,15 +59,17 @@ require_once "resources/paging.php";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
-	//prepare to page the results
-		$sql = "select count(*) as num_rows from v_ring_groups ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		if (strlen($order_by) == 0) {
-			$sql .= "order by ring_group_name, ring_group_extension asc ";
+	//get total ring group count from the database
+		$sql = "select count(*) as num_rows from v_ring_groups where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			$total_ring_groups = $row['num_rows'];
 		}
-		else {
-			$sql .= "order by $order_by $order ";
-		}
+		unset($prep_statement, $row);
+
+	//prepare to page the results (reuse $sql from above)
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -116,20 +110,20 @@ require_once "resources/paging.php";
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('ring_group_name', $text['label-name'], $order_by, $order);
 	echo th_order_by('ring_group_extension', $text['label-extension'], $order_by, $order);
-	//echo th_order_by('ring_group_context', 'Context', $order_by, $order);
-	//echo th_order_by('ring_group_strategy', 'Strategy', $order_by, $order);
-	//echo th_order_by('ring_group_timeout_app', 'Timeout App', $order_by, $order);
-	//echo th_order_by('ring_group_timeout_data', 'Timeout Data', $order_by, $order);
 	echo th_order_by('ring_group_enabled', $text['label-enabled'], $order_by, $order);
+	if (permission_exists('ring_group_forward')) {
+		echo "<th>".$text['label-tools']."</th>";
+	}
 	echo th_order_by('ring_group_description', $text['header-description'], $order_by, $order);
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('ring_group_add')) {
-		echo "<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>";
+		if ($_SESSION['limit']['ring_groups']['numeric'] == '' || ($_SESSION['limit']['ring_groups']['numeric'] != '' && $total_ring_groups < $_SESSION['limit']['ring_groups']['numeric'])) {
+			echo "<a href='ring_group_edit.php' alt='add'>".$v_link_label_add."</a>";
+		}
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -147,11 +141,10 @@ require_once "resources/paging.php";
 			}
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_extension']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_context']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_strategy']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_app']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_data']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['ring_group_enabled'])."&nbsp;</td>\n";
+			if (permission_exists('ring_group_forward')) {
+				echo "	<td valign='top' class='".$row_style[$c]." tr_link_void'><a href='".PROJECT_PATH."/app/ring_groups/ring_group_forward_edit.php?id=".$row['ring_group_uuid']."&return_url=".urlencode($_SERVER['PHP_SELF'])."' alt='".$text['link-call-forward']."'>".$text['link-call-forward']."</a></td>\n";
+			}
 			echo "	<td valign='top' class='row_stylebg'>".$row['ring_group_description']."&nbsp;</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('ring_group_edit')) {
@@ -175,7 +168,9 @@ require_once "resources/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td class='list_control_icons'>";
 	if (permission_exists('ring_group_add')) {
-		echo 		"<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>";
+		if ($_SESSION['limit']['ring_groups']['numeric'] == '' || ($_SESSION['limit']['ring_groups']['numeric'] != '' && $total_ring_groups < $_SESSION['limit']['ring_groups']['numeric'])) {
+			echo "<a href='ring_group_edit.php' alt='add'>".$v_link_label_add."</a>";
+		}
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
@@ -184,15 +179,8 @@ require_once "resources/paging.php";
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "<br><br>";
 	echo "</div>";
-	echo "<br /><br />";
-	echo "<br /><br />";
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br /><br />";
 
 //include the footer
 	require_once "resources/footer.php";

@@ -37,7 +37,7 @@
 				--voicemail_password = row["voicemail_password"];
 				--greeting_id = row["greeting_id"];
 				voicemail_mail_to = row["voicemail_mail_to"];
-				voicemail_attach_file = row["voicemail_attach_file"];
+				voicemail_file = row["voicemail_file"];
 				voicemail_local_after_email = row["voicemail_local_after_email"];
 			end);
 
@@ -45,12 +45,15 @@
 			if (voicemail_local_after_email == nil) then
 				voicemail_local_after_email = "true";
 			end
-			if (voicemail_attach_file == nil) then
-				voicemail_attach_file = "true";
+			if (voicemail_file == nil) then
+				voicemail_file = "listen";
 			end
 
 		--require the email address to send the email
 			if (string.len(voicemail_mail_to) > 2) then
+				--include languages file
+					dofile(scripts_dir.."/app/voicemail/app_languages.lua");
+
 				--get voicemail message details
 					sql = [[SELECT * FROM v_voicemail_messages
 						WHERE domain_uuid = ']] .. domain_uuid ..[['
@@ -67,6 +70,21 @@
 							message_length = row["message_length"];
 							--message_status = row["message_status"];
 							--message_priority = row["message_priority"];
+						--get the recordings from the database
+							if (storage_type == "base64") then
+								--add functions
+									dofile(scripts_dir.."/resources/functions/base64.lua");
+
+								--set the voicemail message path
+									message_location = voicemail_dir.."/"..id.."/msg_"..uuid.."."..vm_message_ext;
+
+								--save the recording to the file system
+									if (string.len(row["message_base64"]) > 32) then
+										local f = io.open(message_location, "w");
+										f:write(base64.decode(row["message_base64"]));
+										f:close();
+									end
+							end
 					end);
 
 				--format the message length and date
@@ -101,7 +119,7 @@
 					subject = subject:gsub("${account}", id);
 					subject = subject:gsub("${domain_name}", domain_name);
 					subject = trim(subject);
-					subject = '=?utf-8?B?'..base64.enc(subject)..'?=';
+					subject = '=?utf-8?B?'..base64.encode(subject)..'?=';
 
 				--prepare the body
 					local f = io.open(file_body, "r");
@@ -113,6 +131,13 @@
 					body = body:gsub("${message_duration}", message_length_formatted);
 					body = body:gsub("${account}", id);
 					body = body:gsub("${domain_name}", domain_name);
+					if (voicemail_file == "attach") then
+						body = body:gsub("${message}", text['label-attached'][default_language.."-"..default_dialect]);
+					elseif (voicemail_file == "link") then
+						body = body:gsub("${message}", "<a href='https://"..domain_name.."/app/voicemails/voicemail_messages.php?action=download&type=vm&t=bin&id="..id.."&voicemail_uuid="..db_voicemail_uuid.."&uuid="..uuid.."&src=email'>"..text['label-download'][default_language.."-"..default_dialect].."</a>");
+					else
+						body = body:gsub("${message}", "<a href='https://"..domain_name.."/app/voicemails/voicemail_messages.php?action=autoplay&id="..db_voicemail_uuid.."&uuid="..uuid.."'>"..text['label-listen'][default_language.."-"..default_dialect].."</a>");
+					end
 					body = body:gsub(" ", "&nbsp;");
 					body = body:gsub("%s+", "");
 					body = body:gsub("&nbsp;", " ");
@@ -123,13 +148,13 @@
 					body = trim(body);
 
 				--send the email
-					if (voicemail_attach_file == "true") then
+					file = voicemail_dir.."/"..id.."/msg_"..uuid.."."..vm_message_ext;
+					if (voicemail_file == "attach") then
 						if (voicemail_local_after_email == "false") then
 							delete = "true";
 						else
 							delete = "false";
 						end
-						file = voicemail_dir.."/"..id.."/msg_"..uuid.."."..vm_message_ext;
 						cmd = "luarun email.lua "..voicemail_mail_to.." "..voicemail_mail_to.." "..headers.." '"..subject.."' '"..body.."' '"..file.."' "..delete;
 					else
 						cmd = "luarun email.lua "..voicemail_mail_to.." "..voicemail_mail_to.." "..headers.." '"..subject.."' '"..body.."'";
@@ -138,12 +163,11 @@
 						freeswitch.consoleLog("notice", "[voicemail] cmd: " .. cmd .. "\n");
 					end
 					result = api:executeString(cmd);
-
 			end
 
 		--whether to keep the voicemail message and details local after email
-			if (voicemail_mail_to) then
-				if (voicemail_local_after_email == "false" and string.len(voicemail_mail_to) > 0) then
+			if (string.len(voicemail_mail_to) > 2) then
+				if (voicemail_local_after_email == "false") then
 					--delete the voicemail message details
 						sql = [[DELETE FROM v_voicemail_messages
 							WHERE domain_uuid = ']] .. domain_uuid ..[['
@@ -153,10 +177,21 @@
 							freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
 						end
 						status = dbh:query(sql);
+					--delete voicemail recording file
+						if (file_exists(file)) then
+							os.remove(file);
+						end
 					--set message waiting indicator
 						message_waiting(id, domain_uuid);
 					--clear the variable
 						db_voicemail_uuid = '';
+				elseif (storage_type == "base64") then
+					--delete voicemail recording file
+						if (file_exists(file)) then
+							os.remove(file);
+						end
 				end
+				
 			end
+			
 	end

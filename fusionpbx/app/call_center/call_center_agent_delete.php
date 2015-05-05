@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
@@ -86,9 +84,12 @@ if (count($_GET)>0) {
 		unset($sql);
 	}
 
+//synchronize configuration
+	save_call_center_xml();
 
-$_SESSION["message"] = $text['message-delete'];
-header("Location: call_center_agents.php");
-return;
+//redirect the browser
+	$_SESSION["message"] = $text['message-delete'];
+	header("Location: call_center_agents.php");
+	return;
 
 ?>

@@ -172,7 +172,12 @@ if ( session:ready() ) then
 
 	--send main call to the conference room
 	if (destination_count > 0) then
-		session:execute("conference", "page-"..destination_number.."@page+flags{endconf}");
+		if (session:getVariable("moderator") ~= nil and session:getVariable("moderator") == "true") then
+			moderator_flag = ",moderator";
+		else
+			moderator_flag = "";
+		end
+		session:execute("conference", "page-"..destination_number.."@page+flags{endconf"..moderator_flag.."}");
 	else
 		session:execute("playback", "tone_stream://%(500,500,480,620);loops=3");
 	end

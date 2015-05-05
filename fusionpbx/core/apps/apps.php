@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 require_once "resources/header.php";
 $document['title'] = $text['title-apps'];
@@ -58,29 +56,15 @@ require_once "resources/paging.php";
 	}
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "		<br />";
-
-	echo "<table width='100%' border='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap><b>".$text['header-apps']."</b></td>\n";
-	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
-	echo "	</tr>\n";
-	echo "	<tr>\n";
-	echo "		<td align='left' colspan='2'>\n";
-	echo "			".$text['description-apps']."<br /><br />\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
-	echo "</table>\n";
+	echo "<b>".$text['header-apps']."</b>\n";
+	echo "<br /><br />\n";
+	echo $text['description-apps'];
+	echo "<br /><br />\n";
 
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "	<th>".$text['label-name']."</th>\n";
@@ -146,14 +130,6 @@ require_once "resources/paging.php";
 	*/
 	echo "</tr>";
 	echo "</table>";
-	echo "</div>";
-	echo "<br /><br />";
-	echo "<br /><br />";
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
 	echo "<br /><br />";
 
 //include the footer

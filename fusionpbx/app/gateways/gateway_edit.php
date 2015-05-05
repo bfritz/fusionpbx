@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -49,8 +47,29 @@ else {
 		$action = "add";
 	}
 
+//get total gateway count from the database, check limit, if defined
+	if ($action == 'add') {
+		if ($_SESSION['limit']['gateways']['numeric'] != '') {
+			$sql = "select count(*) as num_rows from v_gateways where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$prep_statement = $db->prepare($sql);
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+				$total_gateways = $row['num_rows'];
+			}
+			unset($prep_statement, $row);
+			if ($total_gateways >= $_SESSION['limit']['gateways']['numeric']) {
+				$_SESSION['message_mood'] = 'negative';
+				$_SESSION['message'] = $text['message-maximum_gateways'].' '.$_SESSION['limit']['gateways']['numeric'];
+				header('Location: gateways.php');
+				return;
+			}
+		}
+	}
+
 //get http post variables and set them to php variables
 	if (count($_POST) > 0) {
+		$domain_uuid = check_str($_POST["domain_uuid"]);
 		$gateway = check_str($_POST["gateway"]);
 		$username = check_str($_POST["username"]);
 		$password = check_str($_POST["password"]);
@@ -80,14 +99,20 @@ else {
 		$description = check_str($_POST["description"]);
 	}
 
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
-
-	$msg = '';
-	if ($action == "update") {
-		$gateway_uuid = check_str($_POST["gateway_uuid"]);
+//prevent the domain_uuid from not being set by someone without this permission
+	if (!permission_exists('gateway_domain')) {
+		$domain_uuid = $_SESSION['domain_uuid'];
 	}
 
+if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
+
+	//get the id
+		if ($action == "update") {
+			$gateway_uuid = check_str($_POST["gateway_uuid"]);
+		}
+
 	//check for all required data
+		$msg = '';
 		//if (strlen($domain_uuid) == 0) { $msg .= $text['message-required']." ".$text['label-domain_uuid']."<br>\n"; }
 		if (strlen($gateway) == 0) { $msg .= $text['message-required']." ".$text['label-gateway']."<br>\n"; }
 		if ($register == "true") {
@@ -144,7 +169,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$gateway_uuid = uuid();
 				$sql = "insert into v_gateways ";
 				$sql .= "(";
-				$sql .= "domain_uuid, ";
+				if (strlen($domain_uuid) > 0) {
+					$sql .= "domain_uuid, ";
+				}
 				$sql .= "gateway_uuid, ";
 				$sql .= "gateway, ";
 				$sql .= "username, ";
@@ -176,7 +203,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				if (strlen($domain_uuid) > 0) {
+					$sql .= "'$domain_uuid', ";
+				}
 				$sql .= "'$gateway_uuid', ";
 				$sql .= "'$gateway', ";
 				$sql .= "'$username', ";
@@ -237,10 +266,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "extension_in_contact = '$extension_in_contact', ";
 				$sql .= "context = '$context', ";
 				$sql .= "profile = '$profile', ";
+				if (strlen($domain_uuid) == 0) {
+					$sql .= "domain_uuid = null, ";
+				}
+				else {
+					$sql .= "domain_uuid = '$domain_uuid', ";
+				}
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "description = '$description' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and gateway_uuid = '$gateway_uuid'";
+				$sql .= "where gateway_uuid = '$gateway_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 			} //if ($action == "update")
@@ -288,18 +322,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			header("Location: gateways.php");
 			return;
 		}
-} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
+} //(count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
 	if (count($_GET) > 0 && $_POST["persistformvar"] != "true") {
 		$gateway_uuid = check_str($_GET["id"]);
 		$sql = "select * from v_gateways ";
-		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and gateway_uuid = '".$gateway_uuid."' ";
+		$sql .= "where gateway_uuid = '".$gateway_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
+			$domain_uuid = $row["domain_uuid"];
 			$gateway = $row["gateway"];
 			$username = $row["username"];
 			$password = $row["password"];
@@ -331,6 +365,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset ($prep_statement);
 	}
 
+//get the sip profiles
+	$sql = "select sip_profile_name from v_sip_profiles ";
+	$sql .= "where sip_profile_enabled = 'true' ";
+	$sql .= "order by sip_profile_name asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$sip_profiles = $prep_statement->fetchAll();
+	unset ($prep_statement, $sql);
+
 //set defaults
 	if (strlen($enabled) == 0) { $enabled = "true"; }
 	if (strlen($register) == 0) { $register = "true"; }
@@ -355,15 +398,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "}\n";
 	echo "</script>";
 
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
 
@@ -393,10 +429,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td width=\"30%\" class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-gateway'].":\n";
+	echo "    ".$text['label-gateway']."\n";
 	echo "</td>\n";
 	echo "<td width=\"70%\" class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='gateway' maxlength='255' value=\"$gateway\">\n";
+	echo "    <input class='formfld' type='text' name='gateway' maxlength='255' value=\"$gateway\" required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-gateway-name']."\n";
 	echo "</td>\n";
@@ -404,7 +440,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-username'].":\n";
+	echo "    ".$text['label-username']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='username' maxlength='255' autocomplete='off' value=\"$username\">\n";
@@ -415,7 +451,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-password'].":\n";
+	echo "    ".$text['label-password']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='password' name='password' id='password' autocomplete='off' maxlength='255' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" value=\"$password\">\n";
@@ -426,7 +462,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-from_user'].":\n";
+	echo "    ".$text['label-from_user']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='from_user' maxlength='255' value=\"$from_user\">\n";
@@ -437,7 +473,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-from_domain'].":\n";
+	echo "    ".$text['label-from_domain']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='from_domain' maxlength='255' value=\"$from_domain\">\n";
@@ -448,10 +484,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-proxy'].":\n";
+	echo "    ".$text['label-proxy']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='proxy' maxlength='255' value=\"$proxy\">\n";
+	echo "    <input class='formfld' type='text' name='proxy' maxlength='255' value=\"$proxy\" required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-proxy']."\n";
 	echo "</td>\n";
@@ -459,7 +495,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-realm'].":\n";
+	echo "    ".$text['label-realm']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='realm' maxlength='255' value=\"$realm\">\n";
@@ -470,11 +506,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-expire_seconds'].":\n";
+	echo "    ".$text['label-expire_seconds']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	if (strlen($expire_seconds) == 0) { $expire_seconds = "800"; }
-	echo "  <input class='formfld' type='text' name='expire_seconds' maxlength='255' value='$expire_seconds'>\n";
+	echo "  <input class='formfld' type='number' name='expire_seconds' maxlength='255' value='$expire_seconds' min='1' max='65535' step='1' required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-expire_seconds']."\n";
 	echo "</td>\n";
@@ -482,7 +518,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-register'].":\n";
+	echo "    ".$text['label-register']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='register'>\n";
@@ -506,10 +542,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-retry_seconds'].":\n";
+	echo "    ".$text['label-retry_seconds']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='retry_seconds' maxlength='255' value='$retry_seconds'>\n";
+	echo "  <input class='formfld' type='number' name='retry_seconds' maxlength='255' value='$retry_seconds' min='1' max='65535' step='1' required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-retry_seconds']."\n";
 	echo "</td>\n";
@@ -520,7 +556,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td style='padding: 0px;' colspan='2' class='' valign='top' align='left' nowrap>\n";
 
 	echo "	<div id=\"show_advanced_box\">\n";
-	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "		<tr>\n";
 	echo "		<td width=\"30%\" valign=\"top\" class=\"vncell\">&nbsp;</td>\n";
 	echo "		<td width=\"70%\" class=\"vtable\">\n";
@@ -531,11 +567,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</div>\n";
 
 	echo "	<div id=\"show_advanced\" style=\"display:none\">\n";
-	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
 	echo "<tr>\n";
 	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-distinct_to'].":\n";
+	echo "    ".$text['label-distinct_to']."\n";
 	echo "</td>\n";
 	echo "<td width='70%' class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='distinct_to'>\n";
@@ -560,7 +596,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-auth_username'].":\n";
+	echo "    ".$text['label-auth_username']."\n";
 	echo "</td>\n";
 	echo "<td width='70%' class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='auth_username' maxlength='255' value=\"$auth_username\">\n";
@@ -571,7 +607,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-extension'].":\n";
+	echo "    ".$text['label-extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='extension' maxlength='255' value=\"$extension\">\n";
@@ -582,7 +618,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-register_transport'].":\n";
+	echo "    ".$text['label-register_transport']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='register_transport'>\n";
@@ -613,7 +649,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-register_proxy'].":\n";
+	echo "    ".$text['label-register_proxy']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='register_proxy' maxlength='255' value=\"$register_proxy\">\n";
@@ -624,7 +660,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-outbound_proxy'].":\n";
+	echo "    ".$text['label-outbound_proxy']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='outbound_proxy' maxlength='255' value=\"$outbound_proxy\">\n";
@@ -635,7 +671,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "	<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		".$text['label-caller_id_in_from'].":\n";
+	echo "		".$text['label-caller_id_in_from']."\n";
 	echo "	</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<select class='formfld' name='caller_id_in_from'>\n";
@@ -660,7 +696,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    ".$text['label-supress_cng'].":\n";
+	echo "    ".$text['label-supress_cng']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='supress_cng'>\n";
@@ -685,10 +721,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-sip_cid_type'].":\n";
+	echo "    ".$text['label-sip_cid_type']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='sip_cid_type' maxlength='255' value=\"$sip_cid_type\">\n";
+	echo "    <input class='formfld' type='text' name='sip_cid_type' maxlength='255' value=\"$sip_cid_type\" pattern='^(none|pid|rpid)$'>\n";
 	echo "<br />\n";
 	echo $text['description-sip_cid_type']."\n";
 	echo "</td>\n";
@@ -696,7 +732,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-codec_prefs'].":\n";
+	echo "    ".$text['label-codec_prefs']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='codec_prefs' maxlength='255' value=\"$codec_prefs\">\n";
@@ -707,7 +743,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-extension_in_contact'].":\n";
+	echo "    ".$text['label-extension_in_contact']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='extension_in_contact'>\n";
@@ -732,10 +768,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-ping'].":\n";
+	echo "    ".$text['label-ping']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='ping' maxlength='255' value=\"$ping\">\n";
+	echo "    <input class='formfld' type='number' name='ping' maxlength='255' min='1' max='65535' step='1' value=\"$ping\">\n";
 	echo "<br />\n";
 	echo $text['description-ping']."\n";
 	echo "</td>\n";
@@ -743,14 +779,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-channels'].":\n";
+	echo "    ".$text['label-channels']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='channels' maxlength='255' value=\"$channels\">\n";
+	echo "    <input class='formfld' type='number' name='channels' maxlength='255' value=\"$channels\" min='0' max='65535' step='1'>\n";
 	echo "<br />\n";
 	echo $text['description-channels']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	if (permission_exists('gateway_domain')) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-domain']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <select class='formfld' name='domain_uuid'>\n";
+		if (strlen($domain_uuid) == 0) {
+			echo "    <option value='' selected='selected'>".$text['select-global']."</option>\n";
+		}
+		else {
+			echo "    <option value=''>".$text['select-global']."</option>\n";
+		}
+		foreach ($_SESSION['domains'] as $row) {
+			if ($row['domain_uuid'] == $domain_uuid) {
+				echo "    <option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
+			}
+			else {
+				echo "    <option value='".$row['domain_uuid']."'>".$row['domain_name']."</option>\n";
+			}
+		}
+		echo "    </select>\n";
+		echo "<br />\n";
+		echo $text['description-domain_name']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 
 	echo "	</table>\n";
 	echo "	</div>";
@@ -761,7 +825,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-context'].":\n";
+	echo "	".$text['label-context']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	if (strlen($context) == 0) { $context = "public"; }
@@ -773,11 +837,20 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-profile'].":\n";
+	echo "	".$text['label-profile']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	if (strlen($profile) == 0) { $profile = "external"; }
-	echo "	<input class='formfld' type='text' name='profile' maxlength='255' value=\"$profile\">\n";
+	echo "	<select class='formfld' name='profile' required='required'>\n";
+	foreach ($sip_profiles as $row) {
+		$sip_profile_name = $row["sip_profile_name"];
+		if ($profile == $sip_profile_name) {
+			echo "	<option value='$sip_profile_name' selected='selected'>".$sip_profile_name."</option>\n";
+		}
+		else {
+			echo "	<option value='$sip_profile_name'>".$sip_profile_name."</option>\n";
+		}
+	}
+	echo "	</select>\n";
 	echo "<br />\n";
 	echo $text['description-profile']."\n";
 	echo "</td>\n";
@@ -785,7 +858,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-enabled'].":\n";
+	echo "	".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='enabled'>\n";
@@ -809,7 +882,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='description' maxlength='255' value=\"$description\">\n";
@@ -821,18 +894,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='gateway_uuid' value='$gateway_uuid'>\n";
+		echo "		<input type='hidden' name='gateway_uuid' value='$gateway_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

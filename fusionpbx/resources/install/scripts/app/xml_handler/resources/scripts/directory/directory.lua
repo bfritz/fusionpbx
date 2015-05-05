@@ -1,6 +1,6 @@
 --	xml_handler.lua
 --	Part of FusionPBX
---	Copyright (C) 2013 Mark J Crane <markjcrane@fusionpbx.com>
+--	Copyright (C) 2013 - 2015 Mark J Crane <markjcrane@fusionpbx.com>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -168,7 +168,12 @@
 							--get the destination hostname from the registration
 								sql = "SELECT hostname FROM registrations ";
 								sql = sql .. "WHERE reg_user = '"..dialed_extension.."' ";
-								sql = sql .. "AND realm = '"..domain_name.."'";
+								sql = sql .. "AND realm = '"..domain_name.."' ";
+								if (database["type"] == "mysql") then
+									sql = sql .. "AND expires > unix_timestamp(NOW())";
+								else
+									sql = sql .. "AND to_timestamp(expires) > NOW()";
+								end
 								status = dbh_switch:query(sql, function(row)
 									database_hostname = row["hostname"];
 								end);
@@ -232,6 +237,13 @@
 								sip_force_expires = row.sip_force_expires;
 								nibble_account = row.nibble_account;
 								sip_bypass_media = row.sip_bypass_media;
+								forward_all_enabled = row.forward_all_enabled;
+								forward_all_destination = row.forward_all_destination;
+								forward_busy_enabled = row.forward_busy_enabled;
+								forward_busy_destination = row.forward_busy_destination;
+								forward_no_answer_enabled = row.forward_no_answer_enabled;
+								forward_no_answer_destination = row.forward_no_answer_destination;
+								do_not_disturb = row.do_not_disturb;
 
 							--set the dial_string
 								if (string.len(row.dial_string) > 0) then
@@ -239,7 +251,7 @@
 								else
 									--set a default dial string
 										if (dial_string == null) then
-											dial_string = "{sip_invite_domain=" .. domain_name .. ",leg_timeout=" .. call_timeout .. ",presence_id=" .. user .. "@" .. domain_name .. "}${sofia_contact(" .. user .. "@" .. domain_name .. ")}";
+											dial_string = "{sip_invite_domain=" .. domain_name .. ",presence_id=" .. user .. "@" .. domain_name .. "}${sofia_contact(" .. user .. "@" .. domain_name .. ")}";
 										end
 									--set the an alternative dial string if the hostnames don't match
 										if (load_balancing) then
@@ -248,7 +260,7 @@
 											else
 												--sofia/internal/${user_data(${destination_number}@${domain_name} attr id)}@${domain_name};fs_path=sip:server
 												user_id = trim(api:execute("user_data", user .. "@" .. domain_name .. " attr id"));
-												dial_string = "{sip_invite_domain=" .. domain_name .. ",leg_timeout=" .. call_timeout .. ",presence_id=" .. user .. "@" .. domain_name .. "}sofia/internal/" .. user_id .. "@" .. domain_name .. ";fs_path=sip:" .. database_hostname;
+												dial_string = "{sip_invite_domain=" .. domain_name .. ",presence_id=" .. user .. "@" .. domain_name .. "}sofia/internal/" .. user_id .. "@" .. domain_name .. ";fs_path=sip:" .. database_hostname;
 												--freeswitch.consoleLog("notice", "[xml_handler-directory.lua] dial_string " .. dial_string .. "\n");
 											end
 										else
@@ -327,12 +339,19 @@
 							directory_visible = row.directory_visible;
 							directory_exten_visible = row.directory_exten_visible;
 							limit_max = row.limit_max;
-							--call_timeout = row.call_timeout;
+							call_timeout = row.call_timeout;
 							limit_destination = row.limit_destination;
 							sip_force_contact = row.sip_force_contact;
 							sip_force_expires = row.sip_force_expires;
 							nibble_account = row.nibble_account;
 							sip_bypass_media = row.sip_bypass_media;
+							forward_all_enabled = row.forward_all_enabled;
+							forward_all_destination = row.forward_all_destination;
+							forward_busy_enabled = row.forward_busy_enabled;
+							forward_busy_destination = row.forward_busy_destination;
+							forward_no_answer_enabled = row.forward_no_answer_enabled;
+							forward_no_answer_destination = row.forward_no_answer_destination;
+							do_not_disturb = row.do_not_disturb;
 						end);
 					end
 
@@ -382,7 +401,7 @@
 							table.insert(xml, [[								<variable name="domain_uuid" value="]] .. domain_uuid .. [["/>]]);
 							table.insert(xml, [[								<variable name="domain_name" value="]] .. domain_name .. [["/>]]);
 							table.insert(xml, [[								<variable name="extension_uuid" value="]] .. extension_uuid .. [["/>]]);
-							--table.insert(xml, [[								<variable name="call_timeout" value="]] .. call_timeout .. [["/>]]);
+							table.insert(xml, [[								<variable name="call_timeout" value="]] .. call_timeout .. [["/>]]);
 							table.insert(xml, [[								<variable name="caller_id_name" value="]] .. sip_from_user .. [["/>]]);
 							table.insert(xml, [[								<variable name="caller_id_number" value="]] .. sip_from_user .. [["/>]]);
 							if (string.len(call_group) > 0) then
@@ -453,6 +472,27 @@
 							end
 							if (sip_bypass_media == "proxy-media") then
 								table.insert(xml, [[								<variable name="proxy_media" value="true"/>]]);
+							end
+							if (string.len(forward_all_enabled) > 0) then
+								table.insert(xml, [[								<variable name="forward_all_enabled" value="]] .. forward_all_enabled .. [["/>]]);
+							end
+							if (string.len(forward_all_destination) > 0) then
+								table.insert(xml, [[								<variable name="forward_all_destination" value="]] .. forward_all_destination .. [["/>]]);
+							end
+							if (string.len(forward_busy_enabled) > 0) then
+								table.insert(xml, [[								<variable name="forward_busy_enabled" value="]] .. forward_busy_enabled .. [["/>]]);
+							end
+							if (string.len(forward_busy_destination) > 0) then
+								table.insert(xml, [[								<variable name="forward_busy_destination" value="]] .. forward_busy_destination .. [["/>]]);
+							end
+							if (string.len(forward_no_answer_enabled) > 0) then
+								table.insert(xml, [[								<variable name="forward_no_answer_enabled" value="]] .. forward_no_answer_enabled .. [["/>]]);
+							end
+							if (string.len(forward_no_answer_destination) > 0) then
+								table.insert(xml, [[								<variable name="forward_no_answer_destination" value="]] .. forward_no_answer_destination .. [["/>]]);
+							end
+							if (string.len(do_not_disturb) > 0) then
+								table.insert(xml, [[								<variable name="do_not_disturb" value="]] .. do_not_disturb .. [["/>]]);
 							end
 							table.insert(xml, [[								<variable name="record_stereo" value="true"/>]]);
 							table.insert(xml, [[								<variable name="transfer_fallback_extension" value="operator"/>]]);

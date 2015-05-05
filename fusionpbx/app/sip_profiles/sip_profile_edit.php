@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,9 +36,27 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	$language = new text;
+	$text = $language->get();
+
+//toggle enabled state
+	if ($_REQUEST['spid'] != '' && $_REQUEST['spsid'] != '' && $_REQUEST['enabled'] != '') {
+		$sql = "update v_sip_profile_settings set ";
+		$sql .= "sip_profile_setting_enabled = '".check_str($_REQUEST['enabled'])."' ";
+		$sql .= "where sip_profile_setting_uuid = '".check_str($_REQUEST['spsid'])."' ";
+		$sql .= "and sip_profile_uuid = '".check_str($_REQUEST['spid'])."' ";
+		$db->exec(check_sql($sql));
+		unset($sql);
+
+		//save the sip profile xml
+		save_sip_profile_xml();
+
+		//apply settings reminder
+		$_SESSION["reload_xml"] = true;
+
+		$_SESSION["message"] = $text['message-update'];
+		header("Location: sip_profile_edit.php?id=".$_REQUEST['spid']);
+		exit;
 	}
 
 //action add or update
@@ -53,8 +71,9 @@ else {
 //get http post variables and set them to php variables
 	if (count($_POST) > 0) {
 		$sip_profile_name = check_str($_POST["sip_profile_name"]);
-		$sip_profile_description = check_str($_POST["sip_profile_description"]);
 		$sip_profile_hostname = check_str($_POST["sip_profile_hostname"]);
+		$sip_profile_description = check_str($_POST["sip_profile_description"]);
+		$sip_profile_enabled = check_str($_POST["sip_profile_enabled"]);
 	}
 
 if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -89,7 +108,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "sip_profile_uuid, ";
 					$sql .= "sip_profile_name, ";
 					$sql .= "sip_profile_hostname, ";
-					$sql .= "sip_profile_description ";
+					$sql .= "sip_profile_description, ";
+					$sql .= "sip_profile_enabled ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
@@ -101,7 +121,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 					else {
 						$sql .= "null, ";
 					}
-					$sql .= "'$sip_profile_description' ";
+					$sql .= "'$sip_profile_description', ";
+					$sql .= "'$sip_profile_enabled' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
@@ -117,18 +138,25 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 					else {
 						$sql .= "sip_profile_hostname = null, ";
 					}
-					$sql .= "sip_profile_description = '$sip_profile_description' ";
+					$sql .= "sip_profile_description = '$sip_profile_description', ";
+					$sql .= "sip_profile_enabled = '$sip_profile_enabled' ";
 					$sql .= "where sip_profile_uuid = '$sip_profile_uuid'";
 					$db->exec(check_sql($sql));
 					unset($sql);
 				} //if ($action == "update")
 
-			//delete the sip profiles from memcache
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-				if ($fp) {
-					$switch_cmd = "memcache delete configuration:sofia.conf:$sip_profile_hostname";
-					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+			//get the hostname
+				if ($sip_profile_name == nul) {
+					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+					if ($fp) {
+						$switch_cmd = "hostname";
+						$sip_profile_hostname = event_socket_request($fp, 'api '.$switch_cmd);
+					}
 				}
+
+			//clear the cache
+				$cache = new cache;
+				$cache->delete("configuration:sofia.conf:".$sip_profile_hostname);
 
 			//redirect the browser
 				$_SESSION["message"] = $text['message-update'];
@@ -149,6 +177,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			$sip_profile_name = $row["sip_profile_name"];
 			$sip_profile_hostname = $row["sip_profile_hostname"];
 			$sip_profile_description = $row["sip_profile_description"];
+			$sip_profile_enabled = $row["sip_profile_enabled"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -159,15 +188,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	$document['title'] = $text['title-sip_profile'];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-sip_profile']."</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
@@ -184,7 +206,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-name'].":\n";
+	echo "	".$text['label-name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='sip_profile_name' maxlength='255' value=\"$sip_profile_name\">\n";
@@ -195,7 +217,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-hostname'].":\n";
+	echo "	".$text['label-hostname']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='sip_profile_hostname' maxlength='255' value=\"$sip_profile_hostname\">\n";
@@ -206,7 +228,21 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "    ".$text['label-enabled']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='sip_profile_enabled'>\n";
+	echo "    	<option value='true' ".(($sip_profile_enabled == "true") ? "selected='selected'" : null).">".$text['label-true']."</option>\n";
+	echo "    	<option value='false' ".(($sip_profile_enabled == "false") ? "selected='selected'" : null).">".$text['label-false']."</option>\n";
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo $text['description-enabled']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<textarea class='formfld' style='width: 300px;' name='sip_profile_description' rows='4'>$sip_profile_description</textarea>\n";
@@ -214,25 +250,23 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo $text['description-description']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='sip_profile_uuid' value='$sip_profile_uuid'>\n";
+		echo "		<input type='hidden' name='sip_profile_uuid' value='$sip_profile_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
 
 	if ($action == "update") {
 		require "sip_profile_settings.php";
 	}
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

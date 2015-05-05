@@ -27,7 +27,7 @@
 include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-if (permission_exists('conference_active_advanced_view')) {
+if (permission_exists('conference_active_view')) {
 	//access granted
 }
 else {
@@ -36,17 +36,14 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-$tmp_conference_name = str_replace("_", " ", $conference_name);
 
 $switch_cmd = 'conference xml_list';
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 if (!$fp) {
-	$msg = "<div align='center'>".$text['message-connection']."<br /></div>"; 
+	$msg = "<div align='center'>".$text['message-connection']."<br /></div>";
 	echo "<div align='center'>\n";
 	echo "<table width='40%'>\n";
 	echo "<tr>\n";
@@ -71,9 +68,10 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>".$text['label-name']."</th>\n";
+	echo "<th>".$text['label-participant-pin']."</th>\n";
 	echo "<th>".$text['label-member-count']."</th>\n";
 	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
@@ -86,29 +84,62 @@ else {
 			$tmp_domain = substr($name, -strlen($_SESSION['domain_name']));
 			if ($tmp_domain == $_SESSION['domain_name']) {
 				$conference_name = substr($name, 0, strlen($name) - strlen('-'.$_SESSION['domain_name']));
-				$conference_display_name = str_replace("-", " ", $conference_name);
-				$conference_display_name = str_replace("_", " ", $conference_display_name);
+				if (is_uuid($conference_name)) {
+					$meeting_uuid = $conference_name;
+					$sql = "select ";
+					$sql .= "cr.conference_room_name, ";
+					$sql .= "v.participant_pin ";
+					$sql .= "from ";
+					$sql .= "v_meetings as v, ";
+					$sql .= "v_conference_rooms as cr ";
+					$sql .= "where ";
+					$sql .= "v.meeting_uuid = cr.meeting_uuid ";
+					$sql .= "and v.meeting_uuid = '".$conference_name."' ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll();
+					foreach ($result as $row2) {
+						$conference_name = $row2['conference_room_name'];
+						$participant_pin = $row2['participant_pin'];
+					}
+					unset ($prep_statement, $row2);
+				}
+				else {
+					$meeting_uuid = $conference_name;
+					$sql = "select ";
+					$sql .= "conference_pin_number ";
+					$sql .= "from ";
+					$sql .= "v_conferences ";
+					$sql .= "where ";
+					$sql .= "domain_uuid = '".$_SESSION['domain_uuid']."' ";
+					$sql .= "and conference_name = '".$conference_name."' ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll();
+					foreach ($result as $row3) {
+						$participant_pin = $row3['conference_pin_number'];
+					}
+					unset ($prep_statement, $row3);
+				}
 
-				//$id = $row->members->member->id;
-				//$flag_can_hear = $row->members->member->flags->can_hear;
-				//$flag_can_speak = $row->members->member->flags->can_speak;
-				//$flag_talking = $row->members->member->flags->talking;
-				//$flag_has_video = $row->members->member->flags->has_video;
-				//$flag_has_floor = $row->members->member->flags->has_floor;
-				//$uuid = $row->members->member->uuid;
-				//$caller_id_name = $row->members->member->caller_id_name;
-				//$caller_id_name = str_replace("%20", " ", $caller_id_name);
-				//$caller_id_number = $row->members->member->caller_id_number;
-
+				if (permission_exists('conference_interactive_view')) {
+					$td_onclick = "onclick=\"document.location.href='conference_interactive.php?c=".$meeting_uuid."'\"";
+				}
 				echo "<tr>\n";
-				echo "<td valign='top' class='".$row_style[$c]."'>".$conference_display_name."</td>\n";
-				echo "<td valign='top' class='".$row_style[$c]."'>".$member_count."</td>\n";
-				echo "<td valign='top' class='".$row_style[$c]."'><a href='conference_interactive.php?c=".$conference_name."'>".$text['button-view']."</a></td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick.">";
+				echo (permission_exists('conference_interactive_view')) ? "<a href='conference_interactive.php?c=".$meeting_uuid."'>".$conference_name."</a>" : $conference_name;
+				echo "</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick.">".$participant_pin."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick.">".$member_count."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick.">";
+				echo (permission_exists('conference_interactive_view')) ? "<a href='conference_interactive.php?c=".$meeting_uuid."'>".$text['button-view']."</a>" : "&nbsp;";
+				echo "</td>\n";
 				echo "</tr>\n";
 
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
 	}
 	echo "</table>\n";
+	echo "<br /><br />";
 }
 ?>

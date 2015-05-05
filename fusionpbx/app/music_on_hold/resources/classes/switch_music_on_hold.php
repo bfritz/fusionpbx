@@ -55,10 +55,8 @@ include "root.php";
 				}
 
 			//add multi-lingual support
-				require_once "app/music_on_hold/app_languages.php";
-				foreach($text as $key => $value) {
-					$text[$key] = $value[$_SESSION['domain']['language']['code']];
-				}
+				$language = new text;
+				$text = $language->get($_SESSION['domain']['language']['code'], 'app/music_on_hold');
 
 			//start the select
 				$select = "	<select class='formfld' name='".$this->select_name."' id='".$this->select_name."' style='width: auto;'>\n";
@@ -84,7 +82,12 @@ include "root.php";
 						else {
 							$moh_value = "local_stream://".$moh_name;
 						}
-						$select .= "		<option value='".$moh_value."' ".(($this->select_value == $moh_value)?'selected="selected"':null).">".(str_replace('_', ' ', $moh_name))."</option>\n";
+						$options[$moh_value] = str_replace('_', ' ', $moh_name);
+				}
+				if (sizeof($options) > 0) {
+					foreach($options as $moh_value => $moh_name) {
+						$select .= "<option value='".$moh_value."' ".(($this->select_value == $moh_value) ? 'selected="selected"' : null).">".$moh_name."</option>\n";
+					}
 				}
 			//recordings
 				if($dh = opendir($_SESSION['switch']['recordings']['dir']."/")) {
@@ -201,10 +204,10 @@ include "root.php";
 		}
 	}
 
-//require_once "app/music_on_hold/resources/classes/switch_music_on_hold.php";
-//$moh= new switch_music_on_hold;
-//$moh->select_name = "hold_music";
-//$moh->select_value = $hold_music;
-//echo $moh->select();
+//build and save the XML
+	//require_once "app/music_on_hold/resources/classes/switch_music_on_hold.php";
+	//$moh = new switch_music_on_hold;
+	//$moh->xml();
+	//$moh->save();
 
 ?>

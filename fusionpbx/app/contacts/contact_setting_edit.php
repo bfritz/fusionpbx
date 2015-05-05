@@ -17,7 +17,7 @@
 
  The Initial Developer of the Original Code is
  Mark J Crane <markjcrane@fusionpbx.com>
- Portions created by the Initial Developer are Copyright (C) 2008-2012
+ Portions created by the Initial Developer are Copyright (C) 2008-2014
  the Initial Developer. All Rights Reserved.
 
  Contributor(s):
@@ -27,14 +27,17 @@
 require_once "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
+if (permission_exists('contact_setting_edit') || permission_exists('contact_setting_add')) {
+	//access granted
+}
+else {
+	echo "access denied";
+	exit;
+}
+
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text['button-save'] as $key => $value) {
-		$languages[$key] = '';
-	}
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -178,32 +181,25 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$document['title'] = $text['title-contact_setting-edit'];
+		$document['title'] = $text['title-contact_setting_edit'];
 	}
 	elseif ($action == "add") {
-		$document['title'] = $text['title-contact_setting-add'];
+		$document['title'] = $text['title-contact_setting_add'];
 	}
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left' width='30%' nowrap='nowrap'><b>";
+	echo "<td valign='top' align='left' width='30%' nowrap='nowrap'><b>";
 	if ($action == "update") {
-		echo $text['header-contact_setting-edit'];
+		echo $text['header-contact_setting_edit'];
 	}
 	if ($action == "add") {
-		echo $text['header-contact_setting-add'];
+		echo $text['header-contact_setting_add'];
 	}
 	echo "</b></td>\n";
-	echo "<td width='70%' align='right'>";
+	echo "<td valign='top' width='70%' align='right'>";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contact_edit.php?id=$contact_uuid'\" value='".$text['button-back']."'>";
 	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
@@ -211,10 +207,10 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
 	if ($action == "update") {
-		echo $text['description-contact_setting-edit'];
+		echo $text['description-contact_setting_edit'];
 	}
 	if ($action == "add") {
-		echo $text['header-contact_setting-add'];
+		echo $text['description-contact_setting_add'];
 	}
 	echo "<br /><br />\n";
 	echo "</td>\n";
@@ -222,40 +218,40 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-contact_category'].":\n";
+	echo "	".$text['label-contact_setting_category']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='contact_setting_category' maxlength='255' value=\"$contact_setting_category\">\n";
+	echo "	<input class='formfld' type='text' name='contact_setting_category' maxlength='255' value=\"".$contact_setting_category."\" required='required'>\n";
 	echo "<br />\n";
-	echo $text['description-contact_category']."\n";
+	echo $text['description-contact_setting_category']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-contact_subcategory'].":\n";
+	echo "	".$text['label-contact_setting_subcategory']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='contact_setting_subcategory' maxlength='255' value=\"$contact_setting_subcategory\">\n";
+	echo "	<input class='formfld' type='text' name='contact_setting_subcategory' maxlength='255' value=\"".$contact_setting_subcategory."\">\n";
 	echo "<br />\n";
-	echo $text['description-contact_subcategory']."\n";
+	echo $text['description-contact_setting_subcategory']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-contact_name'].":\n";
+	echo "	".$text['label-contact_setting_type']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='contact_setting_name' maxlength='255' value=\"$contact_setting_name\">\n";
+	echo "	<input class='formfld' type='text' name='contact_setting_name' maxlength='255' value=\"".$contact_setting_name."\">\n";
 	echo "<br />\n";
-	echo $text['description-contact_name']."\n";
+	echo $text['description-contact_setting_type']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-contact_value'].":\n";
+	echo "	".$text['label-contact_setting_value']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$category = $row['contact_setting_category'];
@@ -263,7 +259,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	$name = $row['contact_setting_name'];
 	echo "	<input class='formfld' type='text' name='contact_setting_value' maxlength='255' value=\"".$row['contact_setting_value']."\">\n";
 	echo "<br />\n";
-	echo $text['description-contact_value']."\n";
+	echo $text['description-contact_setting_value']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -297,7 +293,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-enabled'].":\n";
+	echo "    ".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='contact_setting_enabled'>\n";
@@ -321,7 +317,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='contact_setting_description' maxlength='255' value=\"$contact_setting_description\">\n";
@@ -332,20 +328,17 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
+	echo "			<br>";
+	echo "			<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contact_setting_uuid' value='$contact_setting_uuid'>\n";
+		echo "		<input type='hidden' name='contact_setting_uuid' value='$contact_setting_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

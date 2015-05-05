@@ -1,4 +1,5 @@
 <?php
+
 	//application details
 		$apps[$x]['name'] = "Conference Center";
 		$apps[$x]['uuid'] = "8d083f5a-f726-42a8-9ffa-8d28f848f10e";
@@ -17,25 +18,6 @@
 		$apps[$x]['description']['fr-ch'] = "";
 		$apps[$x]['description']['pt-pt'] = "O centro de conferências permite gerir uma ou mais salas de conferência, audio e vídeo.";
 		$apps[$x]['description']['pt-br'] = "";
-
-	//menu details
-		$y = 0;
-		$apps[$x]['menu'][$y]['title']['en-us'] = "Conference Center";
-		$apps[$x]['menu'][$y]['title']['es-cl'] = "Cent. de Conferencias";
-		$apps[$x]['menu'][$y]['title']['de-de'] = "";
-		$apps[$x]['menu'][$y]['title']['de-ch'] = "";
-		$apps[$x]['menu'][$y]['title']['de-at'] = "";
-		$apps[$x]['menu'][$y]['title']['fr-fr'] = "Centre de Conférences";
-		$apps[$x]['menu'][$y]['title']['fr-ca'] = "";
-		$apps[$x]['menu'][$y]['title']['fr-ch'] = "";
-		$apps[$x]['menu'][$y]['title']['pt-pt'] = "Conferencias";
-		$apps[$x]['menu'][$y]['title']['pt-br'] = "";
-		$apps[$x]['menu'][$y]['uuid'] = "95f88726-4706-43f0-b52b-9504a0b8046f";
-		$apps[$x]['menu'][$y]['parent_uuid'] = "fd29e39c-c936-f5fc-8e2b-611681b266b5";
-		$apps[$x]['menu'][$y]['category'] = "internal";
-		$apps[$x]['menu'][$y]['path'] = "/app/conference_centers/conference_centers.php";
-		$apps[$x]['menu'][$y]['groups'][] = "superadmin";
-		$apps[$x]['menu'][$y]['groups'][] = "admin";
 
 	//permission details
 		$y = 0;
@@ -108,6 +90,11 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "user";
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "conference_room_wait_mod";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$apps[$x]['permissions'][$y]['groups'][] = "admin";
+		$apps[$x]['permissions'][$y]['groups'][] = "user";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "conference_room_schedule";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$apps[$x]['permissions'][$y]['groups'][] = "user";
@@ -247,6 +234,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "meeting_uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Meeting UUID";
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "conference_room_name";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the conference room name.";
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "profile";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Select the conference profile.";
@@ -259,6 +250,14 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "max_members";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "numeric";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Limit number of people in the conference.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "start_datetime";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Open the conference room at the start time.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "stop_datetime";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Close the conference room at the stop time.";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "wait_mod";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";

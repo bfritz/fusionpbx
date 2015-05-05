@@ -35,15 +35,13 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-require_once "resources/header.php";
-$document['title'] = $text['title-call_center_queues'];
-
-require_once "resources/paging.php";
+//includes and title
+	require_once "resources/header.php";
+	$document['title'] = $text['title-call_center_queues'];
+	require_once "resources/paging.php";
 
 //get http variables and set as php variables
 	$order_by = $_GET["order_by"];
@@ -64,42 +62,52 @@ require_once "resources/paging.php";
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-	$sql = "select * from v_call_center_queues ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($order_by) == 0) {
-		$order_by = 'queue_name';
-		$order = 'asc';
-	}
-	else {
-		$sql .= "order by $order_by $order ";
-	}
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	$num_rows = count($result);
-	unset ($prep_statement, $result, $sql);
-	$rows_per_page = 100;
-	$param = "";
-	$page = $_GET['page'];
-	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
-	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
-	$offset = $rows_per_page * $page;
+	//get total call center queues count from the database
+		$sql = "select count(*) as num_rows from v_call_center_queues where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			$total_call_center_queues = $row['num_rows'];
+		}
+		unset($prep_statement, $row);
 
-	$sql = "select * from v_call_center_queues ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($order_by) == 0) {
-		$order_by = 'queue_name';
-		$order = 'asc';
-	}
-	else {
-		$sql .= "order by $order_by $order ";
-	}
-	$sql .= " limit $rows_per_page offset $offset ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
+	//prepare to page the results (reuse $sql from above)
+		if (strlen($order_by) == 0) {
+			$order_by = 'queue_name';
+			$order = 'asc';
+		}
+		else {
+			$sql .= "order by $order_by $order ";
+		}
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		$num_rows = count($result);
+		unset ($prep_statement, $result, $sql);
+
+		$rows_per_page = 100;
+		$param = "";
+		$page = $_GET['page'];
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
+
+		$sql = "select * from v_call_center_queues ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		if (strlen($order_by) == 0) {
+			$order_by = 'queue_name';
+			$order = 'asc';
+		}
+		else {
+			$sql .= "order by $order_by $order ";
+		}
+		$sql .= " limit $rows_per_page offset $offset ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		$result_count = count($result);
+		unset ($prep_statement, $sql);
 
 	$c = 0;
 	$row_style["0"] = "row_style0";
@@ -124,7 +132,9 @@ require_once "resources/paging.php";
 	echo th_order_by('queue_description', $text['label-description'], $order_by, $order);
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('call_center_queue_add')) {
-		echo "<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
+		if ($_SESSION['limit']['call_center_queues']['numeric'] == '' || ($_SESSION['limit']['call_center_queues']['numeric'] != '' && $total_call_center_queues < $_SESSION['limit']['call_center_queues']['numeric'])) {
+			echo "<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>".$v_link_label_add."</a>";
+		}
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -177,7 +187,9 @@ require_once "resources/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td class='list_control_icons'>";
 	if (permission_exists('call_center_queue_add')) {
-		echo 		"<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
+		if ($_SESSION['limit']['call_center_queues']['numeric'] == '' || ($_SESSION['limit']['call_center_queues']['numeric'] != '' && $total_call_center_queues < $_SESSION['limit']['call_center_queues']['numeric'])) {
+			echo "<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>".$v_link_label_add."</a>";
+		}
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
@@ -186,6 +198,7 @@ require_once "resources/paging.php";
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "<br><br>";
 
 
 //show the footer

@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
@@ -52,6 +50,7 @@ else {
 //set http values as php variables
 	if (count($_POST)>0) {
 		$var_name = check_str($_POST["var_name"]);
+		$var_hostname = check_str($_POST["var_hostname"]);
 		$var_value = check_str($_POST["var_value"]);
 		$var_cat = check_str($_POST["var_cat"]);
 		if (strlen($_POST["var_cat_other"]) > 0) {
@@ -97,6 +96,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "var_uuid, ";
 				$sql .= "var_name, ";
+				$sql .= "var_hostname, ";
 				$sql .= "var_value, ";
 				$sql .= "var_cat, ";
 				$sql .= "var_enabled, ";
@@ -107,6 +107,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "'$var_uuid', ";
 				$sql .= "'$var_name', ";
+				if (strlen($var_hostname) > 0) {
+					$sql .= "'$var_hostname', ";
+				}
+				else {
+					$sql .= "null, ";
+				}
 				$sql .= "'$var_value', ";
 				$sql .= "'$var_cat', ";
 				$sql .= "'$var_enabled', ";
@@ -131,6 +137,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//update the variables
 					$sql = "update v_vars set ";
 					$sql .= "var_name = '$var_name', ";
+					if (strlen($var_hostname) > 0) {
+						$sql .= "var_hostname = '$var_hostname', ";
+					}
+					else {
+						$sql .= "var_hostname = null, ";
+					}
 					$sql .= "var_value = '$var_value', ";
 					$sql .= "var_cat = '$var_cat', ";
 					$sql .= "var_enabled = '$var_enabled', ";
@@ -163,6 +175,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$var_name = $row["var_name"];
+			$var_hostname = $row["var_hostname"];
 			$var_value = $row["var_value"];
 			$var_cat = $row["var_cat"];
 			$var_enabled = $row["var_enabled"];
@@ -182,15 +195,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //show contents
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	if ($action == "add") {
@@ -207,7 +213,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-name'].":\n";
+	echo "	".$text['label-name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='var_name' maxlength='255' value=\"$var_name\">\n";
@@ -218,7 +224,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-value'].":\n";
+	echo "	".$text['label-value']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='var_value' maxlength='255' value=\"$var_value\">\n";
@@ -228,8 +234,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-hostname']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='var_hostname' maxlength='255' value=\"$var_hostname\">\n";
+	echo "<br />\n";
+	echo $text['description-hostname']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-category'].":\n";
+	echo "	".$text['label-category']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$table_name = 'v_vars';$field_name = 'var_cat';$sql_where_optional = "";$field_current_value = $var_cat;
@@ -241,7 +258,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-enabled'].":\n";
+	echo "    ".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='var_enabled'>\n";
@@ -265,7 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-order'].":\n";
+	echo "    ".$text['label-order']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select name='var_order' class='formfld'>\n";
@@ -290,7 +307,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<textarea class='formfld' name='var_description' rows='17'>$var_description</textarea>\n";
@@ -301,9 +318,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='var_uuid' value='$var_uuid'>\n";
+		echo "		<input type='hidden' name='var_uuid' value='$var_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 
@@ -368,12 +386,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include header
 	require_once "resources/footer.php";

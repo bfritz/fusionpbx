@@ -26,7 +26,7 @@
 require_once "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-if (permission_exists('contact_edit')) {
+if (permission_exists('contact_note_edit') || permission_exists('contact_note_add')) {
 	//access granted
 }
 else {
@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -68,10 +66,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($contact_note) == 0) { $msg .= $text['message-required'].$text['label-contact_note']."<br>\n"; }
-		//if (strlen($domain_uuid) == 0) { $msg .= $text['message-required']."domain_uuid<br>\n"; }
-		//if (strlen($last_mod_date) == 0) { $msg .= $text['message-required']."Last Modified Date<br>\n"; }
-		//if (strlen($last_mod_user) == 0) { $msg .= $text['message-required']."Last Modified By<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "resources/header.php";
 			require_once "resources/persist_form_var.php";
@@ -162,54 +156,46 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%'  border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
+	echo "<td align='left' width='30%' nowrap='nowrap'>";
 	if ($action == "add") {
-		echo "<td align='left' width='15%' nowrap='nowrap'><b>".$text['header-contact_notes-add']."</b></td>\n";
+		echo "<b>".$text['header-contact_notes-add']."</b>";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='15%' nowrap='nowrap'><b>".$text['header-contact_notes-edit']."</b></td>\n";
+		echo "<b>".$text['header-contact_notes-edit']."</b>\n";
 	}
+	echo "</td>\n";
 	echo "<td width='70%' align='right'>";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contact_edit.php?id=$contact_uuid'\" value='".$text['button-back']."'>";
 	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+	echo "<tr><td colspan='2'>&nbsp;</td></tr>\n";
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-contact_note'].":\n";
+	echo "	".$text['label-contact_note']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <textarea class='formfld' type='text' rows=\"20\" style=\"width: 100%\" name='contact_note'>$contact_note</textarea>\n";
+	echo "  <textarea class='formfld' type='text' rows=\"20\" style='width: 100%' name='contact_note'>".$contact_note."</textarea>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
+	echo "			<br>";
+	echo "			<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contact_note_uuid' value='$contact_note_uuid'>\n";
+		echo "		<input type='hidden' name='contact_note_uuid' value='$contact_note_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

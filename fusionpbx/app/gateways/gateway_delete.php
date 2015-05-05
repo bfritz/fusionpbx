@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 if (strlen($_GET["id"])>0) {
 	//set the variable
@@ -46,8 +44,7 @@ if (strlen($_GET["id"])>0) {
 
 	//get the gateway name
 		$sql = "select * from v_gateways ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and gateway_uuid = '$id' ";
+		$sql .= "where gateway_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -78,8 +75,7 @@ if (strlen($_GET["id"])>0) {
 
 	//delete the gateway
 		$sql = "delete from v_gateways ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and gateway_uuid = '$id' ";
+		$sql .= "where gateway_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
 

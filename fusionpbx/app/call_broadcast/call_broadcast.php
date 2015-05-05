@@ -26,7 +26,6 @@
 include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-require_once "app_languages.php";
 if (permission_exists('call_broadcast_view')) {
 	//access granted
 }
@@ -36,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //add the includes
 	require_once "resources/header.php";
@@ -50,17 +47,11 @@ else {
 	$order = $_GET["order"];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "		<br>";
-
-	echo "<table width='100%' border='0'><tr>\n";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr>\n";
 	echo "<td width='50%' nowrap='nowrap' align='left'><b>".$text['title']."</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr></table>\n";
+	echo "<br>";
 
 	$sql = "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -92,7 +83,6 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('broadcast_name', $text['label-name'], $order_by, $order);
@@ -153,14 +143,6 @@ else {
 	echo "</tr>\n";
 
 	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
 	echo "<br><br>";
 
 require_once "resources/footer.php";

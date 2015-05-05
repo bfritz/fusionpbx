@@ -35,14 +35,13 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-if (count($_GET)>0) {
-    $id = $_GET["id"];
-}
+//get the id
+	if (count($_GET) > 0) {
+		$id = $_GET["id"];
+	}
 
 if (strlen($id)>0) {
 	//get filename
@@ -67,7 +66,9 @@ if (strlen($id)>0) {
 		unset($sql);
 
 	//delete the recording
-		unlink($_SESSION['switch']['recordings']['dir']."/".$filename);
+		if (file_exists($_SESSION['switch']['recordings']['dir']."/".$filename)) {
+			@unlink($_SESSION['switch']['recordings']['dir']."/".$filename);
+		}
 }
 
 //redirect the user

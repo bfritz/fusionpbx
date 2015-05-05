@@ -50,25 +50,64 @@
 		--say the message date
 			if (session:ready()) then
 				if (string.len(dtmf_digits) == 0) then
+					if (current_time_zone ~= nil) then
+						session:execute("set", "timezone="..current_time_zone.."");
+					end
 					session:say(created_epoch, default_language, "CURRENT_DATE_TIME", "pronounced");
 				end
 			end
+
+		--get the recordings from the database
+			if (storage_type == "base64") then
+				sql = [[SELECT * FROM v_voicemail_messages 
+					WHERE domain_uuid = ']] .. domain_uuid ..[['
+					AND voicemail_message_uuid = ']].. uuid.. [[' ]];
+				if (debug["sql"]) then
+					freeswitch.consoleLog("notice", "[ivr_menu] SQL: " .. sql .. "\n");
+				end
+				status = dbh:query(sql, function(row)
+					--add functions
+						dofile(scripts_dir.."/resources/functions/base64.lua");
+
+					--set the voicemail message path
+						message_location = voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext;
+
+					--save the recording to the file system
+						if (string.len(row["message_base64"]) > 32) then
+							local file = io.open(message_location, "w");
+							file:write(base64.decode(row["message_base64"]));
+							file:close();
+						end
+				end);
+			elseif (storage_type == "http_cache") then
+				message_location = storage_path.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext;
+			end
+
 		--play the message
 			if (session:ready()) then
 				if (string.len(dtmf_digits) == 0) then
 					stream_seek = true;
-					if (vm_message_ext == "mp3") then
-						if (api:executeString("module_exists mod_vlc") == "true") then
-							session:streamFile("vlc://"..voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
+					if (storage_type == "http_cache") then
+						message_location = storage_path.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext;
+						session:streamFile(storage_path.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
+					else
+						if (vm_message_ext == "mp3") then
+							if (api:executeString("module_exists mod_vlc") == "true") then
+								session:streamFile("vlc://"..voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
+							else
+								session:streamFile(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
+							end
 						else
 							session:streamFile(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
 						end
-					else
-						session:streamFile(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
 					end
 					stream_seek = false;
 					session:streamFile("silence_stream://1000");
 				end
+			end
+		--remove the voicemail message
+			if (storage_type == "base64") then
+				os.remove(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
 			end
 		--to listen to the recording press 1
 			if (session:ready()) then

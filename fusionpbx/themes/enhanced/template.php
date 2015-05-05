@@ -97,41 +97,38 @@ if (
 	?>
 <?php } ?>
 
-DIV#default_login {
-	z-index: 1000;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-}
-
-#default_login_container {
-	display: block;
-	width: 300px;
-	height: <?php echo ($_SESSION['login']['domain_name.visible']['boolean']) ? '300px' : '267px'; ?>;
+#default_login {
+	display: inline-block;
+	padding: 30px;
+	margin-bottom: 28px;
 	<?php
 	if (
 		isset($_SESSION['theme']['background_image']) ||
 		$_SESSION['theme']['background_color'][0] != '' ||
 		$_SESSION['theme']['background_color'][1] != ''
 		) { ?>
-		background-color: <?php echo $_SESSION['theme']['login_background_color']['text']; ?>;
-		opacity: <?php echo $_SESSION['theme']['login_opacity']['text']; ?>;
-		filter: alpha(opacity=<?php echo (100 * (float) $_SESSION['theme']['login_opacity']['text']); ?>);
-		-moz-opacity: <?php echo $_SESSION['theme']['login_opacity']['text']; ?>;
-		-khtml-opacity: <?php echo $_SESSION['theme']['login_opacity']['text']; ?>;
+		background-color: <?php echo ($_SESSION['theme']['login_background_color']['text'] != '') ? $_SESSION['theme']['login_background_color']['text'] : "#fff"; ?>;
+		background: rgba(<?php echo ($_SESSION['theme']['login_background_color']['text'] != '') ? hex2rgb($_SESSION['theme']['login_background_color']['text'], ',') : "255, 255, 255"; ?>, <?php echo ($_SESSION['theme']['login_opacity']['text'] != '') ? $_SESSION['theme']['login_opacity']['text'] : "1"; ?>);
 		-webkit-border-radius: 4px;
 		-moz-border-radius: 4px;
 		border-radius: 4px;
-		-webkit-box-shadow: 0 1px 20px #888;
-		-moz-box-shadow: 0 1px 20px #888;
-		box-shadow: 0 1px 20px #888;
 		<?php
+		if ($_SESSION['theme']['login_shadow_color']['text'] != '') {
+			?>
+			-webkit-box-shadow: 0 1px 20px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			-moz-box-shadow: 0 1px 20px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			box-shadow: 0 1px 20px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			<?php
+		}
 	}
 	?>
+}
+
+A.login_box_link {
+	font-size: 11px;
+	text-shadow: 0 0 2px <?php echo ($_SESSION['theme']['login_background_color']['text'] != '') ? $_SESSION['theme']['login_background_color']['text'] : "#fff"; ?>;
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 DIV#footer {
@@ -140,11 +137,17 @@ DIV#footer {
 	left: 0;
 	right: 0;
 	height: 20px;
-	-khtml-opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
-	-moz-opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
-	filter: alpha(opacity=<?php echo (100 * (float) $_SESSION['theme']['footer_opacity']['text']); ?>);
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=<?php echo $_SESSION['theme']['footer_opacity']['text']; ?>);
-	opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+	<?php
+	if ($_SESSION['theme']['footer_opacity']['text'] != '') {
+		?>
+		-khtml-opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+		-moz-opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+		filter: alpha(opacity=<?php echo (100 * (float) $_SESSION['theme']['footer_opacity']['text']); ?>);
+		filter: progid:DXImageTransform.Microsoft.Alpha(opacity=<?php echo $_SESSION['theme']['footer_opacity']['text']; ?>);
+		opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+		<?php
+	}
+	?>
 	text-align: center;
 	vertical-align: middle;
 	padding-bottom: 0;
@@ -187,7 +190,7 @@ th {
 	border-bottom: 1px solid #a4aebf;
 	text-align: left;
 	color: #3164AD;
-	font-size: 13px;
+	font-size: 12px;
 	font-family: arial;
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -209,7 +212,7 @@ td {
 td.list_control_icons {
 	/* multiple icons exist (horizontally) */
 	padding: none;
-	padding-left: 3px;
+	padding-left: 2px;
 	width: 50px;
 	text-align: right;
 	vertical-align: top;
@@ -227,6 +230,15 @@ td.list_control_icon {
 }
 
 img.list_control_icon {
+	margin: 2px;
+	width: 21px;
+	height: 21px;
+	border: none;
+	opacity: 0.4;
+	-moz-opacity: 0.4;
+	}
+
+img.list_control_icon_disabled {
 	margin: 2px;
 	width: 21px;
 	height: 21px;
@@ -256,6 +268,7 @@ input.btn, input.button {
 	background-color: #000;
 	text-align: center;
 	text-transform: uppercase;
+	text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.85);
 	opacity: 0.9;
 	-moz-opacity: 0.9;
 	}
@@ -266,6 +279,7 @@ input.btn:hover, input.button:hover, img.list_control_icon:hover {
 	-moz-box-shadow: 0 0 5px #cddaf0;
 	opacity: 1.0;
 	-moz-opacity: 1.0;
+	cursor: pointer;
 	}
 
 input.txt, textarea.txt, select.txt, .formfld {
@@ -296,6 +310,11 @@ input.txt:focus, .formfld:focus {
 	-moz-box-shadow: 0 0 5px #cddaf0;
 	box-shadow: 0 0 5px #cddaf0;
 	}
+
+/* removes spinners (increment/decrement controls) inside input fields */
+input[type=number] { -moz-appearance: textfield; }
+::-webkit-inner-spin-button { -webkit-appearance: none; }
+::-webkit-outer-spin-button { -webkit-appearance: none; }
 
 select.formfld {
 	height: 27px;
@@ -431,6 +450,26 @@ table.tr_hover tr:hover td a {
 	padding: 5px 7px;
 }
 
+.row_style2 {
+	border-bottom: 1px solid #c5d1e5;
+	background-color: #fff;
+	color: #000;
+	text-align: center;
+	padding: 0 1px 0 1px;
+	width: 51px;
+	white-space: nowrap;
+}
+
+.row_style_hor_mir_grad {
+	background: -moz-linear-gradient(left, #e5e9f0 0%, #fff 25%, #fff 75%, #e5e9f0 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e5e9f0), color-stop(25%,#fff), color-stop(75%,#fff), color-stop(100%,#e5e9f0));
+	background: -webkit-linear-gradient(left, #e5e9f0 0%,#fff 25%,#fff 75%,#e5e9f0 100%);
+	background: -o-linear-gradient(left, #e5e9f0 0%,#fff 25%,#fff 75%,#e5e9f0 100%);
+	background: -ms-linear-gradient(left, #e5e9f0 0%,#fff 25%,#fff 75%,#e5e9f0 100%);
+	background: linear-gradient(to right, #e5e9f0 0%,#fff 25%,#fff 75%,#e5e9f0 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e9f0', endColorstr='#e5e9f0',GradientType=1 );
+}
+
 .row_stylebg {
 	border-bottom: 1px solid #b9c5d8;
 	background-color: #f0f2f6;
@@ -441,7 +480,6 @@ table.tr_hover tr:hover td a {
 
 .border {
 	border: solid 1px #a4aebf;
-	/*background-color: #FFFFFF;*/
 }
 
 
@@ -459,9 +497,7 @@ table.tr_hover tr:hover td a {
 }
 
 table {
-	/*background:#ccc;*/
-	/*margin:20px;*/
-	/*border:#ccc 1px solid;*/
+
 }
 
 table th {
@@ -469,8 +505,7 @@ table th {
 }
 
 table td {
-	/*background:#fff;*/
-	/*padding:2px 10px 4px 10px*/
+
 }
 
 table tr.even td {
@@ -528,6 +563,46 @@ legend {
 	padding-right: 2px;
 }
 
+#main_content {
+	<?php
+	if (
+		strlen($_SESSION["username"]) > 0 &&
+		(
+			isset($_SESSION['theme']['background_image']) ||
+			$_SESSION['theme']['background_color'][0] != '' ||
+			$_SESSION['theme']['background_color'][1] != ''
+		)) { ?>
+		background-color: #FFFFFF;
+		background-attachment: fixed;
+		<?php
+		if ($_SESSION['theme']['body_opacity']['text'] != '') {
+			?>
+			opacity: <?php echo $_SESSION['theme']['body_opacity']['text']?>;
+			filter:alpha(opacity=<?php echo (100 * (float) $_SESSION['theme']['body_opacity']['text'])?>);
+			-moz-opacity: <?php echo $_SESSION['theme']['body_opacity']['text']?>;
+			-khtml-opacity: <?php echo $_SESSION['theme']['body_opacity']['text']?>;
+			<?php
+		}
+		?>
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+		<?php
+		if ($_SESSION['theme']['login_shadow_color']['text'] != '') {
+			?>
+			-webkit-box-shadow: 0 1px 4px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			-moz-box-shadow: 0 1px 4px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			box-shadow: 0 1px 4px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			<?php
+		}
+		?>
+		padding: 20px;
+	<?php } else { ?>
+		padding: 10px;
+	<?php } ?>
+	text-align: left;
+}
+
 /* begin the menu css*/
 
 	.menu_bar {
@@ -537,9 +612,15 @@ legend {
 		-moz-border-radius: 4px;
 		border-radius: 4px;
 		padding: 4px;
-		-webkit-box-shadow: 0 1px 4px #aaa;
-		-moz-box-shadow: 0 1px 4px #aaa;
-		box-shadow: 0 1px 4px #aaa;
+		<?php
+		if ($_SESSION['theme']['login_shadow_color']['text'] != '') {
+			?>
+			-webkit-box-shadow: 0 1px 4px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			-moz-box-shadow: 0 1px 4px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			box-shadow: 0 1px 4px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			<?php
+		}
+		?>
 	}
 
 	.menu_bg {
@@ -558,13 +639,10 @@ legend {
 		?>
 		background-repeat: repeat-x;
 		background-attachment: fixed;
-		/*background-color: #FFFFFF;*/
-
 		opacity: 0.9;
 		filter:alpha(opacity=90);
 		-moz-opacity:0.9;
 		-khtml-opacity: 0.9;
-
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		border-radius: 3px;
@@ -575,34 +653,6 @@ legend {
 		padding-right:20px;
 	}
 
-	.main_content {
-		<?php
-		if (
-			strlen($_SESSION["username"]) > 0 &&
-			(
-				isset($_SESSION['theme']['background_image']) ||
-				$_SESSION['theme']['background_color'][0] != '' ||
-				$_SESSION['theme']['background_color'][1] != ''
-			)) { ?>
-			background-color: #FFFFFF;
-			background-attachment: fixed;
-			opacity: 0.93;
-			filter:alpha(opacity=93);
-			-moz-opacity:0.93;
-			-khtml-opacity: 0.93;
-			-webkit-border-radius: 4px;
-			-moz-border-radius: 4px;
-			border-radius: 4px;
-			-webkit-box-shadow: 0 1px 4px #aaa;
-			-moz-box-shadow: 0 1px 4px #aaa;
-			box-shadow: 0 1px 4px #aaa;
-			padding: 20px;
-		<?php } else { ?>
-			padding: 10px;
-		<?php } ?>
-		text-align: left;
-	}
-
 	#menu{
 		width:100%;
 		float:left;
@@ -611,15 +661,13 @@ legend {
 	#menu a, #menu h2{
 		font:bold 11px/16px arial,helvetica,sans-serif;
 		display:block;
-		/*border-color:#ccc #888 #555 #bbb;*/
 		white-space:nowrap;
 		margin:0;
 		padding: 3px;
 	}
 
 	#menu h2{
-		/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
-		/*text-transform:uppercase*/
+		color:#FFFFFF;
 		<?php
 		if ($_SESSION['domain']['language']['code'] == "en-us") {
 			echo "width:125px;\n";
@@ -637,8 +685,6 @@ legend {
 	}
 
 	#menu h2 h2{
-		/*background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
-		/*text-transform:uppercase*/
 		padding: 3px;
 	}
 
@@ -659,7 +705,7 @@ legend {
 
 	#menu .menu_sub {
 		display:none;
-		padding-top:10px;
+		padding: 5px 0px 8px 0px;
 		<?php
 		if ($_SESSION['domain']['language']['code'] == "en-us") {
 			echo "width:125px;\n";
@@ -679,9 +725,15 @@ legend {
 		-webkit-border-radius: 0 0 3px 3px;
 		-moz-border-radius: 0 0 3px 3px;
 		border-radius: 0 0 3px 3px;
-		-webkit-box-shadow: 0 2px 3px #aaa;
-		-moz-box-shadow: 0 2px 3px #aaa;
-		box-shadow: 0 2px 3px #aaa;
+		<?php
+		if ($_SESSION['theme']['login_shadow_color']['text'] != '') {
+			?>
+			-webkit-box-shadow: 0 2px 3px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			-moz-box-shadow: 0 2px 3px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			box-shadow: 0 2px 3px <?php echo $_SESSION['theme']['login_shadow_color']['text']?>;
+			<?php
+		}
+		?>
 	}
 
 	#menu a:hover{
@@ -731,7 +783,6 @@ legend {
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		border-radius: 3px;
-		/*background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;*/
 	}
 
 	div#menu li:hover{
@@ -754,7 +805,6 @@ legend {
 	#menu a.x, #menu a.x:visited{
 		font-weight:bold;
 		color:#000;
-		/*background:#a4aebf url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 	}
 
 	#menu a.x:hover{
@@ -865,7 +915,6 @@ legend {
 	#domain_selector_domain {
 		display: <?php echo ($_SESSION['theme']['domain_visible']['text'] != 'true') ? 'none' : 'inline-block'; ?>;
 		white-space: nowrap;
-		margin-top: 10px;
 		padding: 2px <?php echo ($_SESSION['theme']['domain_background_opacity']['text'] != '' && $_SESSION['theme']['domain_background_opacity']['text'] != 0) ? 7 : 0; ?>px 1px 7px;
 		margin-top: -1px;
 		background-color: rgba(<?php echo hex2rgb($_SESSION['theme']['domain_background_color']['text'],','); ?>, <?php echo ($_SESSION['theme']['domain_background_opacity']['text'] != '') ? $_SESSION['theme']['domain_background_opacity']['text'] : 0; ?>);
@@ -873,7 +922,8 @@ legend {
 		-moz-border-radius: 1px;
 		border-radius: 1px;
 		font-size: 12px;
-		color: <?php echo $_SESSION['theme']['domain_color']['text']; ?>;
+		color: <?php echo ($_SESSION['theme']['domain_color']['text'] != '') ? $_SESSION['theme']['domain_color']['text'] : '#000'; ?>;
+		<?php echo ($_SESSION['theme']['domain_shadow_color']['text'] != '') ? 'text-shadow: 0 0 2px '.$_SESSION['theme']['domain_shadow_color']['text'].';' : null; ?>
 	}
 
 	#domain_selector_domain:hover {
@@ -902,9 +952,9 @@ legend {
 		font-size: 10pt;
 		overflow: hidden;
 		background-color: #fff;
-		-webkit-box-shadow: 0 0 10px #888;
-		-moz-box-shadow: 0 0 10px #888;
-		box-shadow: 0 0 10px #888;
+		-webkit-box-shadow: 0 0 10px <?php echo ($_SESSION['theme']['login_shadow_color']['text'] != '') ? $_SESSION['theme']['login_shadow_color']['text'] : "#888"; ?>;
+		-moz-box-shadow: 0 0 10px <?php echo ($_SESSION['theme']['login_shadow_color']['text'] != '') ? $_SESSION['theme']['login_shadow_color']['text'] : "#888"; ?>;
+		box-shadow: 0 0 10px <?php echo ($_SESSION['theme']['login_shadow_color']['text'] != '') ? $_SESSION['theme']['login_shadow_color']['text'] : "#888"; ?>;
 	}
 
 	#domains_header {
@@ -951,30 +1001,203 @@ legend {
 		padding: 20px;
 		}
 
+/* operator panel styles begin */
+
+	DIV.op_ext {
+		float: left;
+		width: 235px;
+		margin: 0px 8px 8px 0px;
+		padding: 0px;
+		border-style: solid;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		-webkit-box-shadow: 0 0 3px #e5e9f0;
+		-moz-box-shadow: 0 0 3px #e5e9f0;
+		box-shadow: 0 0 3px #e5e9f0;
+		border-width: 1px 3px;
+		border-color: #b9c5d8 #c5d1e5;
+		background-color: #e5eaf5;
+		cursor: default;
+		}
+
+	DIV.op_state_active {
+		background-color: #baf4bb;
+		border-width: 1px 3px;
+		border-color: #77d779;
+		}
+
+	DIV.op_state_ringing {
+		background-color: #a8dbf0;
+		border-width: 1px 3px;
+		border-color: #41b9eb;
+		}
+
+	TABLE.op_ext {
+		width: 100%;
+		height: 60px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		background-color: #e5eaf5;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		}
+
+	TD.op_ext_icon {
+		vertical-align: middle;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		}
+
+	IMG.op_ext_icon {
+		cursor: move;
+		width: 39px;
+		height: 42px;
+		border: none;
+		}
+
+	TD.op_ext_info {
+		text-align: left;
+		vertical-align: top;
+		font-family: arial;
+		font-size: 10px;
+		overflow: auto;
+		width: 100%;
+		padding: 3px 5px 3px 7px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		background-color: #f0f2f6;
+		}
+
+	TD.op_state_ringing {
+		background-color: #d1f1ff;
+		}
+
+	TD.op_state_active {
+		background-color: #e1ffe2;
+		}
+
+	TABLE.op_state_ringing {
+		background-color: #a8dbf0;
+		}
+
+	TABLE.op_state_active {
+		background-color: #baf4bb;
+		}
+
+	.op_user_info {
+		font-family: arial;
+		font-size: 10px;
+		display: inline-block;
+		}
+
+	.op_user_info strong {
+		color: #3164AD;
+		}
+
+	.op_caller_info {
+		display: block;
+		margin-top: 7px;
+		font-family: arial;
+		font-size: 10px;
+		}
+
+	.op_call_info {
+		display: inline-block;
+		padding: 0px;
+		font-family: arial;
+		font-size: 10px;
+		}
+
+	#op_btn_status_available {
+		background-image: -moz-linear-gradient(top, #8ec989 25%, #2d9c38 64%);
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.25, #8ec989), color-stop(0.64, #2d9c38));
+		background-color: #2d9c38;
+		border: 1px solid #006200;
+		}
+
+	#op_btn_status_available_on_demand {
+		background-image: -moz-linear-gradient(top, #abd0aa 25%, #629d62 64%);
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.25, #abd0aa), color-stop(0.64, #629d62));
+		background-color: #629d62;
+		border: 1px solid #619c61;
+		}
+
+	#op_btn_status_on_break {
+		background-image: -moz-linear-gradient(top, #ddc38b 25%, #be8e2c 64%);
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.25, #ddc38b), color-stop(0.64, #be8e2c));
+		background-color: #be8e2c;
+		border: 1px solid #7d1b00;
+		}
+
+	#op_btn_status_do_not_disturb {
+		background-image: -moz-linear-gradient(top, #cc8984 25%, #960d10 64%);
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.25, #cc8984), color-stop(0.64, #960d10));
+		background-color: #960d10;
+		border: 1px solid #5b0000;
+		}
+
+	#op_btn_status_logged_out {
+		background-image: -moz-linear-gradient(top, #cacac9 25%, #8d8d8b 64%);
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.25, #cacac9), color-stop(0.64, #8d8d8b));
+		background-color: #8d8d8b;
+		border: 1px solid #5d5f5a;
+		}
+
+	/* jquery ui autocomplete styles */
+
+	.ui-widget {
+		margin: 0px;
+		padding: 0px;
+		}
+
+	.ui-autocomplete {
+		cursor: default;
+		position: absolute;
+		max-height: 200px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		white-space: nowrap;
+		width: auto;
+		border: 1px solid #c0c0c0;
+		}
+
+	.ui-menu, .ui-menu .ui-menu-item {
+		width: 350px;
+		}
+
+	.ui-menu .ui-menu-item a {
+		text-decoration: none;
+		cursor: pointer;
+		border-color: #fff;
+		background-image: none;
+		background-color: #fff;
+		white-space: nowrap;
+		font-family: arial;
+		font-size: 12px;
+		color: #444;
+		}
+
+	.ui-menu .ui-menu-item a:hover {
+		color: #5082ca;
+		border: 1px solid white;
+		background-image: none;
+		background-color: #fff;
+		}
+
+/* operator panel styles end */
+
+SPAN.playback_progress_bar {
+	background-color: #c43e42;
+	height: 1px;
+	display: inline-block;
+	}
+
 </style>
-
-<script type="text/javascript">
-	<!--
-		function jsconfirm(title,msg,url) {
-			if (confirm(msg)){
-				window.location = url;
-			}
-			else{
-			}
-		}
-	//-->
-</script>
-
-<SCRIPT language="JavaScript">
-	<!--
-		function confirmdelete(url) {
-			var confirmed = confirm("Are you sure want to delete this.");
-			if (confirmed == true) {
-				window.location=url;
-			}
-		}
-	//-->
-</SCRIPT>
 
 <?php if (substr_count($_SERVER["PHP_SELF"], "xml_cdr_statistics.php") == 0) { ?>
 	<!-- // javascript calendar and color picker (source: http://rightjs.org) -->
@@ -983,8 +1206,9 @@ legend {
 	<script language="JavaScript" type='text/javascript' src='<?php echo PROJECT_PATH; ?>/resources/rightjs/right-colorpicker-src.js'></script>
 <?php } ?>
 
-<script language="JavaScript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery-1.8.3.js"></script>
+<script language="JavaScript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery-1.11.1.js"></script>
 <script language="JavaScript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery.autosize.input.js"></script>
+
 <script language="JavaScript" type="text/javascript">
 	$(document).ready(function() {
 
@@ -1042,8 +1266,9 @@ legend {
 </script>
 
 <script language="JavaScript" type="text/javascript">
-	function display_message(msg, mood) {
+	function display_message(msg, mood, delay) {
 		mood = typeof mood !== 'undefined' ? mood : 'default';
+		delay = typeof delay !== 'undefined' ? delay : <?php echo (1000 * (float) $_SESSION['theme']['message_delay']['text']); ?>;
 		if (msg != '') {
 			// insert temp div to get width w/o scroll bar
 			var helper_div = $('<div />');
@@ -1057,28 +1282,76 @@ legend {
 			$("#message_text").html(msg);
 			$("#message_container").css({height: $("#message_text").css("height")});
 			$("#message_container").css({width: inner_width});
-			$("#message_text").animate({top: '+=200'}, 0).animate({opacity: 1}, "fast").delay(<?php echo (1000 * (float) $_SESSION['theme']['message_delay']['text']); ?>).animate({top: '-=200'}, 1000).animate({opacity: 0});
-			$("#message_container").animate({top: '+=200'}, 0).animate({opacity: <?php echo $_SESSION['theme']['message_opacity']['text']; ?>}, "fast").delay(<?php echo (1000 * (float) $_SESSION['theme']['message_delay']['text']); ?>).animate({top: '-=200'}, 1000).animate({opacity: 0}, function() {
+			$("#message_text").animate({top: '+=200'}, 0).animate({opacity: 1}, "fast").delay(delay).animate({top: '-=200'}, 1000).animate({opacity: 0});
+			$("#message_container").animate({top: '+=200'}, 0).animate({opacity: <?php echo $_SESSION['theme']['message_opacity']['text']; ?>}, "fast").delay(delay).animate({top: '-=200'}, 1000).animate({opacity: 0}, function() {
 				$("#message_container").removeClass('message_container_mood_'+mood);
 			});
 		}
 	}
 </script>
 
+<script type='text/javascript'>
+	// preload images
+	img_play = new Image();	img_play.src = "<?php echo PROJECT_PATH; ?>/themes/enhanced/images/icon_play.png";
+	img_pause = new Image(); img_pause.src = "<?php echo PROJECT_PATH; ?>/themes/enhanced/images/icon_pause.png";
+
+	var recording_audio;
+
+	function recording_play(recording_id) {
+		if (document.getElementById('recording_progress_bar_'+recording_id)) {
+			document.getElementById('recording_progress_bar_'+recording_id).style.display='';
+		}
+		recording_audio = document.getElementById('recording_audio_'+recording_id)
+
+		if (recording_audio.paused) {
+			recording_audio.play();
+			recording_audio.volume = 1;
+			document.getElementById('recording_button_'+recording_id).innerHTML = "<?php echo str_replace("class='list_control_icon'", "class='list_control_icon' style='opacity: 1;'", $v_link_label_pause); ?>";
+		}
+		else {
+			recording_audio.pause();
+			document.getElementById('recording_button_'+recording_id).innerHTML = "<?php echo $v_link_label_play; ?>";
+		}
+	}
+
+	function recording_reset(recording_id) {
+		if (document.getElementById('recording_progress_bar_'+recording_id)) {
+			document.getElementById('recording_progress_bar_'+recording_id).style.display='none';
+		}
+		document.getElementById('recording_button_'+recording_id).innerHTML = "<?php echo $v_link_label_play; ?>";
+	}
+
+	function update_progress(recording_id) {
+		recording_audio = document.getElementById('recording_audio_'+recording_id);
+		var recording_progress = document.getElementById('recording_progress_'+recording_id);
+		var value = 0;
+		if (recording_audio.currentTime > 0) {
+			value = (100 / recording_audio.duration) * recording_audio.currentTime;
+		}
+		recording_progress.style.width = value + "%";
+	}
+</script>
+
 </head>
 
 <?php
+//add multi-lingual support
+	$language = new text;
+	$text = $language->get(null,'themes/enhanced');
+
 // set message_onload
 if (strlen($_SESSION['message']) > 0) {
 	$message_text = addslashes($_SESSION['message']);
 	$message_mood = $_SESSION['message_mood'];
+	$message_delay = $_SESSION['message_delay'];
 
 	$onload .= "display_message('".$message_text."'";
-	if ($message_mood != '') {
-		$onload .= ", '".$message_mood."'";
+	$onload .= ($message_mood != '') ? ", '".$message_mood."'" : ", 'default'";
+	if ($message_delay != '') {
+		$onload .= ", '".$message_delay."'";
 	}
 	$onload .= "); ";
-	unset($_SESSION['message'], $_SESSION['message_mood']);
+	unset($_SESSION['message'], $_SESSION['message_mood'], $_SESSION['message_delay']);
 }
 ?>
 
@@ -1090,13 +1363,6 @@ if (strlen($_SESSION['message']) > 0) {
 	<?php
 	//logged in show the domains block
 	if (strlen($_SESSION["username"]) > 0 && permission_exists("domain_select") && count($_SESSION['domains']) > 1) {
-
-		//add multi-lingual support
-		require_once "themes/enhanced/app_languages.php";
-		foreach($text as $key => $value) {
-			$text[$key] = $value[$_SESSION['domain']['language']['code']];
-		}
-
 		?>
 		<div id="domains_container">
 			<input type="hidden" id="domains_visible" value="0">
@@ -1385,7 +1651,7 @@ if (strlen($_SESSION['message']) > 0) {
 						<table cellpadding='0' cellspacing='1' border='0' width='100%' style='margin-bottom: 60px;'>
 
 							<tr>
-								<td class='main_content' valign='top' align='center'>
+								<td id='main_content' valign='top' align='center'>
 									<!--{body}-->
 								</td>
 							</tr>
@@ -1399,13 +1665,16 @@ if (strlen($_SESSION['message']) > 0) {
 
 		// default login being used
 		else {
+			$logo = (isset($_SESSION['theme']['logo']['text'])) ? $_SESSION['theme']['logo']['text'] : PROJECT_PATH."/themes/enhanced/images/logo.png";
 			?>
 			<div id="main_content" class='main_content' style='position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 0;'>
 				<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'>
 					<tr>
 						<td align='center' valign='middle'>
-							<span id='default_login_container'></span>
-							<br /><br /><br />
+							<span id='default_login'>
+								<a href='<?php echo PROJECT_PATH; ?>/'><img src='<?php echo $logo; ?>' width='250'></a><br />
+								<!--{body}-->
+							</span>
 						</td>
 					</tr>
 				</table>
@@ -1416,31 +1685,11 @@ if (strlen($_SESSION['message']) > 0) {
 	</div>
 
 	<?php
-	if (isset($_SESSION['theme']['logo']['text'])){
-		$logo = $_SESSION['theme']['logo']['text'];
-	}
-	else {
-		$logo = PROJECT_PATH."/themes/enhanced/images/logo.png";
-	}
-
-	if ($default_login) {
-		?>
-		<div id="default_login">
-			<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'>
-				<tr>
-					<td align='center' valign='middle'>
-						<a href='<?php echo PROJECT_PATH; ?>/'><img src='<?php echo $logo; ?>' width='250'></a>
-						<br />
-						<!--{body}-->
-						<br /><br /><br />
-					</td>
-				</tr>
-			</table>
-		</div>
-		<?php
-	}
 	$footer .= "&copy; Copyright 2008 - ".date("Y")." <a href='http://www.fusionpbx.com' class='footer' target='_blank'>fusionpbx.com</a>. All rights reserved.\n";
 	echo "<div id='footer' style='position: absolute; z-index; 10000;'><span class='footer'>".$footer."</span></div>\n";
+	if (isset($_SESSION['theme']['bottom_html']['text'])){
+		echo $_SESSION['theme']['bottom_html']['text'];
+	}
 	?>
 
 </body>

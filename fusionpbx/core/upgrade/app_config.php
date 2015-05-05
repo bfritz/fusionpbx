@@ -18,23 +18,6 @@
 		$apps[$x]['description']['pt-pt'] = "Atualizar o esquema da base de dados.";
 		$apps[$x]['description']['pt-br'] = "";
 
-	//menu details
-		$apps[$x]['menu'][0]['title']['en-us'] = "Upgrade";
-		$apps[$x]['menu'][0]['title']['es-cl'] = "Actualizar";
-		$apps[$x]['menu'][0]['title']['de-de'] = "";
-		$apps[$x]['menu'][0]['title']['de-ch'] = "";
-		$apps[$x]['menu'][0]['title']['de-at'] = "";
-		$apps[$x]['menu'][0]['title']['fr-fr'] = "Mise à jour";
-		$apps[$x]['menu'][0]['title']['fr-ca'] = "";
-		$apps[$x]['menu'][0]['title']['fr-ch'] = "";
-		$apps[$x]['menu'][0]['title']['pt-pt'] = "Actualizar BD";
-		$apps[$x]['menu'][0]['title']['pt-br'] = "";
-		$apps[$x]['menu'][0]['uuid'] = "8c826e92-be3c-0944-669a-24e5b915d562";
-		$apps[$x]['menu'][0]['parent_uuid'] = "594d99c5-6128-9c88-ca35-4b33392cec0f";
-		$apps[$x]['menu'][0]['category'] = "internal";
-		$apps[$x]['menu'][0]['path'] = "/core/upgrade/index.php";
-		$apps[$x]['menu'][0]['groups'][] = "superadmin";
-
 	//permission details
 		$y = 0;
 		$apps[$x]['permissions'][$y]['name'] = "upgrade_svn";
@@ -80,53 +63,6 @@
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "software_version";
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = "softwareversion";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-
-	//schema details
-		$y = 1; //table array index
-		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = "v_emails";
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "email_uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "primary";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "call_uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_xml_cdr";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "domain_uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_domains";
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "domain_uuid";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sent_date";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "timestamp";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "date";
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "timestamp";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "type";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "status";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "email";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 

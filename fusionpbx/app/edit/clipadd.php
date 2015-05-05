@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 if (count($_POST)>0) {
 	$clip_name = check_str($_POST["clip_name"]);
@@ -92,7 +90,7 @@ if (count($_POST)>0) {
 	echo "<form method='post' action=''>";
 	echo "<table width='100%' border='0'>";
 	echo "	<tr>";
-	echo "		<td>Name:</td>";
+	echo "		<td>Name</td>";
 	echo "		<td><input type='text' class='txt' name='clip_name'></td>";
 	echo "	</tr>";
 

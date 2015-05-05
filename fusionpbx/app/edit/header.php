@@ -26,11 +26,8 @@
 */
 
 //add multi-lingual support
-	unset($text);
-	require "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 echo "<html>";
 echo "<head>";
@@ -77,7 +74,7 @@ echo "<SCRIPT language=\"JavaScript\">\n";
 echo "<!--\n";
 echo "function confirmdelete(url)\n";
 echo "{\n";
-echo " var confirmed = confirm(".$text['button-delete-this'].");\n";
+echo " var confirmed = confirm('".$text['button-delete-this']."');\n";
 echo " if (confirmed == true) {\n";
 echo "      window.location=url;\n";
 echo " }\n";

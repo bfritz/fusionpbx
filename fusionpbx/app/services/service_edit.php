@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -167,15 +165,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	require_once "resources/header.php";
 
 //begin the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
 		echo "<td align='left' width='30%' nowrap><b>".$text['title']."</b></td>\n";
@@ -212,17 +203,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='service_type'>\n";
 	echo "	<option value=''></option>\n";
-	if ($service_type == "pid_file") {
-		echo "	<option value='pid_file' SELECTED >pid file</option>\n";
+	if ($service_type == "pid" || $service_type == "pid_file") {
+		echo "	<option value='pid' selected='selected'>pid</option>\n";
 	}
 	else {
-		echo "	<option value='pid_file'>pid file</option>\n";
+		echo "	<option value='pid'>pid</option>\n";
 	}
-	if ($service_type == "php") {
-		echo "	<option value='php' SELECTED >php</option>\n";
+	//if ($service_type == "php") {
+	//	echo "	<option value='php' selected='selected'>php</option>\n";
+	//}
+	//else {
+	//	echo "	<option value='php'>php</option>\n";
+	//}
+	if ($service_type == "file") {
+		echo "	<option value='file' selected='selected'>file</option>\n";
 	}
 	else {
-		echo "	<option value='php'>php</option>\n";
+		echo "	<option value='file'>file</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
@@ -244,23 +241,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-start']."\n";
+	echo "	".$text['label-start_command']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='service_cmd_start' maxlength='255' value=\"$service_cmd_start\">\n";
 	echo "<br />\n";
-	echo $text['description-start']."\n";
+	echo $text['description-start_command']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-stop']."\n";
+	echo "	".$text['label-stop_command']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='service_cmd_stop' maxlength='255' value=\"$service_cmd_stop\">\n";
 	echo "<br />\n";
-	echo $text['description-stop']."\n";
+	echo $text['description-stop_command']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -277,18 +274,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='service_uuid' value='$service_uuid'>\n";
+		echo "		<input type='hidden' name='service_uuid' value='$service_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //show the footer
 	require_once "resources/footer.php";

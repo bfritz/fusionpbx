@@ -32,23 +32,11 @@
 			//set the global variable
 				global $db;
 
-			//clear the sessions
-				unset($_SESSION['contact']);
-				unset($_SESSION['domain']);
-				unset($_SESSION['email']);
-				unset($_SESSION['ldap']);
-				unset($_SESSION['login']);
-				unset($_SESSION['provision']);
-				unset($_SESSION['security']);
-				unset($_SESSION['server']);
-				unset($_SESSION['switch']);
-
 			//set the PDO error mode
 				$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 			//get the default settings
 				$sql = "select * from v_default_settings ";
-				$sql .= "where default_setting_enabled = 'true' ";
 				try {
 					$prep_statement = $db->prepare($sql . " order by default_setting_order asc ");
 					$prep_statement->execute();
@@ -64,23 +52,26 @@
 				}
 				//set the settings as a session
 				foreach ($result as $row) {
-					$name = $row['default_setting_name'];
-					$category = $row['default_setting_category'];
-					$subcategory = $row['default_setting_subcategory'];
-					if (strlen($subcategory) == 0) {
-						if ($name == "array") {
-							$_SESSION[$category][] = $row['default_setting_value'];
+					if ($row['default_setting_enabled'] == 'true') {
+						$name = $row['default_setting_name'];
+						$category = $row['default_setting_category'];
+						$subcategory = $row['default_setting_subcategory'];
+						if (strlen($subcategory) == 0) {
+							if ($name == "array") {
+								$_SESSION[$category][] = $row['default_setting_value'];
+							}
+							else {
+								$_SESSION[$category][$name] = $row['default_setting_value'];
+							}
 						}
 						else {
-							$_SESSION[$category][$name] = $row['default_setting_value'];
-						}
-					} else {
-						if ($name == "array") {
-							$_SESSION[$category][$subcategory][] = $row['default_setting_value'];
-						}
-						else {
-							$_SESSION[$category][$subcategory]['uuid'] = $row['default_setting_uuid'];
-							$_SESSION[$category][$subcategory][$name] = $row['default_setting_value'];
+							if ($name == "array") {
+								$_SESSION[$category][$subcategory][] = $row['default_setting_value'];
+							}
+							else {
+								$_SESSION[$category][$subcategory]['uuid'] = $row['default_setting_uuid'];
+								$_SESSION[$category][$subcategory][$name] = $row['default_setting_value'];
+							}
 						}
 					}
 				}
@@ -121,7 +112,8 @@
 							else {
 								$_SESSION[$category][$name] = $row['domain_setting_value'];
 							}
-						} else {
+						}
+						else {
 							//$$category[$subcategory][$name] = $row['domain_setting_value'];
 							if ($name == "array") {
 								$_SESSION[$category][$subcategory][] = $row['domain_setting_value'];
@@ -138,7 +130,6 @@
 					$sql = "select * from v_user_settings ";
 					$sql .= "where domain_uuid = '" . $_SESSION["domain_uuid"] . "' ";
 					$sql .= "and user_uuid = '" . $_SESSION["user_uuid"] . "' ";
-					$sql .= "and user_setting_enabled = 'true' ";
 					try {
 						$prep_statement = $db->prepare($sql . " order by user_setting_order asc ");
 						$prep_statement->execute();
@@ -150,25 +141,28 @@
 					if ($prep_statement) {
 						$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 						foreach ($result as $row) {
-							$name = $row['user_setting_name'];
-							$category = $row['user_setting_category'];
-							$subcategory = $row['user_setting_subcategory'];
-							if (strlen($row['user_setting_value']) > 0) {
-								if (strlen($subcategory) == 0) {
-									//$$category[$name] = $row['domain_setting_value'];
-									if ($name == "array") {
-										$_SESSION[$category][] = $row['user_setting_value'];
+							if ($row['user_setting_enabled'] == 'true') {
+								$name = $row['user_setting_name'];
+								$category = $row['user_setting_category'];
+								$subcategory = $row['user_setting_subcategory'];
+								if (strlen($row['user_setting_value']) > 0) {
+									if (strlen($subcategory) == 0) {
+										//$$category[$name] = $row['domain_setting_value'];
+										if ($name == "array") {
+											$_SESSION[$category][] = $row['user_setting_value'];
+										}
+										else {
+											$_SESSION[$category][$name] = $row['user_setting_value'];
+										}
 									}
 									else {
-										$_SESSION[$category][$name] = $row['user_setting_value'];
-									}
-								} else {
-									//$$category[$subcategory][$name] = $row['domain_setting_value'];
-									if ($name == "array") {
-										$_SESSION[$category][$subcategory][] = $row['user_setting_value'];
-									}
-									else {
-										$_SESSION[$category][$subcategory][$name] = $row['user_setting_value'];
+										//$$category[$subcategory][$name] = $row['domain_setting_value'];
+										if ($name == "array") {
+											$_SESSION[$category][$subcategory][] = $row['user_setting_value'];
+										}
+										else {
+											$_SESSION[$category][$subcategory][$name] = $row['user_setting_value'];
+										}
 									}
 								}
 							}
@@ -190,11 +184,7 @@
 				}
 
 			//set the context
-				if (count($_SESSION["domains"]) > 1) {
-					$_SESSION["context"] = $_SESSION["domain_name"];
-				} else {
-					$_SESSION["context"] = 'default';
-				}
+				$_SESSION["context"] = $_SESSION["domain_name"];
 
 			//recordings add the domain to the path if there is more than one domains
 				if (count($_SESSION["domains"]) > 1) {
@@ -230,8 +220,8 @@
 			//get the PROJECT PATH
 				include "root.php";
 
-			//get the list of installed apps from the core and mod directories
-				$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
+			//get the list of installed apps from the core and app directories
+				$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_{config,menu}.php",GLOB_BRACE);
 				$x=0;
 				foreach ($config_list as &$config_path) {
 					include($config_path);
@@ -289,12 +279,7 @@
 						$domain_name = $row["domain_name"];
 
 					//get the context
-						if ($domain_count == 1) {
-							$context = "default";
-						}
-						else {
-							$context = $domain_name;
-						}
+						$context = $domain_name;
 
 					//show the domain when display_type is set to text
 						if ($display_type == "text") {
@@ -315,7 +300,8 @@
 								else {
 									$_SESSION[$category][$name] = $row['default_setting_value'];
 								}
-							} else {
+							}
+							else {
 								if ($name == "array") {
 									$_SESSION[$category][$subcategory][] = $row['default_setting_value'];
 								}

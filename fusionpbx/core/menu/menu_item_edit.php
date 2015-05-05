@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the menu_uuid
 	$menu_uuid = check_str($_REQUEST["id"]);
@@ -320,14 +318,8 @@ else {
 		$document['title'] = $text['title-menu_item-add'];
 	}
 
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' action=''>";
-	echo "<table width='100%' cellpadding='6' cellspacing='0'>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0'>";
 	echo "<tr>\n";
 	echo "<td width='30%' align='left' valign='top' nowrap><b>";
 	if ($action == "update") {
@@ -345,15 +337,15 @@ else {
 	echo "</tr>\n";
 
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>".$text['label-title'].":</td>";
+	echo "		<td class='vncellreq'>".$text['label-title']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_title' value='$menu_item_title'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>".$text['label-link'].":</td>";
+	echo "		<td class='vncellreq'>".$text['label-link']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_link' value='$menu_item_link'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>".$text['label-category'].":</td>";
+	echo "		<td class='vncellreq'>".$text['label-category']."</td>";
 	echo "		<td class='vtable'>";
 	echo "            <select name=\"menu_item_category\" class='formfld'>\n";
 	if ($menu_item_category == "internal") { echo "<option value=\"internal\" selected>".$text['option-internal']."</option>\n"; } else { echo "<option value=\"internal\">".$text['option-internal']."</option>\n"; }
@@ -364,7 +356,7 @@ else {
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncell'>".$text['label-parent_menu'].":</td>";
+	echo "		<td class='vncell'>".$text['label-parent_menu']."</td>";
 	echo "		<td class='vtable'>";
 	$sql = "SELECT * FROM v_menu_items ";
 	$sql .= "where menu_uuid = '$menu_uuid' ";
@@ -388,7 +380,7 @@ else {
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncell' valign='top'>".$text['label-groups'].":</td>";
+	echo "		<td class='vncell' valign='top'>".$text['label-groups']."</td>";
 	echo "		<td class='vtable'>";
 
 	echo "<table width='52%'>\n";
@@ -418,7 +410,7 @@ else {
 
 	echo "<br />\n";
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "where (domain_uuid = '".$domain_uuid."' or domain_uuid is null) ";
 	$sql .= "order by group_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -443,7 +435,7 @@ else {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-protected'].":\n";
+	echo "    ".$text['label-protected']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='menu_item_protected'>\n";
@@ -468,14 +460,14 @@ else {
 	if ($action == "update") {
 		if ($menu_item_parent_uuid == "") {
 			echo "	<tr>";
-			echo "		<td class='vncell'>".$text['label-menu_order'].":</td>";
+			echo "		<td class='vncell'>".$text['label-menu_order']."</td>";
 			echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_order' value='$menu_item_order'></td>";
 			echo "	</tr>";
 		}
 	}
 
 	echo "	<tr>";
-	echo "		<td class='vncell'>".$text['label-description'].":</td>";
+	echo "		<td class='vncell'>".$text['label-description']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_description' value='$menu_item_description'></td>";
 	echo "	</tr>";
 
@@ -488,10 +480,11 @@ else {
 		echo "			</td>\n";
 		echo "			<td align='right'>";
 		if ($action == "update") {
-			echo "				<input type='hidden' name='menu_item_uuid' value='$menu_item_uuid'>";
+			echo "			<input type='hidden' name='menu_item_uuid' value='$menu_item_uuid'>";
 		}
 		echo "				<input type='hidden' name='menu_uuid' value='$menu_uuid'>";
 		echo "				<input type='hidden' name='menu_item_uuid' value='$menu_item_uuid'>";
+		echo "				<br>";
 		echo "				<input type='submit' class='btn' name='submit' value='".$text['button-save']."'>\n";
 		echo "			</td>";
 		echo "			</tr>";
@@ -500,12 +493,8 @@ else {
 		echo "	</tr>";
 	}
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
   require_once "resources/footer.php";

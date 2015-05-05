@@ -17,12 +17,13 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2013
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
+	Riccardo Granchi <riccardo.granchi@nems.it>
 */
 require_once "root.php";
 require_once "resources/require.php";
@@ -166,12 +167,32 @@ function load_extensions() {
 		if (strlen($_SESSION["domain_uuid"]) > 0 && strlen($_SESSION["user_uuid"]) > 0 && count($_SESSION['user']['extension']) == 0) {
 			//get the user extension list
 				unset($_SESSION['user']['extension']);
-				$sql = "select e.extension, e.number_alias, e.user_context, e.extension_uuid, e.outbound_caller_id_name, e.outbound_caller_id_number from v_extensions as e, v_extension_users as u ";
-				$sql .= "where e.domain_uuid = '".$_SESSION['domain_uuid']."' ";
-				$sql .= "and e.extension_uuid = u.extension_uuid ";
-				$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
-				$sql .= "and e.enabled = 'true' ";
-				$sql .= "order by e.extension asc ";
+				$sql = "select ";
+				$sql .= "	e.extension, ";
+				$sql .= "	e.number_alias, ";
+				$sql .= "	e.user_context, ";
+				$sql .= "	e.extension_uuid, ";
+				$sql .= "	e.outbound_caller_id_name, ";
+				$sql .= "	e.outbound_caller_id_number, ";
+				$sql .= "	v.voicemail_uuid ";
+				$sql .= "from ";
+				$sql .= "	v_extension_users as u, ";
+				$sql .= "	v_extensions as e ";
+				$sql .= "		left outer join v_voicemails as v on ( ";
+				$sql .= "			e.domain_uuid = v.domain_uuid ";
+				$sql .= "			and v.voicemail_enabled = 'true' ";
+				$sql .= "			and ( ";
+				$sql .= "				e.extension = v.voicemail_id ";
+				$sql .= "				or e.number_alias = v.voicemail_id ";
+				$sql .= "			) ";
+				$sql .= "		) ";
+				$sql .= "where ";
+				$sql .= "	e.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+				$sql .= "	and e.extension_uuid = u.extension_uuid ";
+				$sql .= "	and u.user_uuid = '".$_SESSION['user_uuid']."' ";
+				$sql .= "	and e.enabled = 'true' ";
+				$sql .= "order by ";
+				$sql .= "	e.extension asc ";
 				$result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 				if (count($result) > 0) {
 					$x = 0;
@@ -181,6 +202,9 @@ function load_extensions() {
 						$_SESSION['user']['extension'][$x]['extension_uuid'] = $row['extension_uuid'];
 						$_SESSION['user']['extension'][$x]['outbound_caller_id_name'] = $row['outbound_caller_id_name'];
 						$_SESSION['user']['extension'][$x]['outbound_caller_id_number'] = $row['outbound_caller_id_number'];
+						if ($row['voicemail_uuid'] != '') {
+							$_SESSION['user']['voicemail'][]['voicemail_uuid'] = $row['voicemail_uuid'];
+						}
 						$_SESSION['user_context'] = $row["user_context"];
 						$x++;
 					}
@@ -266,7 +290,7 @@ function build_menu() {
 }
 
 
-function event_socket_create($host, $port, $password){
+function event_socket_create($host, $port, $password) {
 	$fp = fsockopen($host, $port, $errno, $errdesc, 3);
 	socket_set_blocking($fp,false);
 
@@ -292,35 +316,40 @@ function event_socket_create($host, $port, $password){
 
 function event_socket_request($fp, $cmd) {
 	if ($fp) {
-		fputs($fp, $cmd."\n\n");
+		$cmd_array = explode("\n",$cmd);
+		foreach ($cmd_array as &$value) {
+		    fputs($fp, $value."\n");
+		}
+		fputs($fp, "\n"); //second line feed to end the headers
+
 		usleep(100); //allow time for reponse
 
 		$response = "";
 		$i = 0;
-		$contentlength = 0;
+		$content_length = 0;
 		while (!feof($fp)) {
 			$buffer = fgets($fp, 4096);
-			if ($contentlength > 0) {
+			if ($content_length > 0) {
 				$response .= $buffer;
 			}
 
-			if ($contentlength == 0) { //if the content has length don't process again
+			if ($content_length == 0) { //if the content has length don't process again
 				if (strlen(trim($buffer)) > 0) { //run only if buffer has content
-					$temparray = explode(":", trim($buffer));
-					if ($temparray[0] == "Content-Length") {
-						$contentlength = trim($temparray[1]);
+					$array = explode(":", trim($buffer));
+					if ($array[0] == "Content-Length") {
+						$content_length = trim($array[1]);
 					}
 				}
 			}
 
-			usleep(20); //allow time for reponse
+			usleep(50); //allow time for reponse
 
 			//prevent an endless loop //optional because of script timeout
-			if ($i > 1000000) { break; }
+			if ($i > 30000) { break; }
 
-			if ($contentlength > 0) { //is contentlength set
+			if ($content_length > 0) { //is content_length set
 				//stop reading if all content has been read.
-				if (strlen($response) >= $contentlength) {
+				if (strlen($response) >= $content_length) {
 					break;
 				}
 			}
@@ -385,9 +414,9 @@ function ListFiles($dir) {
 	}
 }
 
-function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='') {
+function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='', $onchange='', $text_append=' ...') {
 	//select_type can be ivr, dialplan, call_center_contact or bridge
-	global $config, $db, $domain_uuid;
+	global $text, $config, $db, $domain_uuid;
 
 	//remove special characters from the name
 		$select_id = str_replace("]", "", $select_name);
@@ -404,6 +433,10 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		echo "	tb.className='formfld';\n";
 		echo "	tb.setAttribute('id', '".$select_id."');\n";
 		echo "	tb.setAttribute('style', '".$select_style."');\n";
+		if ($onchange != '') {
+			echo "	tb.setAttribute('onchange', \"".$onchange."\");\n";
+			echo "	tb.setAttribute('onkeyup', \"".$onchange."\");\n";
+		}
 		echo "	tb.value=obj.options[obj.selectedIndex].value;\n";
 		echo "	document.getElementById('btn_select_to_input_".$select_id."').style.visibility = 'hidden';\n";
 		echo "	tbb=document.createElement('INPUT');\n";
@@ -424,6 +457,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		echo "	obj[0].parentNode.removeChild(obj[1]);\n";
 		echo "	obj[0].parentNode.removeChild(obj[2]);\n";
 		echo "	document.getElementById('btn_select_to_input_".$select_id."').style.visibility = 'visible';\n";
+		if ($onchange != '') {
+			echo "	".$onchange.";\n";
+		}
 		echo "}\n";
 		echo "</script>\n";
 		echo "\n";
@@ -432,490 +468,391 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//default selection found to false
 		$selection_found = false;
 
-	if (if_group("superadmin")) {
-		echo "		<select name='".$select_name."' id='".$select_id."' class='formfld' style='".$select_style."' >\n"; //onchange='changeToInput".$select_id."(this);'
-		if (strlen($select_value) > 0) {
-			if ($select_type == "ivr") {
-				echo "		<option value='".$select_value."' selected='selected'>".$select_label."</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_label."</option>\n";
-			}
+	echo "	<select name='".$select_name."' id='".$select_id."' class='formfld' style='".$select_style."' onchange=\"".$onchange."\">\n";
+
+	//display a default select label (specified explicitly or from the language file) if no selected value is passed in
+		if ($select_value == '' && $select_label != '' && $select_label != ' ') {
+			$options[] = "<option value=''>".$select_label."</option>";
+			$options[] = "<option value='' disabled='disabled'></option>";
 		}
-	}
-	else {
-		echo "		<select name='".$select_name."' id='".$select_id."' class='formfld' style='".$select_style."'>\n";
-	}
+		else if ($select_value == '' && $select_label == '' && $text['label-select_destination'] != '') {
+			$options[] = "<option value=''>".$text['label-select_destination']."</option>";
+			$options[] = "<option value='' disabled='disabled'></option>";
+		}
+		else {
+			$options[] = "<option value=''></option>";
+		}
 
-	echo "		<option></option>\n";
-
-	//list call center queues
+	//call center queues
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/call_center/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_call_center_queues ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "order by queue_name asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='Call Center'>\n";
-				}
-				$previous_call_center_name = "";
-				foreach ($result as &$row) {
-					$queue_name = $row["queue_name"];
-					$queue_name = str_replace('_${domain_name}@default', '', $queue_name);
-					$queue_extension = $row["queue_extension"];
-					if ($previous_call_center_name != $queue_name) {
-						if ("menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$queue_extension." XML ".$_SESSION["context"] == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Call Center'>";
+					$previous_call_center_name = "";
+					foreach ($result as &$row) {
+						$queue_name = $row["queue_name"];
+						$queue_name = str_replace('_${domain_name}@default', '', $queue_name);
+						$queue_extension = $row["queue_extension"];
+						if ($previous_call_center_name != $queue_name) {
+							$selected = (
+								$select_value == "transfer:".$queue_extension." XML ".$_SESSION["context"] ||
+								$select_value == "menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"]
+								) ? true : false;
 							if ($select_type == "ivr") {
-								echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"]."' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
+								$options[] = "<option value='menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$queue_extension." ".$queue_name."</option>";
 							}
 							if ($select_type == "dialplan") {
-								echo "		<option value='transfer:".$queue_extension." XML ".$_SESSION["context"]."' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
+								$options[] = "<option value='transfer:".$queue_extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$queue_extension." ".$queue_name."</option>";
 							}
-							$selection_found = true;
+							if ($selected) { $selection_found = true; }
+							$previous_call_center_name = $queue_name;
 						}
-						else {
-							if ($select_type == "ivr") {
-								echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"]."'>".$queue_extension." ".$queue_name."</option>\n";
-							}
-							if ($select_type == "dialplan") {
-								echo "		<option value='transfer:".$queue_extension." XML ".$_SESSION["context"]."'>".$queue_extension." ".$queue_name."</option>\n";
-							}
-						}
-						$previous_call_center_name = $queue_name;
 					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 				unset ($prep_statement);
 			}
 		}
 
-	//list call flows
+	//call flows
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/call_flows/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_call_flows ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "order by call_flow_extension asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				echo "<optgroup label='Call Flows'>\n";
-				foreach ($result as &$row) {
-					$call_flow_name = $row["call_flow_name"];
-					$call_flow_extension = $row["call_flow_extension"];
-					$call_flow_context = $row["call_flow_context"];
-					if ("transfer $call_flow_extension XML ".$call_flow_context == $select_value || "transfer:".$call_flow_extension." XML ".$call_flow_context == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Call Flows'>";
+					foreach ($result as &$row) {
+						$call_flow_name = $row["call_flow_name"];
+						$call_flow_extension = $row["call_flow_extension"];
+						$call_flow_context = $row["call_flow_context"];
+						$selected = (
+							$select_value == "transfer ".$call_flow_extension." XML ".$call_flow_context ||
+							$select_value == "transfer:".$call_flow_extension." XML ".$call_flow_context ||
+							$select_value == "menu-exec-app:transfer ".$call_flow_extension." XML ".$call_flow_context
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $call_flow_extension XML ".$call_flow_context."' selected='selected'>".$call_flow_extension." ".$call_flow_name."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer ".$call_flow_extension." XML ".$call_flow_context."' ".(($selected) ? "selected='selected'" : null).">".$call_flow_extension." ".$call_flow_name."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$call_flow_extension XML ".$call_flow_context."' selected='selected'>".$call_flow_extension." ".$call_flow_name."</option>\n";
+							$options[] = "<option value='transfer:".$call_flow_extension." XML ".$call_flow_context."' ".(($selected) ? "selected='selected'" : null).">".$call_flow_extension." ".$call_flow_name."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $call_flow_extension XML ".$call_flow_context."'>".$call_flow_extension." ".$call_flow_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$call_flow_extension XML ".$call_flow_context."'>".$call_flow_extension." ".$call_flow_name."</option>\n";
-						}
-					}
+					$options[] = "</optgroup>";
 				}
-				echo "</optgroup>\n";
 				unset ($prep_statement, $call_flow_extension);
 			}
 		}
 
-	//list call groups
+	//call groups
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/extensions/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select distinct(call_group) from v_extensions ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and call_group <> '' ";
 				$sql .= "order by call_group asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$x = 0;
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='Call Group'>\n";
-				}
-				$previous_call_group_name = "";
-				foreach ($result as &$row) {
-					$call_groups = $row["call_group"];
-					$call_group_array = explode(",", $call_groups);
-					foreach ($call_group_array as $call_group) {
-						$call_group = trim($call_group);
-						if ($previous_call_group_name != $call_group) {
-							if ("menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name'] == $select_value || "bridge:group/".$call_group."@".$_SESSION['domain_name'] == $select_value) {
+				if (count($result) > 0) {
+					$previous_call_group_name = "";
+					$options[] = "<optgroup label='Call Group'>";
+					foreach ($result as &$row) {
+						$call_groups = $row["call_group"];
+						$call_group_array = explode(",", $call_groups);
+						foreach ($call_group_array as $call_group) {
+							$call_group = trim($call_group);
+							if ($previous_call_group_name != $call_group) {
+								$selected = (
+									$select_value == "bridge:group/".$call_group."@".$_SESSION['domain_name'] ||
+									$select_value == "menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name']
+									) ? true : false;
 								if ($select_type == "ivr") {
-									echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name']."' selected='selected'>".$call_group."</option>\n";
+									$options[] = "<option value='menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name']."' ".(($selected) ? "selected='selected'" : null).">".$call_group."</option>";
 								}
 								if ($select_type == "dialplan") {
-									echo "		<option value='bridge:group/".$call_group."@".$_SESSION['domain_name']."' selected='selected'>".$call_group."</option>\n";
+									$options[] = "<option value='bridge:group/".$call_group."@".$_SESSION['domain_name']."' ".(($selected) ? "selected='selected'" : null).">".$call_group."</option>";
 								}
-								$selection_found = true;
+								if ($selected) { $selection_found = true; }
+								$previous_call_group_name = $call_group;
 							}
-							else {
-								if ($select_type == "ivr") {
-									echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name']."'>".$call_group."</option>\n";
-								}
-								if ($select_type == "dialplan") {
-									echo "		<option value='bridge:group/".$call_group."@".$_SESSION['domain_name']."'>".$call_group."</option>\n";
-								}
-							}
-							$previous_call_group_name = $call_group;
 						}
+						$x++;
 					}
-					$x++;
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 				unset ($prep_statement);
 			}
 		}
 
-	//list conference centers
+	//conference centers
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/conference_centers/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_conference_centers ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "order by conference_center_name asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$x = 0;
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 				if (count($result) > 0) {
-					if ($select_type == "dialplan" || $select_type == "ivr") {
-						echo "<optgroup label='Conference Centers'>\n";
-					}
+					$options[] = "<optgroup label='Conference Centers'>";
 					foreach ($result as &$row) {
 						$name = $row["conference_center_name"];
 						$extension = $row["conference_center_extension"];
 						$description = $row["conference_center_description"];
-						if ("transfer ".$extension." XML ".$_SESSION['context'] == $select_value || "transfer:".$extension." XML ".$_SESSION['context'] == $select_value) {
-							if ($select_type == "ivr") {
-								echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION['context']."' selected='selected'>".$name." ".$description."</option>\n";
-							}
-							if ($select_type == "dialplan") {
-								echo "		<option value='transfer:$extension XML ".$_SESSION['context']."' selected='selected'>".$name." ".$description."</option>\n";
-							}
-							$selection_found = true;
+						$selected = (
+							$select_value == "transfer ".$extension." XML ".$_SESSION['context'] ||
+							$select_value == "transfer:".$extension." XML ".$_SESSION['context'] ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$_SESSION['context']
+							) ? true : false;
+						if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION['context']."' ".(($selected) ? "selected='selected'" : null).">".$name." ".$description."</option>";
 						}
-						else {
-							if ($select_type == "ivr") {
-								echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION['context']."'>".$name." ".$description."</option>\n";
-							}
-							if ($select_type == "dialplan") {
-								echo "		<option value='transfer:".$extension." XML ".$_SESSION['context']."'>".$name." ".$description."</option>\n";
-							}
+						if ($select_type == "dialplan") {
+							$options[] = "<option value='transfer:".$extension." XML ".$_SESSION['context']."' ".(($selected) ? "selected='selected'" : null).">".$name." ".$description."</option>";
 						}
-						$x++;
+						if ($selected) { $selection_found = true; }
 					}
-					if ($select_type == "dialplan" || $select_type == "ivr") {
-						echo "</optgroup>\n";
-					}
+					$options[] = "</optgroup>";
 					unset ($prep_statement);
 				}
 			}
 		}
 
-	//list conferences
+	//conferences
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/conferences/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_conferences ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "order by conference_name asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$x = 0;
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 				if (count($result) > 0) {
-					if ($select_type == "dialplan" || $select_type == "ivr") {
-						echo "<optgroup label='Conferences'>\n";
-					}
+					$options[] = "<optgroup label='Conferences'>";
 					foreach ($result as &$row) {
 						$name = $row["conference_name"];
 						$extension = $row["conference_extension"];
 						$description = $row["conference_description"];
-						if ("transfer ".$extension." XML ".$_SESSION['context'] == $select_value || "transfer:".$extension." XML ".$_SESSION['context'] == $select_value) {
-							if ($select_type == "ivr") {
-								echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION['context']."' selected='selected'>".$name." ".$description."</option>\n";
-							}
-							if ($select_type == "dialplan") {
-								echo "		<option value='transfer:$extension XML ".$_SESSION['context']."' selected='selected'>".$name." ".$description."</option>\n";
-							}
-							$selection_found = true;
+						$selected = (
+							$select_value == "transfer ".$extension." XML ".$_SESSION['context'] ||
+							$select_value == "transfer:".$extension." XML ".$_SESSION['context'] ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$_SESSION['context']
+							) ? true : false;
+						if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION['context']."' ".(($selected) ? "selected='selected'" : null).">".$name." ".$description."</option>";
 						}
-						else {
-							if ($select_type == "ivr") {
-								echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION['context']."'>".$name." ".$description."</option>\n";
-							}
-							if ($select_type == "dialplan") {
-								echo "		<option value='transfer:".$extension." XML ".$_SESSION['context']."'>".$name." ".$description."</option>\n";
-							}
+						if ($select_type == "dialplan") {
+							$options[] = "<option value='transfer:".$extension." XML ".$_SESSION['context']."' ".(($selected) ? "selected='selected'" : null).">".$name." ".$description."</option>";
 						}
-						$x++;
+						if ($selected) { $selection_found = true; }
 					}
-					if ($select_type == "dialplan" || $select_type == "ivr") {
-						echo "</optgroup>\n";
-					}
-					unset ($prep_statement);
+					$options[] = "</optgroup>";
 				}
+				unset ($prep_statement);
 			}
 		}
 
-	//list destinations
-		/*
-		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/destinations/app_config.php")) {
-			$sql = "select * from v_destinations ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and destination_enabled = 'true' ";
-			$sql .= "order by destination_name asc ";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$x = 0;
-			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-			if ($select_type == "dialplan" || $select_type == "ivr") {
-				echo "<optgroup label='Destinations'>\n";
-			}
-			foreach ($result as &$row) {
-				$name = $row["destination_name"];
-				$context = $row["destination_context"];
-				$extension = $row["destination_extension"];
-				$description = $row["destination_description"];
-				if ("transfer ".$extension." XML ".$context == $select_value || "transfer:".$extension." XML ".$context == $select_value) {
-					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer $extension XML ".$context."' selected='selected'>".$name." ".$description."</option>\n";
-					}
-					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:$extension XML ".$context."' selected='selected'>".$name." ".$description."</option>\n";
-					}
-					$selection_found = true;
-				}
-				else {
-					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer $extension XML ".$context."'>".$name." ".$description."</option>\n";
-					}
-					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:".$extension." XML ".$context."'>".$name." ".$description."</option>\n";
-					}
-				}
-				$x++;
-			}
-			if ($select_type == "dialplan" || $select_type == "ivr") {
-				echo "</optgroup>\n";
-			}
-			unset ($prep_statement);
-		}
-		*/
-
-	//list extensions
+	//extensions
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/extensions/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 				$sql = "select * from v_extensions ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and enabled = 'true' ";
 				$sql .= "order by extension asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				echo "<optgroup label='Extensions'>\n";
-				foreach ($result as &$row) {
-					$extension = $row["extension"];
-					$context = $row["user_context"];
-					$description = $row["description"];
-					if ("menu-exec-app:transfer ".$extension." XML ".$context == $select_value || "transfer:".$extension." XML ".$context == $select_value || "user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name'] == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Extensions'>";
+					foreach ($result as &$row) {
+						$extension = $row["extension"];
+						$context = $row["user_context"];
+						$description = $row["description"];
+						$selected = (
+							$select_value == "user/".$extension."@".$_SESSION['domains'][$domain_uuid]['domain_name'] ||
+							$select_value == "transfer:".$extension." XML ".$context ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$context
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$context."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$description."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
+							$options[] = "<option value='transfer:".$extension." XML ".$context."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$description."</option>";
 						}
 						if ($select_type == "call_center_contact") {
-							echo "		<option value='user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name']."' selected='selected'>".$extension." ".$description."</option>\n";
+							$options[] = "<option value='user/".$extension."@".$_SESSION['domains'][$domain_uuid]['domain_name']."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$description."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$context."'>".$extension." ".$description."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$context."'>".$extension." ".$description."</option>\n";
-						}
-						if ($select_type == "call_center_contact") {
-							echo "		<option value='user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name']."'>".$extension." ".$description."</option>\n";
-						}
-					}
+					$options[] = "</optgroup>";
 				}
-				echo "</optgroup>\n";
 				unset ($prep_statement, $extension);
 			}
 		}
 
-	//list fax extensions
+	//fax extensions
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/fax/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_fax ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "order by fax_extension asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				echo "<optgroup label='FAX'>\n";
-				foreach ($result as &$row) {
-					$fax_name = $row["fax_name"];
-					$extension = $row["fax_extension"];
-					if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='FAX'>";
+					foreach ($result as &$row) {
+						$fax_name = $row["fax_name"];
+						$extension = $row["fax_extension"];
+						$selected = (
+							$select_value == "transfer ".$extension." XML ".$_SESSION["context"] ||
+							$select_value == "transfer:".$extension." XML ".$_SESSION["context"] ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$fax_name."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$fax_name."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$fax_name."</option>\n";
+							$options[] = "<option value='transfer:".$extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$fax_name."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$fax_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$fax_name."</option>\n";
-						}
-					}
+					$options[] = "</optgroup>";
 				}
-				echo "</optgroup>\n";
 				unset ($prep_statement, $extension);
 			}
 		}
 
-	//list fifo queues
+	//fifo queues
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/fifo/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_dialplan_details ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
+				$sql .= "and dialplan_detail_type = 'fifo' ";
+				$sql .= "and dialplan_detail_data not like '%@${domain_name} in%' ";
 				$sql .= "order by dialplan_detail_data asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$x = 0;
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='FIFO'>\n";
-				}
-				foreach ($result as &$row) {
-					//$dialplan_detail_tag = $row["dialplan_detail_tag"];
-					if ($row["dialplan_detail_type"] == "fifo") {
-						if (strpos($row["dialplan_detail_data"], '@${domain_name} in') !== false) {
-							$dialplan_uuid = $row["dialplan_uuid"];
-							//get the extension number using the dialplan_uuid
-								$sql = "select dialplan_detail_data as extension_number ";
-								$sql .= "from v_dialplan_details ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$sql .= "and dialplan_detail_type = 'destination_number' ";
-								$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-								$extension_number = $tmp['extension_number'];
-								$extension_number = ltrim($extension_number, "^");
-								$extension_number = ltrim($extension_number, "\\");
-								$extension_number = rtrim($extension_number, "$");
-								unset($tmp);
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Queues (FIFO)'>";
+					foreach ($result as &$row) {
+						$dialplan_uuid = $row["dialplan_uuid"];
+						//get the extension number using the dialplan_uuid
+							$sql = "select dialplan_detail_data as extension_number ";
+							$sql .= "from v_dialplan_details ";
+							$sql .= "where domain_uuid = '".$domain_uuid."' ";
+							$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+							$sql .= "and dialplan_detail_type = 'destination_number' ";
+							$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
+							$extension_number = $tmp['extension_number'];
+							$extension_number = ltrim($extension_number, "^");
+							$extension_number = ltrim($extension_number, "\\");
+							$extension_number = rtrim($extension_number, "$");
+							unset($tmp);
 
-							//get the extension number using the dialplan_uuid
-								$sql = "select * ";
-								$sql .= "from v_dialplans ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-								$dialplan_name = $tmp['dialplan_name'];
-								$dialplan_name = str_replace("_", " ", $dialplan_name);
-								unset($tmp);
+						//get the extension number using the dialplan_uuid
+							$sql = "select * ";
+							$sql .= "from v_dialplans ";
+							$sql .= "where domain_uuid = '".$domain_uuid."' ";
+							$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+							$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
+							$dialplan_name = $tmp['dialplan_name'];
+							$dialplan_name = str_replace("_", " ", $dialplan_name);
+							unset($tmp);
 
-							$fifo_name = $row["dialplan_detail_data"];
-							$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
-							$option_label = $extension_number.' '.$dialplan_name;
-							if ($select_type == "ivr") {
-								if ("menu-exec-app:transfer ".$row["dialplan_detail_data"] == $select_value) {
-									echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
-									$selection_found = true;
-								}
-								else {
-									echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."'>".$option_label."</option>\n";
-								}
-							}
-							if ($select_type == "dialplan") {
-								if ("transfer:".$row["dialplan_detail_data"] == $select_value) {
-									echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
-									$selection_found = true;
-								}
-								else {
-									echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."'>".$option_label."</option>\n";
-								}
-							}
+						$fifo_name = $row["dialplan_detail_data"];
+						$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
+						$option_label = $extension_number.' '.$dialplan_name;
+						if ($select_type == "ivr") {
+							$selected = ("menu-exec-app:transfer ".$row["dialplan_detail_data"] == $select_value) ? true : false;
+							$options[] = "<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$option_label."</option>";
+							if ($selected) { $selection_found = true; }
+						}
+						if ($select_type == "dialplan") {
+							$selected = ("transfer:".$extension_number." XML ".$_SESSION["context"] == $select_value) ? true : false;
+							$options[] = "<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$option_label."</option>";
+							if ($selected) { $selection_found = true; }
 						}
 					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 				unset ($prep_statement);
 			}
 		}
 
 	//gateways
-			if (if_group("superadmin")) {
+		if (if_group("superadmin")) {
+			$sql = "select v_gateways.gateway_uuid, v_gateways.gateway, v_domains.domain_name from v_gateways ";
+			$sql .= "inner join v_domains on v_gateways.domain_uuid=v_domains.domain_uuid ";
+			$sql .= "where enabled = 'true' ";
+			$sql .= "order by gateway asc ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+			$tmp_selected = '';
+			if (count($result) > 0) {
 				if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact" || $select_type == "bridge") {
-					echo "<optgroup label='Gateways'>\n";
+					$options[] = "<optgroup label='Gateways'>";
 				}
-				$sql = "select v_gateways.gateway_uuid, v_gateways.gateway, v_domains.domain_name from v_gateways ";
-				$sql .= "inner join v_domains on v_gateways.domain_uuid=v_domains.domain_uuid ";
-				$sql .= "where enabled = 'true' ";
-				$sql .= "order by gateway asc ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				$result_count = count($result);
-				unset ($prep_statement, $sql);
-				$tmp_selected = '';
 				foreach($result as $row) {
-					if ('sofia/gateway/'.$row['gateway_uuid'].'/' == $select_value) {
-						$tmp_selected = "selected='selected'";
+					switch ($select_type) {
+						case "dialplan":
+							$default_value = 'bridge:sofia/gateway/'.$row['gateway_uuid'].'/';
+							$selected = (strpos($select_value, $default_value) === 0) ? true : false;
+							$value = ($selected) ? $select_value : $default_value.$text_append;
+							$flag = ($selected && $select_value != $default_value.$text_append) ? "*" : null;
+							$options[] = "<option value='".$value."' ".(($selected) ? "selected='selected'" : null).">".$row['gateway']."@".$row['domain_name']." ".$flag."</option>";
+							break;
+						case "bridge":
+							$default_value = 'sofia/gateway/'.$row['gateway_uuid'].'/';
+							$selected = (strpos($select_value, $default_value) === 0) ? true : false;
+							$value = ($selected) ? $select_value : $default_value.$text_append;
+							$flag = ($selected && $select_value != $default_value.$text_append) ? "*" : null;
+							$options[] = "<option value='".$value."' ".(($selected) ? "selected='selected'" : null).">".$row['gateway']."@".$row['domain_name']." ".$flag."</option>";
+							break;
+						case "ivr":
+							$default_value = 'menu-exec-app:bridge sofia/gateway/'.$row['gateway_uuid'].'/';
+							$selected = (strpos($select_value, $default_value) === 0) ? true : false;
+							$value = ($selected) ? $select_value : $default_value.$text_append;
+							$flag = ($selected && $select_value != $default_value.$text_append) ? "*" : null;
+							$options[] = "<option value='".$value."' ".(($selected) ? "selected='selected'" : null).">".$row['gateway']."@".$row['domain_name']." ".$flag."</option>";
+							break;
+						case "call_center_contact":
+							if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/conference_centers/app_config.php")) {
+								$default_value = 'sofia/gateway/'.$row['gateway_uuid'].'/';
+								$selected = (strpos($select_value, $default_value) === 0) ? true : false;
+								$value = ($selected) ? $select_value : $default_value.$text_append;
+								$flag = ($selected && $select_value != $default_value.$text_append) ? "*" : null;
+								$options[] = "<option value='".$value."' ".(($selected) ? "selected='selected'" : null).">".$row['gateway']."@".$row['domain_name']." ".$flag."</option>";
+							}
+							break;
 					}
-					if ($select_type == "dialplan") {
-						echo "		<option value='bridge:sofia/gateway/".$row['gateway_uuid']."/xxxxx' $tmp_selected>".$row['gateway']."@".$row['domain_name']."</option>\n";
-					}
-					if ($select_type == "bridge") {
-						echo "		<option value='sofia/gateway/".$row['gateway_uuid']."/' $tmp_selected>".$row['gateway']."@".$row['domain_name']."</option>\n";
-					}
-					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row['gateway_uuid']."/xxxxx' $tmp_selected>".$row['gateway']."@".$row['domain_name']."</option>\n";
-					}
-		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/conference_centers/app_config.php")) {
-					if ($select_type == "call_center_contact") {
-						echo "		<option value='sofia/gateway/".$row['gateway_uuid']."/xxxxx' $tmp_selected>".$row['gateway']."@".$row['domain_name']."</option>\n";
-					}
-		}
-					$tmp_selected = '';
+					if ($selected) { $selection_found = true; }
 				}
-				unset($sql, $result);
 				if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 			}
-		
+			unset($prep_statement, $sql, $result, $value, $default_value, $flag);
+		}
+
 
 	//xmpp
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/xmpp/app_config.php")) {
-			if (if_group("superadmin")) {
-				if ($select_type == "bridge") {
-					echo "<optgroup label='XMPP Gateways'>\n";
-				}
+			if (if_group("superadmin") && $select_type == "bridge") {
 				$sql = "select v_xmpp.xmpp_profile_uuid, v_xmpp.profile_name, v_domains.domain_name from v_xmpp ";
 				$sql .= "inner join v_domains on v_xmpp.domain_uuid=v_domains.domain_uuid ";
 				$sql .= "where enabled = 'true' ";
@@ -923,30 +860,26 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				$result_count = count($result);
 				unset ($prep_statement, $sql);
 				$tmp_selected = '';
-				foreach($result as $row) {
-					if ('dingaling/'.$row['profile_name'].'/' == $select_value) {
-						$tmp_selected = "selected='selected'";
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='XMPP Gateways'>";
+					foreach($result as $row) {
+						$selected = ('dingaling/'.$row['profile_name'].'/' == $select_value) ? true : false;
+						$options[] = "<option value='dingaling/".$row['profile_name']."/' ".(($selected) ? "selected='selected'" : null).">".$row['profile_name']."@".$row['domain_name']."</option>";
+						if ($selected) { $selection_found = true; }
 					}
-					if ($select_type == "bridge") {
-						echo "		<option value='dingaling/".$row['profile_name']."/' $tmp_selected>".$row['profile_name']."@".$row['domain_name']."</option>\n";
-					}
-					$tmp_selected = '';
+					$options[] = "</optgroup>";
 				}
 				unset($sql, $result);
-				if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
-					echo "</optgroup>\n";
-				}
 			}
 		}
 
-	//list hunt groups
+	//hunt groups
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/hunt_groups/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_hunt_groups ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and hunt_group_enabled = 'true' ";
 				$sql .= "and ( ";
 				$sql .= "hunt_group_type = 'simultaneous' ";
@@ -957,326 +890,153 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='Hunt Groups'>\n";
-				}
-				foreach ($result as &$row) {
-					$extension = $row["hunt_group_extension"];
-					$hunt_group_name = $row["hunt_group_name"];
-					if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Hunt Groups'>";
+					foreach ($result as &$row) {
+						$extension = $row["hunt_group_extension"];
+						$hunt_group_name = $row["hunt_group_name"];
+						$selected = (
+							$select_value == "transfer ".$extension." XML ".$_SESSION["context"] ||
+							$select_value == "transfer:".$extension." XML ".$_SESSION["context"] ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$hunt_group_name."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$hunt_group_name."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$hunt_group_name."</option>\n";
+							$options[] = "<option value='transfer:".$extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$hunt_group_name."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$hunt_group_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$hunt_group_name."</option>\n";
-						}
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 				unset ($prep_statement, $extension);
 			}
 		}
 
-	//list ivr menus
+	//ivr menus
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/ivr_menu/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_ivr_menus ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and ivr_menu_enabled = 'true' ";
 				$sql .= "order by ivr_menu_extension asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='IVR Menu'>\n";
-				}
-				foreach ($result as &$row) {
-					$extension = $row["ivr_menu_extension"];
-					$extension_name = $row["ivr_menu_name"];
-					$extension_label = $row["ivr_menu_name"];
-					$extension_name = str_replace(" ", "_", $extension_name);
-					if (count($_SESSION["domains"]) > 1) {
-						$extension_name =  $_SESSION['domains'][$row['domain_uuid']]['domain_name'].'-'.$extension_name;
-					}
-					if ("ivr:".$extension_name."" == $select_value || "ivr ".$extension_name == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='IVR Menu'>";
+					foreach ($result as &$row) {
+						$extension = $row["ivr_menu_extension"];
+						$extension_name = $row["ivr_menu_name"];
+						$extension_label = $row["ivr_menu_name"];
+						$extension_name = str_replace(" ", "_", $extension_name);
+						if (count($_SESSION["domains"]) > 1) {
+							$extension_name =  $_SESSION['domains'][$row['domain_uuid']]['domain_name'].'-'.$extension_name;
+						}
+						$selected = (
+							$select_value == "ivr ".$extension_name ||
+							$select_value == "ivr:".$extension_name ||
+							$select_value == "menu-exec-app:ivr ".$extension ||
+							$select_value == "transfer ".$extension." XML ".$_SESSION["context"] ||
+							$select_value == "transfer:".$extension." XML ".$_SESSION["context"] ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$extension_label."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$extension_label."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:".$extension." XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$extension_label."</option>\n";
+							$options[] = "<option value='transfer:".$extension." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$extension_label."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer ".$extension." XML ".$_SESSION["context"]."'>".$extension." ".$extension_label."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:".$extension." XML ".$_SESSION["context"]."'>".$extension." ".$extension_label."</option>\n";
-						}
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 				unset ($prep_statement, $extension);
 			}
 		}
 
-	//list ivr menus
-		/*
-		if ($select_type == "ivr") {
-			//list sub ivr menu
-				$sql = "select * from v_ivr_menus ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and ivr_menu_enabled = 'true' ";
-				$sql .= "order by ivr_menu_name asc ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='IVR Sub'>\n";
-				}
-				foreach ($result as &$row) {
-					$extension_name = $row["ivr_menu_name"];
-					$extension_label = $row["ivr_menu_name"];
-					$extension_name = str_replace(" ", "_", $extension_name);
-					if (count($_SESSION["domains"]) > 1) {
-						$extension_name = $_SESSION['domains'][$row['domain_uuid']]['domain_name'].'-'.$extension_name;
-					}
-					if ($extension_name == $select_value) {
-						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_label."</option>\n";
-						$selection_found = true;
-					}
-					else {
-						echo "		<option value='menu-sub:$extension_name'>".$extension_label."</option>\n";
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
-				}
-				unset ($prep_statement, $extension_name);
-
-			//list ivr misc
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='IVR Misc'>\n";
-				}
-				if ($ivr_menu_option_action == "menu-top") {
-					echo "		<option value='menu-top:' selected='selected'>Top</option>\n";
-					$selection_found = true;
-				}
-				else {
-					echo "		<option value='menu-top:'>Top</option>\n";
-				}
-				if ($ivr_menu_option_action == "menu-exit") {
-					echo "		<option value='menu-exit:' selected='selected'>Exit</option>\n";
-					$selection_found = true;
-				}
-				else {
-					echo "		<option value='menu-exit:'>Exit</option>\n";
-				}
-				if (strlen($select_value) > 0) {
-					if (!$selection_found) {
-						echo "		<option value='$select_value' selected='selected'>".$select_value."</option>\n";
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
-				}
-		}
-		*/
-
-	//list the languages
+	//languages
 		if ($select_type == "dialplan" || $select_type == "ivr") {
-			echo "<optgroup label='Language'>\n";
+			$options[] = "<optgroup label='Language'>";
 		}
-		//dutch
-		if ("menu-exec-app:set default_language=nl" == $select_value || "set:default_language=nl" == $select_value) {
+		$tmp_lang_options = array(
+			'nl' => 'Dutch',
+			'en' => 'English',
+			'fr' => 'French',
+			'it' => 'Italian',
+			'de' => 'German',
+			'pt-pt' => 'Portuguese (Portugal)',
+			'pt-br' => 'Portuguese (Brazil)',
+			'es' => 'Spanish');
+		foreach ($tmp_lang_options as $tmp_lang_option_abbr => $tmp_lang_option_name) {
+			$selected = (
+				$select_value == "menu-exec-app:set default_language=".$tmp_lang_option_abbr ||
+				$select_value == "set:default_language=".$tmp_lang_option_abbr
+				) ? true : false;
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=nl' selected='selected'>Dutch</option>\n";
+				$options[] = "	<option value='menu-exec-app:set default_language=".$tmp_lang_option_abbr."' ".(($selected) ? "selected='selected'" : null).">".$tmp_lang_option_name."</option>";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=nl' selected='selected'>Dutch</option>\n";
+				$options[] = "	<option value='set:default_language=".$tmp_lang_option_abbr."' ".(($selected) ? "selected='selected'" : null).">".$tmp_lang_option_name."</option>";
 			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=nl'>Dutch</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=nl'>Dutch</option>\n";
-			}
-		}
-		//english
-		if ("menu-exec-app:set default_language=en" == $select_value || "set:default_language=en" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=en' selected='selected'>English</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=en' selected='selected'>English</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=en'>English</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=en'>English</option>\n";
-			}
-		}
-		//french
-		if ("menu-exec-app:set default_language=fr" == $select_value || "set:default_language=fr" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=fr' selected='selected'>French</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=fr' selected='selected'>French</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=fr'>French</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=fr'>French</option>\n";
-			}
-		}
-		//italian
-		if ("menu-exec-app:set default_language=it" == $select_value || "set:default_language=it" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=it' selected='selected'>Italian</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=it' selected='selected'>Italian</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=it'>Italian</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=it'>Italian</option>\n";
-			}
-		}
-		//german
-		if ("menu-exec-app:set default_language=de" == $select_value || "set:default_language=de" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=de' selected='selected'>German</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=de' selected='selected'>German</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=de'>German</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=de'>German</option>\n";
-			}
-		}
-		//portuguese - portugal
-		if ("menu-exec-app:set default_language=de" == $select_value || "set:default_language=de" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=pt-pt' selected='selected'>Portuguese - Portugal</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=pt-pt' selected='selected'>Portuguese - Portugal</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=pt-pt'>Portuguese - Portuguese - Portugal</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=pt-pt'>Portuguese - Portugal</option>\n";
-			}
-		}
-		//portuguese - brazil
-		if ("menu-exec-app:set default_language=pt-br" == $select_value || "set:default_language=de" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=pt-br' selected='selected'>Portuguese - Brazil</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=pt-br' selected='selected'>Portuguese - Brazil</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=pt-br'>Portuguese - Brazil</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=pt-br'>Portuguese - Brazil</option>\n";
-			}
-		}
-		//spanish
-		if ("menu-exec-app:set default_language=es" == $select_value || "set:default_language=es" == $select_value) {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=es' selected='selected'>Spanish</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=es' selected='selected'>Spanish</option>\n";
-			}
-		}
-		else {
-			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set default_language=es'>Spanish</option>\n";
-			}
-			if ($select_type == "dialplan") {
-				echo "	<option value='set:default_language=es'>Spanish</option>\n";
-			}
+			if ($selected) { $selection_found = true; }
 		}
 		if ($select_type == "dialplan" || $select_type == "ivr") {
-			echo "</optgroup>\n";
+			$options[] = "</optgroup>";
 		}
+		unset($tmp_lang_options);
 
 	//recordings
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/recordings/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
-				if($dh = opendir($_SESSION['switch']['recordings']['dir']."/")) {
-					$tmp_selected = false;
-					$files = Array();
-					echo "<optgroup label='Recordings'>\n";
-					while($file = readdir($dh)) {
-						if($file != "." && $file != ".." && $file[0] != '.') {
-							if(is_dir($_SESSION['switch']['recordings']['dir'] . "/" . $file)) {
-								//this is a directory
-							}
-							else {
-								if ($ivr_menu_greet_long == $_SESSION['switch']['recordings']['dir']."/".$file) {
-									$tmp_selected = true;
-									if ($select_type == "dialplan") {
-										echo "		<option value='playback:".$_SESSION['switch']['recordings']['dir']."/".$file."' selected='selected'>".$file."</option>\n";
-									}
-									if ($select_type == "ivr") {
-										echo "		<option value='menu-exec-app:playback ".$_SESSION['switch']['recordings']['dir']."/".$file."' selected='selected'>".$file."</option>\n";
-									}
-								}
-								else {
-									if ($select_type == "dialplan") {
-										echo "		<option value='playback:".$_SESSION['switch']['recordings']['dir']."/".$file."'>".$file."</option>\n";
-									}
-									if ($select_type == "ivr") {
-										echo "		<option value='menu-exec-app:playback ".$_SESSION['switch']['recordings']['dir']."/".$file."'>".$file."</option>\n";
-									}
-								}
-							}
+				$sql = "select * from v_recordings ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
+				$sql .= "order by recording_name asc ";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Recordings'>";
+					foreach ($result as &$row) {
+						$recording_name = $row["recording_name"];
+						$recording_filename = $row["recording_filename"];
+						$path_mod = ($_SESSION['recordings']['storage_type']['text'] != 'base64') ? $_SESSION['switch']['recordings']['dir']."/" : null;
+						if ($select_type == "dialplan") {
+							$execute_method = 'lua:';
 						}
+						else if ($select_type == "ivr") {
+							$execute_method = 'menu-exec-app:lua ';
+						}
+						$selected = (
+							$select_value == $execute_method."streamfile.lua ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename ||
+							$select_value == $execute_method."streamfile.lua ".$recording_filename
+							) ? true : false;
+						$options[] = "<option value='".$execute_method."streamfile.lua ".$path_mod.$recording_filename."' ".(($selected) ? "selected='selected'" : null).">".$recording_name."</option>";
+						if ($selected) { $selection_found = true; }
 					}
-					closedir($dh);
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
+			}
+		}
+
+	//phrases
+		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/phrases/app_config.php")) {
+			if ($select_type == "dialplan" || $select_type == "ivr") {
+				$sql = "select * from v_phrases where domain_uuid = '".$domain_uuid."' ";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Phrases'>";
+					foreach ($result as &$row) {
+						$selected = ($select_value == "phrase:".$row["phrase_name"].".".$domain_uuid) ? true : false;
+						$options[] = "<option value='phrase:".$row["phrase_name"].".".$domain_uuid."' ".(($selected) ? "selected='selected'" : null).">".$row["phrase_name"]."</option>";
+						if ($selected) { $selection_found = true; }
+					}
+					$options[] = "</optgroup>";
+				}
+				unset ($prep_statement);
 			}
 		}
 
@@ -1284,392 +1044,328 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/ring_groups/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_ring_groups ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and ring_group_enabled = 'true' ";
 				$sql .= "order by ring_group_extension asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='Ring Groups'>\n";
-				}
-				foreach ($result as &$row) {
-					$extension = $row["ring_group_extension"];
-					$context = $row["ring_group_context"];
-					$description = $row["ring_group_description"];
-					if ("transfer ".$extension." XML ".$context == $select_value || "transfer:".$extension." XML ".$context == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Ring Groups'>";
+					foreach ($result as &$row) {
+						$extension = $row["ring_group_extension"];
+						$context = $row["ring_group_context"];
+						$description = $row["ring_group_description"];
+						$selected = (
+							$select_value == "transfer ".$extension." XML ".$context ||
+							$select_value == "transfer:".$extension." XML ".$context ||
+							$select_value == "menu-exec-app:transfer ".$extension." XML ".$context
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer ".$extension." XML ".$context."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$description."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
+							$options[] = "<option value='transfer:".$extension." XML ".$context."' ".(($selected) ? "selected='selected'" : null).">".$extension." ".$description."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer $extension XML ".$context."'>".$extension." ".$description."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:$extension XML ".$context."'>".$extension." ".$description."</option>\n";
-						}
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 			}
 		}
 
-	//list time conditions
+	//time conditions
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/time_conditions/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_dialplan_details ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$x = 0;
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				foreach ($result as &$row) {
-					//$dialplan_detail_tag = $row["dialplan_detail_tag"];
-					switch ($row['dialplan_detail_type']) {
-					case "hour":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "minute":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "minute-of-day":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "mday":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "mweek":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "mon":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "yday":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "year":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "wday":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					case "week":
-						$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
-					default:
-						//$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
-						break;
+				if (count($result) > 0) {
+					foreach ($result as &$row) {
+						switch ($row['dialplan_detail_type']) {
+							case "hour":
+							case "minute":
+							case "minute-of-day":
+							case "time-of-day":
+							case "mday":
+							case "mweek":
+							case "mon":
+							case "yday":
+							case "year":
+							case "wday":
+							case "week":
+								$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
+						}
 					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='Time Conditions'>\n";
-				}
-				foreach($time_array as $key=>$val) {
-					$dialplan_uuid = $key;
-					//get the extension number using the dialplan_uuid
-						$sql = "select dialplan_detail_data as extension_number ";
-						$sql .= "from v_dialplan_details ";
-						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-						$sql .= "and dialplan_detail_type = 'destination_number' ";
-						$sql .= "order by extension_number asc ";
-						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-						$extension_number = $tmp['extension_number'];
-						$extension_number = ltrim($extension_number, "^");
-						$extension_number = ltrim($extension_number, "\\");
-						$extension_number = rtrim($extension_number, "$");
-						unset($tmp);
+					$options[] = "<optgroup label='Time Conditions'>";
+					foreach($time_array as $key=>$val) {
+						$dialplan_uuid = $key;
+						//get the extension number using the dialplan_uuid
+							$sql = "select dialplan_detail_data as extension_number ";
+							$sql .= "from v_dialplan_details ";
+							$sql .= "where domain_uuid = '".$domain_uuid."' ";
+							$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+							$sql .= "and dialplan_detail_type = 'destination_number' ";
+							$sql .= "order by extension_number asc ";
+							$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
+							$extension_number = $tmp['extension_number'];
+							$extension_number = ltrim($extension_number, "^");
+							$extension_number = ltrim($extension_number, "\\");
+							$extension_number = rtrim($extension_number, "$");
+							unset($tmp);
 
-					//get the extension number using the dialplan_uuid
-						$sql = "select * ";
-						$sql .= "from v_dialplans ";
-						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-						$dialplan_name = $tmp['dialplan_name'];
-						$dialplan_name = str_replace("_", " ", $dialplan_name);
-						unset($tmp);
+						//get the extension number using the dialplan_uuid
+							$sql = "select * ";
+							$sql .= "from v_dialplans ";
+							$sql .= "where domain_uuid = '".$domain_uuid."' ";
+							$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+							$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
+							$dialplan_name = $tmp['dialplan_name'];
+							$dialplan_name = str_replace("_", " ", $dialplan_name);
+							unset($tmp);
 
-						$option_label = $extension_number.' '.$dialplan_name;
-						if ($select_type == "ivr") {
-							if ("menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"] == $select_value) {
-								echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
-								$selection_found = true;
+							$option_label = $extension_number.' '.$dialplan_name;
+							if ($select_type == "ivr") {
+								$selected = ("menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"] == $select_value) ? true : false;
+								$options[] = "<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$option_label."</option>";
+								if ($selected) { $selection_found = true; }
 							}
-							else {
-								echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."'>".$option_label."</option>\n";
+							if ($select_type == "dialplan") {
+								$selected = ("transfer:".$extension_number." XML ".$_SESSION["context"] == $select_value) ? true : false;
+								$options[] = "<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$option_label."</option>";
+								if ($selected) { $selection_found = true; }
 							}
-						}
-						if ($select_type == "dialplan") {
-							if ("transfer:".$extension_number == $select_value) {
-								echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
-								$selection_found = true;
-							}
-							else {
-								echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."'>".$option_label."</option>\n";
-							}
-						}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					}
+					$options[] = "</optgroup>";
 				}
 				unset ($prep_statement);
 			}
 		}
 
-	//list voicemail
+	//voicemail
 		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/voicemails/app_config.php")) {
 			if ($select_type == "dialplan" || $select_type == "ivr") {
 				$sql = "select * from v_voicemails ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and voicemail_enabled = 'true' ";
 				$sql .= "order by voicemail_id asc ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "<optgroup label='Voicemail'>\n";
-				}
-				foreach ($result as &$row) {
-					$voicemail_id = $row["voicemail_id"];
-					$description = $row["voicemail_description"];
-					if ("voicemail default \${domain_name} ".$voicemail_id == $select_value || "transfer:*99".$voicemail_id." XML ".$_SESSION["context"] == $select_value || "voicemail:default \${domain_name} ".$voicemail_id == $select_value) {
+				if (count($result) > 0) {
+					$options[] = "<optgroup label='Voicemail'>";
+					foreach ($result as &$row) {
+						$voicemail_id = $row["voicemail_id"];
+						$description = $row["voicemail_description"];
+						$selected = (
+							$select_value == "voicemail default \${domain_name} ".$voicemail_id ||
+							$select_value == "voicemail:default \${domain_name} ".$voicemail_id ||
+							$select_value == "transfer:*99".$voicemail_id." XML ".$_SESSION["context"] ||
+							$select_value == "menu-exec-app:transfer *99".$voicemail_id." XML ".$_SESSION["context"]
+							) ? true : false;
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer *99".$voicemail_id." XML ".$_SESSION["context"]."' selected='selected'>".$voicemail_id." ".$description."</option>\n";
+							$options[] = "<option value='menu-exec-app:transfer *99".$voicemail_id." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$voicemail_id." ".$description."</option>";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:*99".$voicemail_id." XML ".$_SESSION["context"]."' selected='selected'>".$voicemail_id." ".$description."</option>\n";
+							$options[] = "<option value='transfer:*99".$voicemail_id." XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">".$voicemail_id." ".$description."</option>";
 						}
-						$selection_found = true;
+						if ($selected) { $selection_found = true; }
 					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer *99".$voicemail_id." XML ".$_SESSION["context"]."'>".$voicemail_id." ".$description."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:*99".$voicemail_id." XML ".$_SESSION["context"]."'>".$voicemail_id." ".$description."</option>\n";
-						}
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr") {
-					echo "</optgroup>\n";
+					$options[] = "</optgroup>";
 				}
 			}
 		}
 
 	//other
-		if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
-			echo "<optgroup label='Other'>\n";
-		}
 		if ($select_type == "dialplan" || $select_type == "ivr") {
+			$options[] = "<optgroup label='Other'>";
 			//set the default value
 				$selected = '';
 			//check voicemail
+				$selected = ($select_value == "transfer:*98 XML ".$_SESSION["context"] || $select_value == "menu-exec-app:transfer *98 XML ".$_SESSION["context"]) ? true : false;
 				if ($select_type == "dialplan") {
-					if ($select_value == "transfer:*98 XML ".$_SESSION["context"]) { $selected = "selected='selected'"; }
-					echo "		<option value='transfer:*98 XML ".$_SESSION["context"]."' $selected>check voicemail</option>\n";
+					$options[] = "<option value='transfer:*98 XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">check voicemail</option>";
 				}
-				if ($select_type == "ivr") {
-					if ($select_value == "menu-exec-app:transfer *98 XML ".$_SESSION["context"]) { $selected = "selected='selected'"; }
-					echo "		<option value='menu-exec-app:transfer *98 XML ".$_SESSION["context"]."' $selected>check voicemail</option>\n";
+				else if ($select_type == "ivr") {
+					$options[] = "<option value='menu-exec-app:transfer *98 XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">check voicemail</option>";
 				}
+				if ($selected) { $selection_found = true; }
 			//company directory
+				$selected = ($select_value == "transfer:*411 XML ".$_SESSION["context"] || $select_value == "menu-exec-app:transfer *411 XML ".$_SESSION["context"]) ? true : false;
 				if ($select_type == "dialplan") {
-					if ($select_value == "transfer:*411 XML ".$_SESSION["context"]) { $selected = "selected='selected'"; }
-					echo "		<option value='transfer:*411 XML ".$_SESSION["context"]."' $selected>company directory</option>\n";
+					$options[] = "<option value='transfer:*411 XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">company directory</option>";
 				}
-				if ($select_type == "ivr") {
-					if ($select_value == "menu-exec-app:transfer *411 XML ".$_SESSION["context"]) { $selected = "selected='selected'"; }
-					echo "		<option value='menu-exec-app:transfer *411 XML ".$_SESSION["context"]."' $selected>company directory</option>\n";
+				else if ($select_type == "ivr") {
+					$options[] = "<option value='menu-exec-app:transfer *411 XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">company directory</option>";
 				}
+				if ($selected) { $selection_found = true; }
 			//record
+				$selected = ($select_value == "transfer:*732 XML ".$_SESSION["context"] || $select_value == "menu-exec-app:transfer *732 XML ".$_SESSION["context"]) ? true : false;
 				if ($select_type == "dialplan") {
-					if ($select_value == "transfer:*732 XML ".$_SESSION["context"]) { $selected = "selected='selected'"; }
-					echo "		<option value='transfer:*732 XML ".$_SESSION["context"]."' $selected>record</option>\n";
+					$options[] = "<option value='transfer:*732 XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">record</option>";
 				}
-				if ($select_type == "ivr") {
-					if ($select_value == "menu-exec-app:transfer *732 XML ".$_SESSION["context"]) { $selected = "selected='selected'"; }
-					echo "		<option value='menu-exec-app:transfer *732 XML ".$_SESSION["context"]."' $selected>record</option>\n";
+				else if ($select_type == "ivr") {
+					$options[] = "<option value='menu-exec-app:transfer *732 XML ".$_SESSION["context"]."' ".(($selected) ? "selected='selected'" : null).">record</option>";
 				}
+				if ($selected) { $selection_found = true; }
 			//advanced
 				if (if_group("superadmin")) {
 					//answer
-						if ($select_value == "answer") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "answer" || $select_value == "menu-exec-app:answer") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='answer' $selected>answer</option>\n";
+							$options[] = "<option value='answer' ".(($selected) ? "selected='selected'" : null).">answer</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:answer' $selected>answer</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:answer' ".(($selected) ? "selected='selected'" : null).">answer</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//hangup
-						if ($select_value == "hangup") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "hangup" || $select_value == "menu-exec-app:hangup") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='hangup' $selected>hangup</option>\n";
+							$options[] = "<option value='hangup' ".(($selected) ? "selected='selected'" : null).">hangup</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:hangup' $selected>hangup</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:hangup' ".(($selected) ? "selected='selected'" : null).">hangup</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//info
-						if ($select_value == "info") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "info" || $select_value == "menu-exec-app:info") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='info' $selected>info</option>\n";
+							$options[] = "<option value='info' ".(($selected) ? "selected='selected'" : null).">info</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:info' $selected>info</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:info' ".(($selected) ? "selected='selected'" : null).">info</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//bridge
-						if ($select_value == "bridge") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "bridge" || $select_value == "bridge:" || $select_value == "menu-exec-app:bridge") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='bridge:' $selected>bridge</option>\n";
+							$options[] = "<option value='bridge:' ".(($selected) ? "selected='selected'" : null).">bridge</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:bridge ' $selected>bridge</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:bridge ' ".(($selected) ? "selected='selected'" : null).">bridge</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//db
-						if ($select_value == "db") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "db" || $select_value == "db:" || $select_value == "menu-exec-app:db") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='db:' $selected>db</option>\n";
+							$options[] = "<option value='db:' ".(($selected) ? "selected='selected'" : null).">db</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:db ' $selected>db</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:db ' ".(($selected) ? "selected='selected'" : null).">db</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//export
-						if ($select_value == "export") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "export" || $select_value == "export:" || $select_value == "menu-exec-app:export") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='export:' $selected>export</option>\n";
+							$options[] = "<option value='export:' ".(($selected) ? "selected='selected'" : null).">export</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:export ' $selected>export</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:export ' ".(($selected) ? "selected='selected'" : null).">export</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//global_set
-						if ($select_value == "global_set") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "global_set" || $select_value == "global_set:" || $select_value == "menu-exec-app:global_set") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='global_set:' $selected>global_set</option>\n";
+							$options[] = "<option value='global_set:' ".(($selected) ? "selected='selected'" : null).">global_set</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:global_set ' $selected>global_set</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:global_set ' ".(($selected) ? "selected='selected'" : null).">global_set</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//group
-						if ($select_value == "group") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "group" || $select_value == "group:" || $select_value == "menu-exec-app:group") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='group:' $selected>group</option>\n";
+							$options[] = "<option value='group:' ".(($selected) ? "selected='selected'" : null).">group</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:group ' $selected>group</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:group ' ".(($selected) ? "selected='selected'" : null).">group</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//javascript
-						if ($select_value == "javascript") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "javascript" || $select_value == "javascript:" || $select_value == "menu-exec-app:javascript") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='javascript:' $selected>javascript</option>\n";
+							$options[] = "<option value='javascript:' ".(($selected) ? "selected='selected'" : null).">javascript</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:javascript ' $selected>javascript</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:javascript ' ".(($selected) ? "selected='selected'" : null).">javascript</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//lua
-						if ($select_value == "lua") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "lua" || $select_value == "lua:" || $select_value == "menu-exec-app:lua") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='lua:' $selected>lua</option>\n";
+							$options[] = "<option value='lua:' ".(($selected) ? "selected='selected'" : null).">lua</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:lua ' $selected>lua</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:lua ' ".(($selected) ? "selected='selected'" : null).">lua</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//perl
-						if ($select_value == "perl") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "perl" || $select_value == "perl:" || $select_value == "menu-exec-app:perl") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='perl:' $selected>perl</option>\n";
+							$options[] = "<option value='perl:' ".(($selected) ? "selected='selected'" : null).">perl</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:perl ' $selected>perl</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:perl ' ".(($selected) ? "selected='selected'" : null).">perl</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//reject
-						if ($select_value == "reject") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "reject" || $select_value == "menu-exec-app:reject") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='reject' $selected>reject</option>\n";
+							$options[] = "<option value='reject' ".(($selected) ? "selected='selected'" : null).">reject</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:reject' $selected>reject</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:reject' ".(($selected) ? "selected='selected'" : null).">reject</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//set
-						if ($select_value == "set") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "set" || $select_value == "set:" || $select_value == "menu-exec-app:set") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='set:' $selected>set</option>\n";
+							$options[] = "<option value='set:' ".(($selected) ? "selected='selected'" : null).">set</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:set ' $selected>set</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:set ' ".(($selected) ? "selected='selected'" : null).">set</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//sleep
-						if ($select_value == "sleep") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "sleep" || $select_value == "sleep:" || $select_value == "menu-exec-app:sleep") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='sleep:' $selected>sleep</option>\n";
+							$options[] = "<option value='sleep:' ".(($selected) ? "selected='selected'" : null).">sleep</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:sleep ' $selected>sleep</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:sleep ' ".(($selected) ? "selected='selected'" : null).">sleep</option>";
 						}
+						if ($selected) { $selection_found = true; }
 					//transfer
-						if ($select_value == "transfer") { $selected = "selected='selected'"; }
+						$selected = ($select_value == "transfer" || $select_value == "transfer:" || $select_value == "menu-exec-app:transfer") ? true : false;
 						if ($select_type == "dialplan") {
-							echo "		<option value='transfer:' $selected>transfer</option>\n";
+							$options[] = "<option value='transfer:' ".(($selected) ? "selected='selected'" : null).">transfer</option>";
 						}
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:transfer ' $selected>transfer</option>\n";
+						else if ($select_type == "ivr") {
+							$options[] = "<option value='menu-exec-app:transfer ' ".(($selected) ? "selected='selected'" : null).">transfer</option>";
 						}
-					//other
-						if ($select_value == "other") {
-							echo "		<option value='' selected='selected'>other</option>\n";
-						} else {
-							echo "		<option value=''>other</option>\n";
-						}
+						if ($selected) { $selection_found = true; }
 				}
-			//selected
-				if (!$selection_found) {
-					if (strlen($select_label) > 0) {
-						echo "		<option value='".$select_value."' selected='selected'>".$select_label."</option>\n";
-					}
-					else {
-						echo "		<option value='".$select_value."' selected='selected'>".trim($select_value,":")."</option>\n";
-					}
-				}
-				if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
-					echo "</optgroup>\n";
-				}
+			$options[] = "</optgroup>";
 		}
 
-		/*
-		//echo "    <option value='answer'>answer</option>\n";
-		//echo "    <option value='bridge'>bridge</option>\n";
-		echo "    <option value='cond'>cond</option>\n";
-		//echo "    <option value='db'>db</option>\n";
-		//echo "    <option value='global_set'>global_set</option>\n";
-		//echo "    <option value='group'>group</option>\n";
-		echo "    <option value='expr'>expr</option>\n";
-		//echo "    <option value='export'>export</option>\n";
-		//echo "    <option value='hangup'>hangup</option>\n";
-		//echo "    <option value='info'>info</option>\n";
-		//echo "    <option value='javascript'>javascript</option>\n";
-		//echo "    <option value='lua'>lua</option>\n";
-		echo "    <option value='playback'>playback</option>\n";
-		echo "    <option value='read'>read</option>\n";
-		//echo "    <option value='reject'>reject</option>\n";
-		echo "    <option value='respond'>respond</option>\n";
-		echo "    <option value='ring_ready'>ring_ready</option>\n";
-		//echo "    <option value='set'>set</option>\n";
-		echo "    <option value='set_user'>set_user</option>\n";
-		//echo "    <option value='sleep'>sleep</option>\n";
-		echo "    <option value='sofia_contact'>sofia_contact</option>\n";
-		//echo "    <option value='transfer'>transfer</option>\n";
-		echo "    <option value='conference'>conference</option>\n";
-		echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
-		*/
-		unset ($prep_statement, $extension);
+	//custom
+		if (!$selection_found && $select_value != '') {
+			array_unshift($options,
+				"<option value='".$select_value."' selected='selected'>".$select_value."</option>",
+				"<option value='' disabled='disabled'></option>"
+			);
+		}
 
-	echo "		</select>\n";
+	//output options
+		if (sizeof($options)>0) {
+			echo implode("\n",$options);
+		}
+
+	echo "	</select>\n";
 	if (if_group("superadmin")) {
 		echo "<input type='button' id='btn_select_to_input_".$select_id."' class='btn' name='' alt='back' onclick='changeToInput".$select_id."(document.getElementById(\"".$select_id."\"));this.style.visibility = \"hidden\";' value='&#9665;'>";
 	}
@@ -1801,7 +1497,7 @@ function save_gateway_xml() {
 
 	//get the list of gateways and write the xml
 		$sql = "select * from v_gateways ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where (domain_uuid = '$domain_uuid' or domain_uuid is null) ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -1820,9 +1516,6 @@ function save_gateway_xml() {
 						if (strlen($row['username']) > 0) {
 							$xml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
 						}
-						else {
-							$xml .= "      <param name=\"username\" value=\"register:false\"/>\n";
-						}
 						if (strlen($row['distinct_to']) > 0) {
 							$xml .= "      <param name=\"distinct-to\" value=\"" . $row['distinct_to'] . "\"/>\n";
 						}
@@ -1831,9 +1524,6 @@ function save_gateway_xml() {
 						}
 						if (strlen($row['password']) > 0) {
 							$xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
-						}
-						else {
-							$xml .= "      <param name=\"password\" value=\"register:false\"/>\n";
 						}
 						if (strlen($row['realm']) > 0) {
 							$xml .= "      <param name=\"realm\" value=\"" . $row['realm'] . "\"/>\n";
@@ -1979,7 +1669,11 @@ function save_var_xml() {
 					$xml .= "<!-- ".base64_decode($row['var_description'])." -->\n";
 				}
 			}
-			$xml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row['var_name']."=".$row['var_value']."\"/>\n";
+			if (strlen($row['var_hostname']) == 0) {
+				$xml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row['var_name']."=".$row['var_value']."\"/>\n";
+			} elseif ($row['var_hostname'] == system('hostname')) {
+				$xml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row['var_name']."=".$row['var_value']."\"/>\n";
+			}
 		}
 		$prev_var_cat = $row['var_cat'];
 	}
@@ -2158,7 +1852,7 @@ function dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_or
 	unset($sql);
 }
 
-function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data, $dialplan_detail_break) {
+function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data, $dialplan_detail_break, $dialplan_detail_inline) {
 	global $db;
 	$dialplan_detail_uuid = uuid();
 	$sql = "insert into v_dialplan_details ";
@@ -2171,7 +1865,8 @@ function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag,
 	$sql .= "dialplan_detail_order, ";
 	$sql .= "dialplan_detail_type, ";
 	$sql .= "dialplan_detail_data, ";
-	$sql .= "dialplan_detail_break ";
+	$sql .= "dialplan_detail_break, ";
+	$sql .= "dialplan_detail_inline ";
 	$sql .= ") ";
 	$sql .= "values ";
 	$sql .= "(";
@@ -2189,10 +1884,16 @@ function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag,
 	$sql .= "'".check_str($dialplan_detail_type)."', ";
 	$sql .= "'".check_str($dialplan_detail_data)."', ";
 	if (strlen($dialplan_detail_break) == 0) {
+		$sql .= "null, ";
+	}
+	else {
+		$sql .= "'".check_str($dialplan_detail_break)."', ";
+	}
+	if (strlen($dialplan_detail_inline) == 0) {
 		$sql .= "null ";
 	}
 	else {
-		$sql .= "'".check_str($dialplan_detail_break)."' ";
+		$sql .= "'".check_str($dialplan_detail_inline)."' ";
 	}
 	$sql .= ")";
 	$db->exec(check_sql($sql));
@@ -2267,38 +1968,21 @@ function save_dialplan_xml() {
 											$group = $row2['dialplan_detail_group'];
 										//get the generic type
 											switch ($row2['dialplan_detail_type']) {
-											case "hour":
-												$type = 'time';
-												break;
-											case "minute":
-												$type = 'time';
-												break;
-											case "minute-of-day":
-												$type = 'time';
-												break;
-											case "mday":
-												$type = 'time';
-												break;
-											case "mweek":
-												$type = 'time';
-												break;
-											case "mon":
-												$type = 'time';
-												break;
-											case "yday":
-												$type = 'time';
-												break;
-											case "year":
-												$type = 'time';
-												break;
-											case "wday":
-												$type = 'time';
-												break;
-											case "week":
-												$type = 'time';
-												break;
-											default:
-												$type = 'default';
+												case "hour":
+												case "minute":
+												case "minute-of-day":
+												case "time-of-day":
+												case "mday":
+												case "mweek":
+												case "mon":
+												case "yday":
+												case "year":
+												case "wday":
+												case "week":
+													$type = 'time';
+													break;
+												default:
+													$type = 'default';
 											}
 
 										//add the conditions to the details array
@@ -2361,38 +2045,21 @@ function save_dialplan_xml() {
 								if ($ent['dialplan_detail_tag'] == "condition") {
 									//get the generic type
 										switch ($ent['dialplan_detail_type']) {
-										case "hour":
-											$type = 'time';
-											break;
-										case "minute":
-											$type = 'time';
-											break;
-										case "minute-of-day":
-											$type = 'time';
-											break;
-										case "mday":
-											$type = 'time';
-											break;
-										case "mweek":
-											$type = 'time';
-											break;
-										case "mon":
-											$type = 'time';
-											break;
-										case "yday":
-											$type = 'time';
-											break;
-										case "year":
-											$type = 'time';
-											break;
-										case "wday":
-											$type = 'time';
-											break;
-										case "week":
-											$type = 'time';
-											break;
-										default:
-											$type = 'default';
+											case "hour":
+											case "minute":
+											case "minute-of-day":
+											case "time-of-day":
+											case "mday":
+											case "mweek":
+											case "mon":
+											case "yday":
+											case "year":
+											case "wday":
+											case "week":
+												$type = 'time';
+												break;
+											default:
+												$type = 'default';
 										}
 
 									//set the attribute and expression
@@ -2568,434 +2235,436 @@ if (!function_exists('save_call_center_xml')) {
 	function save_call_center_xml() {
 		global $db, $domain_uuid;
 
-		//include the classes
-		include "app/dialplan/resources/classes/dialplan.php";
+		if (strlen($_SESSION['switch']['call_center']['dir']) > 0) {
+			//include the classes
+			include "app/dialplan/resources/classes/dialplan.php";
 
-		$sql = "select * from v_call_center_queues ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		$result_count = count($result);
-		unset ($prep_statement, $sql);
-		if ($result_count > 0) { //found results
-			foreach($result as $row) {
-				//set the variables
-					$call_center_queue_uuid = $row["call_center_queue_uuid"];
-					$domain_uuid = $row["domain_uuid"];
-					$dialplan_uuid = $row["dialplan_uuid"];
-					$queue_name = check_str($row["queue_name"]);
-					$queue_extension = $row["queue_extension"];
-					$queue_strategy = $row["queue_strategy"];
-					$queue_moh_sound = $row["queue_moh_sound"];
-					$queue_record_template = $row["queue_record_template"];
-					$queue_time_base_score = $row["queue_time_base_score"];
-					$queue_max_wait_time = $row["queue_max_wait_time"];
-					$queue_max_wait_time_with_no_agent = $row["queue_max_wait_time_with_no_agent"];
-					$queue_tier_rules_apply = $row["queue_tier_rules_apply"];
-					$queue_tier_rule_wait_second = $row["queue_tier_rule_wait_second"];
-					$queue_tier_rule_wait_multiply_level = $row["queue_tier_rule_wait_multiply_level"];
-					$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
-					$queue_timeout_action = $row["queue_timeout_action"];
-					$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
-					$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
-					$queue_cid_prefix = $row["queue_cid_prefix"];
-					$queue_announce_sound = $row["queue_announce_sound"];
-					$queue_announce_frequency = $row["queue_announce_frequency"];
-					$queue_description = check_str($row["queue_description"]);
+			$sql = "select * from v_call_center_queues ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+			$result_count = count($result);
+			unset ($prep_statement, $sql);
+			if ($result_count > 0) {
+				foreach($result as $row) {
+					//set the variables
+						$call_center_queue_uuid = $row["call_center_queue_uuid"];
+						$domain_uuid = $row["domain_uuid"];
+						$dialplan_uuid = $row["dialplan_uuid"];
+						$queue_name = check_str($row["queue_name"]);
+						$queue_extension = $row["queue_extension"];
+						$queue_strategy = $row["queue_strategy"];
+						$queue_moh_sound = $row["queue_moh_sound"];
+						$queue_record_template = $row["queue_record_template"];
+						$queue_time_base_score = $row["queue_time_base_score"];
+						$queue_max_wait_time = $row["queue_max_wait_time"];
+						$queue_max_wait_time_with_no_agent = $row["queue_max_wait_time_with_no_agent"];
+						$queue_tier_rules_apply = $row["queue_tier_rules_apply"];
+						$queue_tier_rule_wait_second = $row["queue_tier_rule_wait_second"];
+						$queue_tier_rule_wait_multiply_level = $row["queue_tier_rule_wait_multiply_level"];
+						$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
+						$queue_timeout_action = $row["queue_timeout_action"];
+						$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
+						$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
+						$queue_cid_prefix = $row["queue_cid_prefix"];
+						$queue_announce_sound = $row["queue_announce_sound"];
+						$queue_announce_frequency = $row["queue_announce_frequency"];
+						$queue_description = check_str($row["queue_description"]);
 
-				//replace space with an underscore
-					$queue_name = str_replace(" ", "_", $queue_name);
+					//replace space with an underscore
+						$queue_name = str_replace(" ", "_", $queue_name);
 
-				//add each Queue to the dialplan
-					if (strlen($row['call_center_queue_uuid']) > 0) {
-						$action = 'add'; //set default action to add
-						$i = 0;
+					//add each Queue to the dialplan
+						if (strlen($row['call_center_queue_uuid']) > 0) {
+							$action = 'add'; //set default action to add
+							$i = 0;
 
-						//determine the action add or update
-						if (strlen($dialplan_uuid) > 0) {
-							$sql = "select * from v_dialplans ";
-							$sql .= "where dialplan_uuid = '".$dialplan_uuid."' ";
-							$prep_statement_2 = $db->prepare($sql);
-							$prep_statement_2->execute();
-							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-								$action = 'update';
+							//determine the action add or update
+							if (strlen($dialplan_uuid) > 0) {
+								$sql = "select * from v_dialplans ";
+								$sql .= "where dialplan_uuid = '".$dialplan_uuid."' ";
+								$prep_statement_2 = $db->prepare($sql);
+								$prep_statement_2->execute();
+								while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
+									$action = 'update';
+								}
+								unset ($sql, $prep_statement_2);
 							}
-							unset ($sql, $prep_statement_2);
-						}
 
-						if ($action == 'add') {
-							//create queue entry in the dialplan
-								$dialplan_name = $queue_name;
-								$dialplan_order ='210';
-								$dialplan_context = $_SESSION['context'];
-								$dialplan_enabled = 'true';
-								$dialplan_description = $queue_description;
-								$app_uuid = '95788e50-9500-079e-2807-fd530b0ea370';
-								$dialplan_uuid = uuid();
-								dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+							if ($action == 'add') {
+								//create queue entry in the dialplan
+									$dialplan_name = $queue_name;
+									$dialplan_order ='210';
+									$dialplan_context = $_SESSION['context'];
+									$dialplan_enabled = 'true';
+									$dialplan_description = $queue_description;
+									$app_uuid = '95788e50-9500-079e-2807-fd530b0ea370';
+									$dialplan_uuid = uuid();
+									dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
-							//add the dialplan_uuid to the call center table
-								$sql = "update v_call_center_queues set ";
-								$sql .= "dialplan_uuid = '$dialplan_uuid' ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and call_center_queue_uuid = '".$row['call_center_queue_uuid']."' ";
-								$db->exec(check_sql($sql));
-								unset($sql);
-						}
-						if ($action == 'update') {
-							//add the dialplan_uuid to the call center table
-								$sql = "update v_dialplans set ";
-								$sql .= "dialplan_name = '".$queue_name."', ";
-								$sql .= "dialplan_description = '".$queue_description."' ";
-								$sql .= "where domain_uuid = '".$domain_uuid."' ";
-								$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
-								$db->exec(check_sql($sql));
-								unset($sql);
+								//add the dialplan_uuid to the call center table
+									$sql = "update v_call_center_queues set ";
+									$sql .= "dialplan_uuid = '$dialplan_uuid' ";
+									$sql .= "where domain_uuid = '$domain_uuid' ";
+									$sql .= "and call_center_queue_uuid = '".$row['call_center_queue_uuid']."' ";
+									$db->exec(check_sql($sql));
+									unset($sql);
+							}
+							if ($action == 'update') {
+								//add the dialplan_uuid to the call center table
+									$sql = "update v_dialplans set ";
+									$sql .= "dialplan_name = '".$queue_name."', ";
+									$sql .= "dialplan_description = '".$queue_description."' ";
+									$sql .= "where domain_uuid = '".$domain_uuid."' ";
+									$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+									$db->exec(check_sql($sql));
+									unset($sql);
 
-							//add the dialplan_uuid to the call center table
-								$sql = "delete from v_dialplan_details ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$db->exec(check_sql($sql));
-								unset($sql);
-						}
+								//add the dialplan_uuid to the call center table
+									$sql = "delete from v_dialplan_details ";
+									$sql .= "where domain_uuid = '$domain_uuid' ";
+									$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+									$db->exec(check_sql($sql));
+									unset($sql);
+							}
 
-						//group 1
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = '${caller_id_name}';
-							$dialplan->dialplan_detail_data = '^([^#]+#)(.*)$';
-							$dialplan->dialplan_detail_break = 'never';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '1';
-							$dialplan->dialplan_detail_order = '010';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
+							//group 1
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $domain_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = '${caller_id_name}';
+								$dialplan->dialplan_detail_data = '^([^#]+#)(.*)$';
+								$dialplan->dialplan_detail_break = 'never';
+								$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '1';
+								$dialplan->dialplan_detail_order = '010';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'set';
-							$dialplan->dialplan_detail_data = 'caller_id_name=$2';
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '1';
-							$dialplan->dialplan_detail_order = '020';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
-
-						//group 2
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'destination_number';
-							$dialplan->dialplan_detail_data = '^'.$row['queue_extension'].'$';
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '2';
-							$dialplan->dialplan_detail_order = '010';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
-
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'answer';
-							$dialplan->dialplan_detail_data = '';
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '2';
-							$dialplan->dialplan_detail_order = '020';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
-
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'set';
-							$dialplan->dialplan_detail_data = 'hangup_after_bridge=true';
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '2';
-							$dialplan->dialplan_detail_order = '030';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
-
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'set';
-							$dialplan->dialplan_detail_data = "caller_id_name=".$queue_cid_prefix."#\${caller_id_name}";
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '2';
-							$dialplan->dialplan_detail_order = '040';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
-
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'callcenter';
-							$dialplan->dialplan_detail_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain_name'];
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '2';
-							$dialplan->dialplan_detail_order = '050';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
-
-							if (strlen($queue_timeout_action) > 0) {
-								$action_array = explode(":",$queue_timeout_action);
 								$dialplan = new dialplan;
 								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan->dialplan_detail_type = $action_array[0];
-								$dialplan->dialplan_detail_data = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
+								$dialplan->dialplan_detail_type = 'set';
+								$dialplan->dialplan_detail_data = 'caller_id_name=$2';
+								$dialplan->dialplan_detail_break = '';
+								$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '1';
+								$dialplan->dialplan_detail_order = '020';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
+
+							//group 2
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $domain_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'destination_number';
+								$dialplan->dialplan_detail_data = '^'.$row['queue_extension'].'$';
 								$dialplan->dialplan_detail_break = '';
 								$dialplan->dialplan_detail_inline = '';
 								$dialplan->dialplan_detail_group = '2';
-								$dialplan->dialplan_detail_order = '060';
+								$dialplan->dialplan_detail_order = '010';
 								$dialplan->dialplan_detail_add();
 								unset($dialplan);
-							}
 
-							$dialplan = new dialplan;
-							$dialplan->domain_uuid = $domain_uuid;
-							$dialplan->dialplan_uuid = $dialplan_uuid;
-							$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan->dialplan_detail_type = 'hangup';
-							$dialplan->dialplan_detail_data = '';
-							$dialplan->dialplan_detail_break = '';
-							$dialplan->dialplan_detail_inline = '';
-							$dialplan->dialplan_detail_group = '2';
-							$dialplan->dialplan_detail_order = '070';
-							$dialplan->dialplan_detail_add();
-							unset($dialplan);
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $domain_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'answer';
+								$dialplan->dialplan_detail_data = '';
+								$dialplan->dialplan_detail_break = '';
+								$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '020';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-						//synchronize the xml config
-							save_dialplan_xml();
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $domain_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'set';
+								$dialplan->dialplan_detail_data = 'hangup_after_bridge=true';
+								$dialplan->dialplan_detail_break = '';
+								$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '030';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-						//unset variables
-							unset($action);
+								if (strlen($queue_cid_prefix) > 0) {
+									$dialplan = new dialplan;
+									$dialplan->domain_uuid = $domain_uuid;
+									$dialplan->dialplan_uuid = $dialplan_uuid;
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'set';
+									$dialplan->dialplan_detail_data = "effective_caller_id_name=".$queue_cid_prefix."-\${caller_id_name}";
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '040';
+									$dialplan->dialplan_detail_add();
+									unset($dialplan);
+								}
 
-					} //end if strlen call_center_queue_uuid; add the call center queue to the dialplan
-			}
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $domain_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'callcenter';
+								$dialplan->dialplan_detail_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain_name'];
+								$dialplan->dialplan_detail_break = '';
+								$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '050';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-			//prepare Queue XML string
-				$v_queues = '';
-				$sql = "select * from v_call_center_queues ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				$x=0;
-				foreach ($result as &$row) {
-					$queue_name = $row["queue_name"];
-					$queue_extension = $row["queue_extension"];
-					$queue_strategy = $row["queue_strategy"];
-					$queue_moh_sound = $row["queue_moh_sound"];
-					$queue_record_template = $row["queue_record_template"];
-					$queue_time_base_score = $row["queue_time_base_score"];
-					$queue_max_wait_time = $row["queue_max_wait_time"];
-					$queue_max_wait_time_with_no_agent = $row["queue_max_wait_time_with_no_agent"];
-					$queue_tier_rules_apply = $row["queue_tier_rules_apply"];
-					$queue_tier_rule_wait_second = $row["queue_tier_rule_wait_second"];
-					$queue_tier_rule_wait_multiply_level = $row["queue_tier_rule_wait_multiply_level"];
-					$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
-					$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
-					$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
-					$queue_announce_sound = $row["queue_announce_sound"];
-					$queue_announce_frequency = $row ["queue_announce_frequency"];
-					$queue_description = $row["queue_description"];
-					if ($x > 0) {
-						$v_queues .= "\n";
-						$v_queues .= "		";
-					}
-					$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\">\n";
-					$v_queues .= "			<param name=\"strategy\" value=\"$queue_strategy\"/>\n";
-					if (strlen($queue_moh_sound) == 0) {
-						$v_queues .= "			<param name=\"moh-sound\" value=\"local_stream://default\"/>\n";
-					}
-					else {
-						if (substr($queue_moh_sound, 0, 15) == 'local_stream://') {
-							$v_queues .= "			<param name=\"moh-sound\" value=\"".$queue_moh_sound."\"/>\n";
+								if (strlen($queue_timeout_action) > 0) {
+									$action_array = explode(":",$queue_timeout_action);
+									$dialplan = new dialplan;
+									$dialplan->domain_uuid = $domain_uuid;
+									$dialplan->dialplan_uuid = $dialplan_uuid;
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = $action_array[0];
+									$dialplan->dialplan_detail_data = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '060';
+									$dialplan->dialplan_detail_add();
+									unset($dialplan);
+								}
+
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $domain_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'hangup';
+								$dialplan->dialplan_detail_data = '';
+								$dialplan->dialplan_detail_break = '';
+								$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '070';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
+
+							//synchronize the xml config
+								save_dialplan_xml();
+
+							//unset variables
+								unset($action);
+
+						} //end if strlen call_center_queue_uuid; add the call center queue to the dialplan
+				}
+
+				//prepare Queue XML string
+					$v_queues = '';
+					$sql = "select * from v_call_center_queues ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+					$x=0;
+					foreach ($result as &$row) {
+						$queue_name = $row["queue_name"];
+						$queue_extension = $row["queue_extension"];
+						$queue_strategy = $row["queue_strategy"];
+						$queue_moh_sound = $row["queue_moh_sound"];
+						$queue_record_template = $row["queue_record_template"];
+						$queue_time_base_score = $row["queue_time_base_score"];
+						$queue_max_wait_time = $row["queue_max_wait_time"];
+						$queue_max_wait_time_with_no_agent = $row["queue_max_wait_time_with_no_agent"];
+						$queue_tier_rules_apply = $row["queue_tier_rules_apply"];
+						$queue_tier_rule_wait_second = $row["queue_tier_rule_wait_second"];
+						$queue_tier_rule_wait_multiply_level = $row["queue_tier_rule_wait_multiply_level"];
+						$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
+						$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
+						$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
+						$queue_announce_sound = $row["queue_announce_sound"];
+						$queue_announce_frequency = $row ["queue_announce_frequency"];
+						$queue_description = $row["queue_description"];
+						if ($x > 0) {
+							$v_queues .= "\n";
+							$v_queues .= "		";
 						}
-						elseif (substr($queue_moh_sound, 0, 2) == '${' && substr($queue_moh_sound, -5) == 'ring}') {
-							$v_queues .= "			<param name=\"moh-sound\" value=\"tone_stream://".$queue_moh_sound.";loops=-1\"/>\n";
+						$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\">\n";
+						$v_queues .= "			<param name=\"strategy\" value=\"$queue_strategy\"/>\n";
+						if (strlen($queue_moh_sound) == 0) {
+							$v_queues .= "			<param name=\"moh-sound\" value=\"local_stream://default\"/>\n";
 						}
 						else {
-							$v_queues .= "			<param name=\"moh-sound\" value=\"".$queue_moh_sound."\"/>\n";
-						}
-					}
-					if (strlen($queue_record_template) > 0) {
-						$v_queues .= "			<param name=\"record-template\" value=\"$queue_record_template\"/>\n";
-					}
-					$v_queues .= "			<param name=\"time-base-score\" value=\"$queue_time_base_score\"/>\n";
-					$v_queues .= "			<param name=\"max-wait-time\" value=\"$queue_max_wait_time\"/>\n";
-					$v_queues .= "			<param name=\"max-wait-time-with-no-agent\" value=\"$queue_max_wait_time_with_no_agent\"/>\n";
-					$v_queues .= "			<param name=\"max-wait-time-with-no-agent-time-reached\" value=\"$queue_max_wait_time_with_no_agent_time_reached\"/>\n";
-					$v_queues .= "			<param name=\"tier-rules-apply\" value=\"$queue_tier_rules_apply\"/>\n";
-					$v_queues .= "			<param name=\"tier-rule-wait-second\" value=\"$queue_tier_rule_wait_second\"/>\n";
-					$v_queues .= "			<param name=\"tier-rule-wait-multiply-level\" value=\"$queue_tier_rule_wait_multiply_level\"/>\n";
-					$v_queues .= "			<param name=\"tier-rule-no-agent-no-wait\" value=\"$queue_tier_rule_no_agent_no_wait\"/>\n";
-					$v_queues .= "			<param name=\"discard-abandoned-after\" value=\"$queue_discard_abandoned_after\"/>\n";
-					$v_queues .= "			<param name=\"abandoned-resume-allowed\" value=\"$queue_abandoned_resume_allowed\"/>\n";
-					$v_queues .= "			<param name=\"announce-sound\" value=\"$queue_announce_sound\"/>\n";
-					$v_queues .= "			<param name=\"announce-frequency\" value=\"$queue_announce_frequency\"/>\n";
-					$v_queues .= "		</queue>";
-					$x++;
-				}
-				unset ($prep_statement);
-
-			//prepare Agent XML string
-				$v_agents = '';
-				$sql = "select * from v_call_center_agents ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				$x=0;
-				foreach ($result as &$row) {
-					//get the values from the db and set as php variables
-						$agent_name = $row["agent_name"];
-						$agent_type = $row["agent_type"];
-						$agent_call_timeout = $row["agent_call_timeout"];
-						$agent_contact = $row["agent_contact"];
-						$agent_status = $row["agent_status"];
-						$agent_no_answer_delay_time = $row["agent_no_answer_delay_time"];
-						$agent_max_no_answer = $row["agent_max_no_answer"];
-						$agent_wrap_up_time = $row["agent_wrap_up_time"];
-						$agent_reject_delay_time = $row["agent_reject_delay_time"];
-						$agent_busy_delay_time = $row["agent_busy_delay_time"];
-						if ($x > 0) {
-							$v_agents .= "\n";
-							$v_agents .= "		";
-
-						}
-
-					//get and then set the complete agent_contact with the call_timeout and when necessary confirm
-						//$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1";
-						//if you change this variable also change app/call_center/call_center_agent_edit.php
-						$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1,group_confirm_read_timeout=2000,leg_timeout=".$agent_call_timeout;
-						if(strstr($agent_contact, '}') === FALSE) {
-							//not found
-							if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
-								//add the call_timeout
-								$tmp_agent_contact = "{call_timeout=".$agent_call_timeout."}".$agent_contact;
+							if (substr($queue_moh_sound, 0, 15) == 'local_stream://') {
+								$v_queues .= "			<param name=\"moh-sound\" value=\"".$queue_moh_sound."\"/>\n";
+							}
+							elseif (substr($queue_moh_sound, 0, 2) == '${' && substr($queue_moh_sound, -5) == 'ring}') {
+								$v_queues .= "			<param name=\"moh-sound\" value=\"tone_stream://".$queue_moh_sound.";loops=-1\"/>\n";
 							}
 							else {
-								//add the call_timeout and confirm
-								$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
-								$tmp_agent_contact = "{".$tmp_confirm.",call_timeout=".$agent_call_timeout."}".$agent_contact;
+								$v_queues .= "			<param name=\"moh-sound\" value=\"".$queue_moh_sound."\"/>\n";
 							}
 						}
-						else {
-							//found
-							if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
+						if (strlen($queue_record_template) > 0) {
+							$v_queues .= "			<param name=\"record-template\" value=\"$queue_record_template\"/>\n";
+						}
+						$v_queues .= "			<param name=\"time-base-score\" value=\"$queue_time_base_score\"/>\n";
+						$v_queues .= "			<param name=\"max-wait-time\" value=\"$queue_max_wait_time\"/>\n";
+						$v_queues .= "			<param name=\"max-wait-time-with-no-agent\" value=\"$queue_max_wait_time_with_no_agent\"/>\n";
+						$v_queues .= "			<param name=\"max-wait-time-with-no-agent-time-reached\" value=\"$queue_max_wait_time_with_no_agent_time_reached\"/>\n";
+						$v_queues .= "			<param name=\"tier-rules-apply\" value=\"$queue_tier_rules_apply\"/>\n";
+						$v_queues .= "			<param name=\"tier-rule-wait-second\" value=\"$queue_tier_rule_wait_second\"/>\n";
+						$v_queues .= "			<param name=\"tier-rule-wait-multiply-level\" value=\"$queue_tier_rule_wait_multiply_level\"/>\n";
+						$v_queues .= "			<param name=\"tier-rule-no-agent-no-wait\" value=\"$queue_tier_rule_no_agent_no_wait\"/>\n";
+						$v_queues .= "			<param name=\"discard-abandoned-after\" value=\"$queue_discard_abandoned_after\"/>\n";
+						$v_queues .= "			<param name=\"abandoned-resume-allowed\" value=\"$queue_abandoned_resume_allowed\"/>\n";
+						$v_queues .= "			<param name=\"announce-sound\" value=\"$queue_announce_sound\"/>\n";
+						$v_queues .= "			<param name=\"announce-frequency\" value=\"$queue_announce_frequency\"/>\n";
+						$v_queues .= "		</queue>";
+						$x++;
+					}
+					unset ($prep_statement);
+
+				//prepare Agent XML string
+					$v_agents = '';
+					$sql = "select * from v_call_center_agents ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+					$x=0;
+					foreach ($result as &$row) {
+						//get the values from the db and set as php variables
+							$agent_name = $row["agent_name"];
+							$agent_type = $row["agent_type"];
+							$agent_call_timeout = $row["agent_call_timeout"];
+							$agent_contact = $row["agent_contact"];
+							$agent_status = $row["agent_status"];
+							$agent_no_answer_delay_time = $row["agent_no_answer_delay_time"];
+							$agent_max_no_answer = $row["agent_max_no_answer"];
+							$agent_wrap_up_time = $row["agent_wrap_up_time"];
+							$agent_reject_delay_time = $row["agent_reject_delay_time"];
+							$agent_busy_delay_time = $row["agent_busy_delay_time"];
+							if ($x > 0) {
+								$v_agents .= "\n";
+								$v_agents .= "		";
+							}
+
+						//get and then set the complete agent_contact with the call_timeout and when necessary confirm
+							//$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1";
+							//if you change this variable also change app/call_center/call_center_agent_edit.php
+							$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1,group_confirm_read_timeout=2000,leg_timeout=".$agent_call_timeout;
+							if(strstr($agent_contact, '}') === FALSE) {
 								//not found
-								if(stristr($agent_contact, 'call_timeout') === FALSE) {
+								if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
 									//add the call_timeout
-									$tmp_pos = strrpos($agent_contact, "}");
-									$tmp_first = substr($agent_contact, 0, $tmp_pos);
-									$tmp_last = substr($agent_contact, $tmp_pos);
-									$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
+									$tmp_agent_contact = "{call_timeout=".$agent_call_timeout."}".$agent_contact;
 								}
 								else {
-									//the string has the call timeout
-									$tmp_agent_contact = $agent_contact;
+									//add the call_timeout and confirm
+									$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
+									$tmp_agent_contact = "{".$tmp_confirm.",call_timeout=".$agent_call_timeout."}".$agent_contact;
 								}
 							}
 							else {
 								//found
-								$tmp_pos = strrpos($agent_contact, "}");
-								$tmp_first = substr($agent_contact, 0, $tmp_pos);
-								$tmp_last = substr($agent_contact, $tmp_pos);
-								if(stristr($agent_contact, 'call_timeout') === FALSE) {
-									//add the call_timeout and confirm
-									$tmp_agent_contact = $tmp_first.','.$tmp_confirm.',call_timeout='.$agent_call_timeout.$tmp_last;
+								if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
+									//not found
+									if(stristr($agent_contact, 'call_timeout') === FALSE) {
+										//add the call_timeout
+										$tmp_pos = strrpos($agent_contact, "}");
+										$tmp_first = substr($agent_contact, 0, $tmp_pos);
+										$tmp_last = substr($agent_contact, $tmp_pos);
+										$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
+									}
+									else {
+										//the string has the call timeout
+										$tmp_agent_contact = $agent_contact;
+									}
 								}
 								else {
-									//add confirm
-									$tmp_agent_contact = $tmp_first.','.$tmp_confirm.$tmp_last;
+									//found
+									$tmp_pos = strrpos($agent_contact, "}");
+									$tmp_first = substr($agent_contact, 0, $tmp_pos);
+									$tmp_last = substr($agent_contact, $tmp_pos);
+									if(stristr($agent_contact, 'call_timeout') === FALSE) {
+										//add the call_timeout and confirm
+										$tmp_agent_contact = $tmp_first.','.$tmp_confirm.',call_timeout='.$agent_call_timeout.$tmp_last;
+									}
+									else {
+										//add confirm
+										$tmp_agent_contact = $tmp_first.','.$tmp_confirm.$tmp_last;
+									}
 								}
 							}
-						}
 
-					$v_agents .= "<agent ";
-					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" ";
-					$v_agents .= "type=\"$agent_type\" ";
-					$v_agents .= "contact=\"$tmp_agent_contact\" ";
-					$v_agents .= "status=\"$agent_status\" ";
-					$v_agents .= "no-answer-delay-time=\"$agent_no_answer_delay_time\" ";
-					$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
-					$v_agents .= "wrap-up-time=\"$agent_wrap_up_time\" ";
-					$v_agents .= "reject-delay-time=\"$agent_reject_delay_time\" ";
-					$v_agents .= "busy-delay-time=\"$agent_busy_delay_time\" ";
-					$v_agents .= "/>";
-					$x++;
-				}
-				unset ($prep_statement);
-
-			//prepare Tier XML string
-				$v_tiers = '';
-				$sql = "select * from v_call_center_tiers ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				$x=0;
-				foreach ($result as &$row) {
-					$agent_name = $row["agent_name"];
-					$queue_name = $row["queue_name"];
-					$tier_level = $row["tier_level"];
-					$tier_position = $row["tier_position"];
-					if ($x > 0) {
-						$v_tiers .= "\n";
-						$v_tiers .= "		";
+						$v_agents .= "<agent ";
+						$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" ";
+						$v_agents .= "type=\"$agent_type\" ";
+						$v_agents .= "contact=\"$tmp_agent_contact\" ";
+						$v_agents .= "status=\"$agent_status\" ";
+						$v_agents .= "no-answer-delay-time=\"$agent_no_answer_delay_time\" ";
+						$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
+						$v_agents .= "wrap-up-time=\"$agent_wrap_up_time\" ";
+						$v_agents .= "reject-delay-time=\"$agent_reject_delay_time\" ";
+						$v_agents .= "busy-delay-time=\"$agent_busy_delay_time\" ";
+						$v_agents .= "/>";
+						$x++;
 					}
-					$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" queue=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
-					$x++;
-				}
+					unset ($prep_statement);
 
-			//set the path
-				if (file_exists('/usr/share/examples/fusionpbx/resources/templates/conf')) {
-					$path = "/usr/share/examples/fusionpbx/resources/templates/conf";
-				}
-				else {
-					$path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
-				}
+				//prepare Tier XML string
+					$v_tiers = '';
+					$sql = "select * from v_call_center_tiers ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+					$x=0;
+					foreach ($result as &$row) {
+						$agent_name = $row["agent_name"];
+						$queue_name = $row["queue_name"];
+						$tier_level = $row["tier_level"];
+						$tier_position = $row["tier_position"];
+						if ($x > 0) {
+							$v_tiers .= "\n";
+							$v_tiers .= "		";
+						}
+						$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" queue=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
+						$x++;
+					}
 
-			//get the contents of the template
-				$file_contents = file_get_contents($path."/autoload_configs/callcenter.conf.xml");
+				//set the path
+					if (file_exists('/usr/share/examples/fusionpbx/resources/templates/conf')) {
+						$path = "/usr/share/examples/fusionpbx/resources/templates/conf";
+					}
+					else {
+						$path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
+					}
 
-			//add the Call Center Queues, Agents and Tiers to the XML config
-				$file_contents = str_replace("{v_queues}", $v_queues, $file_contents);
-				unset ($v_queues);
+				//get the contents of the template
+					$file_contents = file_get_contents($path."/autoload_configs/callcenter.conf.xml");
 
-				$file_contents = str_replace("{v_agents}", $v_agents, $file_contents);
-				unset ($v_agents);
+				//add the Call Center Queues, Agents and Tiers to the XML config
+					$file_contents = str_replace("{v_queues}", $v_queues, $file_contents);
+					unset ($v_queues);
 
-				$file_contents = str_replace("{v_tiers}", $v_tiers, $file_contents);
-				unset ($v_tiers);
+					$file_contents = str_replace("{v_agents}", $v_agents, $file_contents);
+					unset ($v_agents);
 
-			//write the XML config file
-				$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/callcenter.conf.xml","w");
-				fwrite($fout, $file_contents);
-				fclose($fout);
+					$file_contents = str_replace("{v_tiers}", $v_tiers, $file_contents);
+					unset ($v_tiers);
 
-			//save the dialplan xml files
-				save_dialplan_xml();
+				//write the XML config file
+					$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/callcenter.conf.xml","w");
+					fwrite($fout, $file_contents);
+					fclose($fout);
 
-			//apply settings
-				$_SESSION["reload_xml"] = true;
+				//save the dialplan xml files
+					save_dialplan_xml();
 
+				//apply settings
+					$_SESSION["reload_xml"] = true;
+			}
 		}
 	}
 }
@@ -3097,6 +2766,7 @@ if (!function_exists('save_sip_profile_xml')) {
 
 		//get the sip profiles from the database
 			$sql = "select * from v_sip_profiles ";
+			$sql .= "where sip_profile_enabled = 'true' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
@@ -3157,8 +2827,8 @@ if (!function_exists('save_switch_xml')) {
 			save_dialplan_xml();
 		}
 		if (is_readable($_SESSION['switch']['extensions']['dir'])) {
-			if (file_exists(PROJECT_PATH."/app/extensions/resources/classes/extension.php")) {
-				require_once PROJECT_PATH."app/extensions/resources/classes/extension.php";
+			if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/extensions/resources/classes/extension.php")) {
+				require_once $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."app/extensions/resources/classes/extension.php";
 				$extension = new extension;
 				$extension->xml();
 			}

@@ -26,7 +26,6 @@
 include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-include "app_languages.php";
 
 if (permission_exists("user_account_setting_view")) {
 	//access granted
@@ -37,13 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text['button-save'] as $key => $value) {
-		$languages[$key] = '';
-	}
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //set the username from v_users
 	$username = $_SESSION["username"];
@@ -289,15 +283,13 @@ else {
 //show the content
 	$table_width ='width="100%"';
 	echo "<form method='post' action=''>";
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
 
-	echo "<table $table_width cellpadding='3' cellspacing='0' border='0'>";
-	echo "<td align='left' width='90%' nowrap><b>".$text['title']."</b></td>\n";
+	echo "<table $table_width cellpadding='0' cellspacing='0' border='0'>";
+	echo "<td align='left' width='100%' nowrap><b>".$text['title']."</b></td>\n";
 	echo "<td nowrap='nowrap'>\n";
-	echo "	<input type='button' class='btn' onclick=\"window.location='".$_SESSION['login']['destination']['url']."'\" value='".$text['button-back']."'>";
+	if (strlen($_SESSION['login']['destination']['url']) > 0) {
+		echo "	<input type='button' class='btn' onclick=\"window.location='".$_SESSION['login']['destination']['url']."'\" value='".$text['button-back']."'>";
+	}
 	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -310,22 +302,22 @@ else {
 
 	echo "<br />\n";
 
-	echo "<table $table_width cellpadding='6' cellspacing='0' border='0'>";
+	echo "<table $table_width cellpadding='0' cellspacing='0' border='0'>";
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>".$text['table-title']."</th>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";
-	echo "		<td width='30%' class='vncellreq' align='left'>".$text['label-username'].":</td>";
+	echo "		<td width='30%' class='vncellreq' align='left' valign='top'>".$text['label-username']."</td>";
 	echo "		<td width='70%' class='vtable' align='left'>$username</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncell' align='left'>".$text['label-password'].":</td>";
+	echo "		<td class='vncell' align='left' valign='top'>".$text['label-password']."</td>";
 	echo "		<td class='vtable' align='left'><input type='password' autocomplete='off' class='formfld' name='password' value=\"\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncell' align='left'>".$text['label-confirm-password'].":</td>";
+	echo "		<td class='vncell' align='left' valign='top'>".$text['label-confirm-password']."</td>";
 	echo "		<td class='vtable' align='left'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
 	echo "	</tr>";
 
@@ -335,7 +327,7 @@ else {
 	echo "<br>";
 	echo "<br>";
 
-	echo "<table $table_width cellpadding='6' cellspacing='0'>";
+	echo "<table $table_width cellpadding='0' cellspacing='0'>";
 	echo "	<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>".$text['table2-title']."</th>\n";
 	echo "	</tr>\n";
@@ -345,8 +337,8 @@ else {
 	}
 	else {
 		echo "	<tr>\n";
-		echo "	<td width='30%' class=\"vncell\">\n";
-		echo "		".$text['label-status'].":\n";
+		echo "	<td width='30%' class=\"vncell\" valign='top'>\n";
+		echo "		".$text['label-status']."\n";
 		echo "	</td>\n";
 		echo "	<td width='70%' class=\"vtable\" align='left'>\n";
 		echo "		<select id='user_status' name='user_status' class='formfld' style=''>\n";
@@ -423,19 +415,24 @@ else {
 		*/
 
 	echo "	<tr>\n";
-	echo "	<td width='20%' class=\"vncell\">\n";
-	echo "		".$text['label-user_language'].": \n";
+	echo "	<td width='20%' class=\"vncell\" valign='top'>\n";
+	echo "		".$text['label-user_language']."\n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\" align='left'>\n";
 	echo "		<select id='user_language' name='user_language' class='formfld' style=''>\n";
 	echo "		<option value=''></option>\n";
-	foreach ($languages as $key => $value) {
-		if ($key == $user_settings['domain']['language']['code']) {
-			echo "		<option value='$key' selected='selected'>$key</option>\n";
-		}
-		else {
-			echo "		<option value='$key'>$key</option>\n";
-		}
+	//get all language codes from database
+	$sql = "select * from v_languages order by language asc";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	foreach ($result as &$row) {
+		$language_codes[$row["code"]] = $row["language"];
+	}
+	unset($prep_statement, $result, $row);
+	foreach ($_SESSION['app']['languages'] as $code) {
+		$selected = ($code == $user_settings['domain']['language']['code']) ? "selected='selected'" : null;
+		echo "	<option value='".$code."' ".$selected.">".$language_codes[$code]." [".$code."]</option>\n";
 	}
 	echo "		</select>\n";
 	echo "		<br />\n";
@@ -444,8 +441,8 @@ else {
 	echo "	</tr>\n";
 
 	echo "	<tr>\n";
-	echo "	<td width='20%' class=\"vncell\">\n";
-	echo "		".$text['label-time'].": \n";
+	echo "	<td width='20%' class=\"vncell\" valign='top'>\n";
+	echo "		".$text['label-time']."\n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\" align='left'>\n";
 	echo "		<select id='user_time_zone' name='user_time_zone' class='formfld' style=''>\n";
@@ -477,22 +474,17 @@ else {
 	echo "		".$text['description-timezone']."<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
-	echo "	</table>";
+	echo "</table>";
 	echo "<br>";
 
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $table_width>";
 	echo "	<tr>";
-	echo "		<td colspan='2' align='right'>";
+	echo "		<td align='right'>";
 	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
 
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 	echo "</form>";
 
 //include the footer

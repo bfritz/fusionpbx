@@ -36,11 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	unset($text);
-	require_once "app/ring_groups/app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get($_SESSION['domain']['language']['code'], 'app/ring_groups');
 
 require_once "resources/header.php";
 require_once "resources/paging.php";
@@ -50,23 +47,20 @@ require_once "resources/paging.php";
 	$order = $_GET["order"];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "		<br />";
 
-	//echo "<table width='100%' border='0'>\n";
-	//echo "	<tr>\n";
-	//echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title']."</b></td>\n";
-	//echo "		<td width='50%' align='right'>&nbsp;</td>\n";
-	//echo "	</tr>\n";
-	//echo "	<tr>\n";
-	//echo "		<td align='left' colspan='2'>\n";
-	//echo "			".$text['description']."<br /><br />\n";
-	//echo "		</td>\n";
-	//echo "	</tr>\n";
-	//echo "</table>\n";
+	if (!$is_included) {
+		echo "<table width='100%' border='0'>\n";
+		echo "	<tr>\n";
+		echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title']."</b></td>\n";
+		echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+		echo "	</tr>\n";
+		echo "	<tr>\n";
+		echo "		<td align='left' colspan='2'>\n";
+		echo "			".$text['description']."<br /><br />\n";
+		echo "		</td>\n";
+		echo "	</tr>\n";
+		echo "</table>\n";
+	}
 
 	//prepare to page the results
 		if (permission_exists('ring_group_add') || permission_exists('ring_group_edit')) {
@@ -98,9 +92,9 @@ require_once "resources/paging.php";
 		$rows_per_page = 10;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the  list
 		if (permission_exists('ring_group_add') || permission_exists('ring_group_edit')) {
@@ -132,7 +126,6 @@ require_once "resources/paging.php";
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	//echo th_order_by('ring_group_name', $text['label-name'], $order_by, $order);
@@ -156,7 +149,7 @@ require_once "resources/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_app']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_data']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_enabled']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'><a href='".PROJECT_PATH."/app/ring_groups/ring_group_forward_edit.php?id=".$row['ring_group_uuid']."' alt='".$text['link-call-forward']."'>".$text['link-call-forward']."</a></td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'><a href='".PROJECT_PATH."/app/ring_groups/ring_group_forward_edit.php?id=".$row['ring_group_uuid']."&return_url=".urlencode($_SERVER['PHP_SELF'])."' alt='".$text['link-call-forward']."'>".$text['link-call-forward']."</a></td>\n";
 			echo "	<td valign='top' class='row_stylebg'>".$row['ring_group_description']."&nbsp;</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -179,15 +172,8 @@ require_once "resources/paging.php";
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "<br><br>";
 	echo "</div>";
-	echo "<br /><br />";
-	echo "<br /><br />";
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br /><br />";
 
 //include the footer
 	require_once "resources/footer.php";

@@ -17,11 +17,12 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 
 	Call Block is written by Gerrit Visser <gerrit308@gmail.com>
 */
@@ -38,10 +39,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //define the call_block_get_extensions function
 	function call_block_get_extensions($select_extension) {
@@ -157,7 +156,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				return;
 			} //if ($action == "add")
 
-			if ($action == "update") {			
+			if ($action == "update") {
 				$sql = " select c.call_block_number, d.domain_name from v_call_block as c ";
 				$sql  .= "JOIN v_domains as d ON c.domain_uuid=d.domain_uuid ";
 				$sql .= "where c.domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -171,12 +170,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$call_block_number = $result[0]["call_block_number"];
 					$domain_name = $result[0]["domain_name"];
 
-//delete extension from memcache
-					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-					if ($fp) {
-						$switch_cmd = "memcache delete app:call_block:".$domain_name.":".$call_block_number;
-						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-					}
+					//clear the cache
+					$cache = new cache;
+					$cache->delete("app:call_block:".$domain_name.":".$call_block_number);
 				}
 				unset ($prep_statement, $sql);
 
@@ -231,17 +227,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	}\n";
 	echo "</script>";
 
-	echo "<div align='center'>";
 	// Show last 5-10 calls first, with add button
 
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['label-edit-add']."</b></td>\n";
@@ -267,10 +256,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-number'].":\n";
+	echo "	".$text['label-number']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='call_block_number' maxlength='255' value=\"$call_block_number\">\n";
+	echo "	<input class='formfld' type='text' name='call_block_number' maxlength='255' value=\"$call_block_number\" required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-number']."\n";
 	echo "<br />\n";
@@ -279,10 +268,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-name'].":\n";
+	echo "	".$text['label-name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='call_block_name' maxlength='255' value=\"$call_block_name\">\n";
+	echo "	<input class='formfld' type='text' name='call_block_name' maxlength='255' value=\"$call_block_name\" required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-name']."\n";
 	echo "</td>\n";
@@ -290,7 +279,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-action'].":\n";
+	echo "	".$text['label-action']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='call_block_action'>\n";
@@ -319,7 +308,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-enabled'].":\n";
+	echo "	".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='call_block_enabled'>\n";
@@ -335,18 +324,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='call_block_uuid' value='$call_block_uuid'>\n";
+		echo "		<input type='hidden' name='call_block_uuid' value='$call_block_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div><br><br>";
 
 
 //get recent calls from the db (if not editing an existing call block record)
@@ -364,13 +350,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<b>".$text['label-edit-add-recent']."</b>";
 		echo "<br><br>";
-		echo "<table class='tr_hover' width='100%' cellpadding='0' cellspacing='0'>\n";
+		echo "<table class='tr_hover' width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 		echo "<th style='width: 25px;'>&nbsp;</th>\n";
 		echo th_order_by('caller_id_name', $text['label-name'], $order_by, $order);
 		echo th_order_by('caller_id_number', $text['label-number'], $order_by, $order);
 		echo th_order_by('start_stamp', $text['label-called-on'], $order_by, $order);
 		echo th_order_by('duration', $text['label-duration'], $order_by, $order);
 		echo "<td>&nbsp;</td>\n";
+		echo "</tr>";
 		$c = 0;
 		$row_style["0"] = "row_style0";
 		$row_style["1"] = "row_style1";
@@ -436,14 +423,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 			} //end foreach
 			unset($sql, $result, $row_count);
-		} //end if results
 
-		echo "<tr>\n";
-		echo "</tr>\n";
-		echo "</table>";
+			echo "</table>";
+			echo "<br><br>";
+
+		} //end if results
+		else {
+			echo "</table>";
+			echo "<br><br>";
+			echo "<br><br>";
+		}
+
 	}
 // end of Display Last 5-10 Calls
-
 
 //include the footer
 	require_once "resources/footer.php";

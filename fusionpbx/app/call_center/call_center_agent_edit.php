@@ -17,11 +17,12 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 require_once "root.php";
 require_once "resources/require.php";
@@ -35,9 +36,35 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	$language = new text;
+	$text = $language->get();
+
+//check for duplicates
+	if ($_GET["check"] == 'duplicate') {
+		//agent id
+			if ($_GET["agent_id"] != '') {
+				$sql = "select ";
+				$sql .= "agent_name ";
+				$sql .= "from ";
+				$sql .= "v_call_center_agents ";
+				$sql .= "where ";
+				$sql .= "agent_id = '".check_str($_GET["agent_id"])."' ";
+				$sql .= "and domain_uuid = '".$domain_uuid."' ";
+				if ($_GET["agent_uuid"] != '') {
+					$sql .= " and call_center_agent_uuid <> '".check_str($_GET["agent_uuid"])."' ";
+				}
+				$prep_statement = $db->prepare($sql);
+				if ($prep_statement) {
+					$prep_statement->execute();
+					$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+					if ($row['agent_name'] != '') {
+						echo $text['message-duplicate_agent_id'].((if_group("superadmin")) ? ": ".$row["agent_name"] : null);
+					}
+				}
+				unset($prep_statement);
+			}
+
+		exit;
 	}
 
 //action add or update
@@ -50,10 +77,12 @@ else {
 	}
 
 //get http post variables and set them to php variables
-	if (count($_POST)>0) {
+	if (count($_POST) > 0) {
 		$agent_name = check_str($_POST["agent_name"]);
 		$agent_type = check_str($_POST["agent_type"]);
 		$agent_call_timeout = check_str($_POST["agent_call_timeout"]);
+		$agent_id = check_str($_POST["agent_id"]);
+		$agent_password = check_str($_POST["agent_password"]);
 		$agent_contact = check_str($_POST["agent_contact"]);
 		$agent_status = check_str($_POST["agent_status"]);
 		//$agent_logout = check_str($_POST["agent_logout"]);
@@ -149,7 +178,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//set the user_status
 		$sql  = "update v_users set ";
 		$sql .= "user_status = '".$agent_status."' ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
 		$sql .= "and username = '".$agent_name."' ";
  		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -201,6 +230,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "agent_name, ";
 				$sql .= "agent_type, ";
 				$sql .= "agent_call_timeout, ";
+				$sql .= "agent_id, ";
+				$sql .= "agent_password, ";
 				$sql .= "agent_contact, ";
 				$sql .= "agent_status, ";
 				//$sql .= "agent_logout, ";
@@ -217,6 +248,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$agent_name', ";
 				$sql .= "'$agent_type', ";
 				$sql .= "'$agent_call_timeout', ";
+				$sql .= "'$agent_id', ";
+				$sql .= "'$agent_password', ";
 				$sql .= "'$agent_contact', ";
 				$sql .= "'$agent_status', ";
 				//$sql .= "'$agent_logout', ";
@@ -242,6 +275,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "agent_name = '$agent_name', ";
 			$sql .= "agent_type = '$agent_type', ";
 			$sql .= "agent_call_timeout = '$agent_call_timeout', ";
+			$sql .= "agent_id = '$agent_id', ";
+			$sql .= "agent_password = '$agent_password', ";
 			$sql .= "agent_contact = '$agent_contact', ";
 			$sql .= "agent_status = '$agent_status', ";
 			//$sql .= "agent_logout = '$agent_logout', ";
@@ -278,6 +313,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$agent_name = $row["agent_name"];
 			$agent_type = $row["agent_type"];
 			$agent_call_timeout = $row["agent_call_timeout"];
+			$agent_id = $row["agent_id"];
+			$agent_password = $row["agent_password"];
 			$agent_contact = $row["agent_contact"];
 			$agent_status = $row["agent_status"];
 			//$agent_logout = $row["agent_logout"];
@@ -293,12 +330,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //set default values
 	if (strlen($agent_type) == 0) { $agent_type = "callback"; }
-	if (strlen($agent_call_timeout) == 0) { $agent_call_timeout = 10; }
+	if (strlen($agent_call_timeout) == 0) { $agent_call_timeout = "15"; }
 	if (strlen($agent_max_no_answer) == 0) { $agent_max_no_answer = "0"; }
 	if (strlen($agent_wrap_up_time) == 0) { $agent_wrap_up_time = "10"; }
-	if (strlen($agent_no_answer_delay_time) == 0) { $agent_no_answer_delay_time = "10"; }
-	if (strlen($agent_reject_delay_time) == 0) { $agent_reject_delay_time = "10"; }
-	if (strlen($agent_busy_delay_time) == 0) { $agent_busy_delay_time = "60"; }
+	if (strlen($agent_no_answer_delay_time) == 0) { $agent_no_answer_delay_time = "30"; }
+	if (strlen($agent_reject_delay_time) == 0) { $agent_reject_delay_time = "90"; }
+	if (strlen($agent_busy_delay_time) == 0) { $agent_busy_delay_time = "90"; }
 
 //show the header
 	require_once "resources/header.php";
@@ -309,8 +346,35 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$document['title'] = $text['title-call_center_agent_edit'];
 	}
 
+//javascript to check for duplicates
+	?>
+	<script language="javascript">
+		function check_duplicates() {
+			//check agent id
+				var agent_id = document.getElementById('agent_id').value;
+				$("#duplicate_agent_id_response").load("call_center_agent_edit.php?check=duplicate&agent_id="+agent_id+"&agent_uuid=<?php echo $call_center_agent_uuid;?>", function() {
+					var duplicate_agent_id = false;
+					if ($("#duplicate_agent_id_response").html() != '') {
+						$('#agent_id').addClass('formfld_highlight_bad');
+						display_message($("#duplicate_agent_id_response").html(), 'negative'<?php if (if_group("superadmin")) { echo ', 3000'; } ?>);
+						duplicate_agent_id = true;
+					}
+					else {
+						$("#duplicate_agent_id_response").html('');
+						$('#agent_id').removeClass('formfld_highlight_bad');
+						duplicate_agent_id = false;
+					}
+
+					if (duplicate_agent_id == false) {
+						document.getElementById('frm').submit();
+					}
+				});
+		}
+	</script>
+
+<?php
 //show the content
-	echo "<form method='post' name='frm' action=''>\n";
+	echo "<form method='post' name='frm' id='frm' action='' onsubmit='check_duplicates(); return false;'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
@@ -321,7 +385,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "<td width='70%' align='right'>";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='call_center_agents.php'\" value='".$text['button-back']."'>";
-	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "	<input type='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -329,8 +393,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-agent_name'].":\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-agent_name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	//---- Begin Select List --------------------
@@ -362,35 +426,58 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-type'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-type']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='agent_type' maxlength='255' value=\"$agent_type\">\n";
+	echo "	<input class='formfld' type='text' name='agent_type' maxlength='255' value=\"$agent_type\" pattern='^(callback|uuid-standby)$'>\n";
 	echo "<br />\n";
 	echo $text['description-type']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-call_timeout'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-call_timeout']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='agent_call_timeout' maxlength='255' value='$agent_call_timeout'>\n";
+	echo "  <input class='formfld' type='number' name='agent_call_timeout' maxlength='255' min='1' step='1' value='$agent_call_timeout'>\n";
 	echo "<br />\n";
 	echo $text['description-call_timeout']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-contact'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-agent_id']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "  <input class='formfld' type='number' name='agent_id' id='agent_id' maxlength='255' min='1' step='1' value='$agent_id'>\n";
+	echo "	<div style='display: none;' id='duplicate_agent_id_response'></div>\n";
+	echo "<br />\n";
+	echo $text['description-agent_id']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-agent_password']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "  <input class='formfld' type='password' name='agent_password' autocomplete='off' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!\$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='255' min='1' step='1' value='$agent_password'>\n";
+	echo "<br />\n";
+	echo $text['description-agent_password']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-contact']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 
 	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
-	switch_select_destination("call_center_contact", "", "agent_contact", $agent_contact, "", "");
+	switch_select_destination("call_center_contact", "", "agent_contact", $agent_contact, "width: 350px;", "");
 
 	echo "<br />\n";
 	echo $text['description-contact']."\n";
@@ -398,8 +485,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-status'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-status']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='agent_status'>\n";
@@ -434,55 +521,55 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-no_answer_delay_time'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-no_answer_delay_time']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='agent_no_answer_delay_time' maxlength='255' value='$agent_no_answer_delay_time'>\n";
+	echo "  <input class='formfld' type='number' name='agent_no_answer_delay_time' maxlength='255' min='1' step='1' value='$agent_no_answer_delay_time'>\n";
 	echo "<br />\n";
 	echo $text['description-no_answer_delay_time']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-max_no_answer'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-max_no_answer']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='agent_max_no_answer' maxlength='255' value='$agent_max_no_answer'>\n";
+	echo "  <input class='formfld' type='number' name='agent_max_no_answer' maxlength='255' min='0' step='1' value='$agent_max_no_answer'>\n";
 	echo "<br />\n";
 	echo $text['description-max_no_answer']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-wrap_up_time'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-wrap_up_time']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='agent_wrap_up_time' maxlength='255' value='$agent_wrap_up_time'>\n";
+	echo "  <input class='formfld' type='number' name='agent_wrap_up_time' maxlength='255' min='1' step='1' value='$agent_wrap_up_time'>\n";
 	echo "<br />\n";
 	echo $text['description-wrap_up_time']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-reject_delay_time'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-reject_delay_time']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='agent_reject_delay_time' maxlength='255' value='$agent_reject_delay_time'>\n";
+	echo "  <input class='formfld' type='number' name='agent_reject_delay_time' maxlength='255' min='1' step='1' value='$agent_reject_delay_time'>\n";
 	echo "<br />\n";
 	echo $text['description-reject_delay_time']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-busy_delay_time'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-busy_delay_time']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='agent_busy_delay_time' maxlength='255' value='$agent_busy_delay_time'>\n";
+	echo "  <input class='formfld' type='number' name='agent_busy_delay_time' maxlength='255' min='1' step='1' value='$agent_busy_delay_time'>\n";
 	echo "<br />\n";
 	echo $text['description-busy_delay_time']."\n";
 	echo "</td>\n";
@@ -490,8 +577,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	/*
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-agent_logout'].":\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-agent_logout']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='agent_logout' maxlength='255' value='$agent_logout'>\n";
@@ -506,12 +593,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "		<input type='hidden' name='call_center_agent_uuid' value='$call_center_agent_uuid'>\n";
 	}
-	echo "			<br /><input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br />";
+	echo "			<input type='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
 
 //footer
 	require_once "resources/footer.php";
+
 ?>

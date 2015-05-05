@@ -17,38 +17,36 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
-if (!$included) {
-	include "root.php";
-	require_once "resources/require.php";
-	require_once "resources/check_auth.php";
-}
-
-if (permission_exists('menu_restore')) {
-	//access granted
-}
-else {
-	echo "access denied";
-	return;
-}
-
-if (!$included) {
-	//add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+//check permissions
+	if (!$included) {
+		include "root.php";
+		require_once "resources/require.php";
+		require_once "resources/check_auth.php";
+		if (permission_exists('menu_restore')) {
+			//access granted
+		}
+		else {
+			echo "access denied";
+			return;
+		}
 	}
 
-	//get the http value and set as a php variable
-	$menu_uuid = check_str($_REQUEST["menu_uuid"]);
-	$menu_language = check_str($_REQUEST["menu_language"]);
-}
+//add multi-lingual support
+	$language = new text;
+	$text = $language->get();
+
+//get the http value and set as a php variable
+	if (!$included) {
+		$menu_uuid = check_str($_REQUEST["menu_uuid"]);
+		$menu_language = check_str($_REQUEST["menu_language"]);
+	}
 
 //menu restore default
 	require_once "resources/classes/menu.php";
@@ -65,11 +63,12 @@ if (!$included) {
 //unset the default template
 	$_SESSION["template_content"] = '';
 
+//redirect
+	if (!$included) {
+		//show a message to the user
+		$_SESSION["message"] = $text['message-restore'];
+		header("Location: ".PROJECT_PATH."/core/menu/menu_edit.php?id=".$menu_uuid);
+		return;
+	}
 
-if (!$included) {
-	//show a message to the user
-	$_SESSION["message"] = $text['message-restore'];
-	header("Location: ".PROJECT_PATH."/core/menu/menu_edit.php?id=".$menu_uuid);
-	return;
-}
 ?>

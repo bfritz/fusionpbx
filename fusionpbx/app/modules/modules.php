@@ -35,18 +35,17 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-require_once "resources/header.php";
-$document['title'] = $text['title-modules'];
+//get includes and the title
+	require_once "resources/header.php";
+	$document['title'] = $text['title-modules'];
+	require_once "resources/paging.php";
 
-require_once "resources/paging.php";
-
-$order_by = $_GET["order_by"];
-$order = $_GET["order"];
+//get the http values ans set as variables
+	$order_by = $_GET["order_by"];
+	$order = $_GET["order"];
 
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 if (strlen($_GET["a"]) > 0) {
@@ -69,8 +68,7 @@ if (strlen($_GET["a"]) > 0) {
 }
 
 //use the module class to get the list of modules from the db and add any missing modules
-	require_once "resources/classes/modules.php";
-	$mod = new switch_modules;
+	$mod = new modules;
 	$mod->db = $db;
 	$mod->dir = $_SESSION['switch']['mod']['dir'];
 	$mod->get_modules();
@@ -95,13 +93,7 @@ if (strlen($_GET["a"]) > 0) {
 	}
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "      <br>";
-
-	echo "<table width='100%' border='0'><tr>\n";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr>\n";
 	echo "<td align='left' nowrap><b>".$text['header-modules']."</b></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -113,7 +105,6 @@ if (strlen($_GET["a"]) > 0) {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	$tmp_module_header = "\n";
 	$tmp_module_header .= "<tr>\n";
@@ -221,14 +212,6 @@ if (strlen($_GET["a"]) > 0) {
 	echo "</tr>\n";
 
 	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
 	echo "<br><br>";
 
 //show the footer

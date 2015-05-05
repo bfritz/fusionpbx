@@ -22,6 +22,7 @@
 
  Contributor(s):
  Mark J Crane <markjcrane@fusionpbx.com>
+ Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 
 //define the conference center class
@@ -36,6 +37,7 @@
 		private $fields;
 		public $search;
 		public $count;
+		public $created_by;
 
 		public function room_count() {
 			//get the room count
@@ -49,6 +51,11 @@
 				if (isset($this->search)) {
 					$sql .= "and r.meeting_uuid = '".$this->meeting_uuid."' ";
 				}
+
+				if (isset($this->created_by)) {
+					$sql .= "and created_by = '".$this->created_by."' ";
+				}
+
 				$prep_statement = $this->db->prepare(check_sql($sql));
 				if ($prep_statement) {
 					$prep_statement->execute();
@@ -64,7 +71,7 @@
 
 		public function rooms() {
 			//get the list of rooms
-				$fields = "r.domain_uuid, r.conference_room_uuid, r.conference_center_uuid, r.meeting_uuid, max_members, ";
+				$fields = "r.domain_uuid, r.conference_room_uuid, r.conference_center_uuid, r.meeting_uuid, r.conference_room_name, max_members, ";
 				$fields .= "wait_mod, announce, mute, sounds, created, created_by, r.enabled, r.description, record, ";
 				$fields .= "profile, meeting_user_uuid, user_uuid, moderator_pin, participant_pin ";
 				$sql = "select ".$fields." from v_conference_rooms as r, v_meeting_users as u, v_meetings as p ";
@@ -79,6 +86,9 @@
 				//}
 				if (isset($this->search)) {
 					$sql .= "and r.meeting_uuid = '".$this->meeting_uuid."' ";
+				}
+				if (isset($this->created_by)) {
+					$sql .= "and r.created_by = '".$this->created_by."' ";
 				}
 				if (strlen($this->order_by) == 0) {
 					$sql .= "order by r.description, r.meeting_uuid asc ";
@@ -101,6 +111,7 @@
 								$result[$x]["conference_room_uuid"] = $row["conference_room_uuid"];
 								$result[$x]["conference_center_uuid"] = $row["conference_center_uuid"];
 								$result[$x]["meeting_uuid"] = $row["meeting_uuid"];
+								$result[$x]["conference_room_name"] = $row["conference_room_name"];
 								$result[$x]["max_members"] = $row["max_members"];
 								$result[$x]["wait_mod"] = $row["wait_mod"];
 								$result[$x]["announce"] = $row["announce"];
@@ -135,6 +146,7 @@
 	$conference_center->domain_uuid = $_SESSION['domain_uuid'];
 	$conference_center->rows_per_page = 150;
 	$conference_center->offset = 0;
+	$conference_center->created_by = uuid;
 	$conference_center->order_by = $order_by;
 	$conference_center->order = $order;
 	$result = $conference_center->rooms();

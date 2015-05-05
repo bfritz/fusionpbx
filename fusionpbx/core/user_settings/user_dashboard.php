@@ -43,7 +43,6 @@
 
 //additional includes
 	require_once "resources/check_auth.php";
-	load_extensions();
 
 //disable login message
 	if ($_GET['msg'] == 'dismiss') {
@@ -60,16 +59,14 @@
 	}
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-// load header
+//load header
 	require_once "resources/header.php";
 	$document['title'] = $text['title-user_dashboard'];
 
-	echo "<br><b>".$text['header-user_dashboard']."</b><br>";
+	echo "<b>".$text['header-user_dashboard']."</b><br>";
 	echo $text['description-user_dashboard'];
 
 
@@ -88,7 +85,7 @@
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		".$text['label-username'].": \n";
+	echo "		".$text['label-username']."\n";
 	echo "	</td>\n";
 	echo "	<td class=\"row_style1\">\n";
 	echo "		<a href='".PROJECT_PATH."/core/user_settings/user_edit.php'>".$_SESSION["username"]."</a> \n";
@@ -99,7 +96,7 @@
 	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/voicemails/voicemail_messages.php")) {
 		echo "<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-		echo "		".$text['label-voicemail'].": \n";
+		echo "		".$text['label-voicemail']."\n";
 		echo "	</td>\n";
 		echo "	<td class=\"row_style1\">\n";
 		echo "		<a href='".PROJECT_PATH."/app/voicemails/voicemail_messages.php'>".$text['label-view-messages']."</a> \n";

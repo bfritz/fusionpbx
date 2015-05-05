@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //set the action with add or update
 	if (isset($_REQUEST["id"])) {
@@ -63,7 +61,7 @@ else {
 		$broadcast_phone_numbers = check_str($_POST["broadcast_phone_numbers"]);
 		$broadcast_avmd = check_str($_POST["broadcast_avmd"]);
 		$broadcast_destination_data = check_str($_POST["broadcast_destination_data"]);
-                        
+
 		if (if_group("superadmin")){
 			$broadcast_accountcode = check_str($_POST["broadcast_accountcode"]);
 		}
@@ -240,17 +238,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	require_once "resources/header.php";
 
 //begin content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	echo "<td width='30%' align='left' nowrap='nowrap'><b>".$text['label-call-broadcast']."</b></td>\n";
@@ -267,20 +256,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-name'].":\n";
+	echo "	".$text['label-name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='broadcast_name' maxlength='255' value=\"$broadcast_name\">\n";
+	echo "	<input class='formfld' type='text' name='broadcast_name' maxlength='255' value=\"$broadcast_name\" required='required'>\n";
 	echo "<br />\n";
 	echo "".$text['description-name']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-        
 	if (if_group("superadmin")){
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "    ".$text['label-accountcode'].":\n";
+		echo "    ".$text['label-accountcode']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		if ($action == "add"){ $accountcode=$_SESSION['domain_name']; }
@@ -294,7 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "    ".$text['label-accountcode'].":\n";
+		echo "    ".$text['label-accountcode']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "  <select name='broadcast_accountcode' id='broadcast_accountcode' class='formfld'>\n";
@@ -311,7 +299,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 			echo "    <option value=\"".$row_accountcode['type_value']."\" $selected>".$row_accountcode['type_value']."</option>\n";
 		}
-                
+
 		unset($sql_accountcode, $prep_statement_accountcode, $result_accountcode);
 		echo "</select>";
 		echo "<br />\n";
@@ -322,10 +310,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-timeout'].":\n";
+	echo "	".$text['label-timeout']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='broadcast_timeout' maxlength='255' value=\"$broadcast_timeout\">\n";
+	echo "	<input class='formfld' type='number' name='broadcast_timeout' maxlength='255' min='1' step='1' value=\"$broadcast_timeout\">\n";
 	echo "<br />\n";
 	echo "".$text['description-timeout']."\n";
 	echo "</td>\n";
@@ -333,10 +321,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-concurrent-limit'].":\n";
+	echo "	".$text['label-concurrent-limit']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='broadcast_concurrent_limit' maxlength='255' value=\"$broadcast_concurrent_limit\">\n";
+	echo "	<input class='formfld' type='number' name='broadcast_concurrent_limit' maxlength='255' min='1' step='1' value=\"$broadcast_concurrent_limit\">\n";
 	echo "<br />\n";
 	echo "".$text['description-concurrent-limit']."\n";
 	echo "</td>\n";
@@ -345,7 +333,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//echo "<tr>\n";
 	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	//echo "	Recording:\n";
+	//echo "	Recording\n";
 	//echo "</td>\n";
 	//echo "<td class='vtable' align='left'>\n";
 	//echo "		<select name='recording_uuid' class='formfld'>\n";
@@ -374,7 +362,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-caller-id-name'].":\n";
+	echo "	".$text['label-caller-id-name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_caller_id_name' maxlength='255' value=\"$broadcast_caller_id_name\">\n";
@@ -385,10 +373,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-callerid-number'].":\n";
+	echo "	".$text['label-callerid-number']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='broadcast_caller_id_number' maxlength='255' value=\"$broadcast_caller_id_number\">\n";
+	echo "	<input class='formfld' type='number' name='broadcast_caller_id_number' maxlength='255' min='0' step='1' value=\"$broadcast_caller_id_number\">\n";
 	echo "<br />\n";
 	echo "".$text['description-caller-id-number']."\n";
 	echo "</td>\n";
@@ -396,7 +384,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 /*
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Type:\n";
+	echo "	Type\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_destination_type' maxlength='255' value=\"$broadcast_destination_type\">\n";
@@ -407,7 +395,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Destination:\n";
+	echo "	Destination\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_destination_data' maxlength='255' value=\"$broadcast_destination_data\">\n";
@@ -423,7 +411,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-destination'].":\n";
+	echo "	".$text['label-destination']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_destination_data' maxlength='255' value=\"$broadcast_destination_data\">\n";
@@ -434,7 +422,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-phone'].":\n";
+	echo "	".$text['label-phone']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<textarea class='formfld' type='text' name='broadcast_phone_numbers' rows='10'>$broadcast_phone_numbers</textarea>\n";
@@ -445,7 +433,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    ".$text['label-avmd'].":\n";
+	echo "    ".$text['label-avmd']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='broadcast_avmd'>\n";
@@ -460,7 +448,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_description' maxlength='255' value=\"$broadcast_description\">\n";
@@ -471,15 +459,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
+	echo "			<br>";
 	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
 
 	/*
 	if ($action == "update") {
@@ -498,7 +484,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	Category:\n";
+		echo "	Category\n";
 		echo "</td>\n";
 		echo "<td width='70%' class='vtable' align='left'>\n";
 		echo "		<select name='user_category' class='formfld'>\n";
@@ -526,7 +512,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	Group:\n";
+		echo "	Group\n";
 		echo "</td>\n";
 		echo "<td width='70%' class='vtable' align='left'>\n";
 		echo "		<select name='group_name' class='formfld'>\n";
@@ -555,7 +541,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	Gateway:\n";
+		echo "	Gateway\n";
 		echo "</td>\n";
 		echo "<td width='70%' class='vtable' align='left'>\n";
 		echo "		<select name='gateway' class='formfld'>\n";
@@ -585,7 +571,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	Phone Type:\n";
+		echo "	Phone Type\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<select name='phonetype1' class='formfld'>\n";
@@ -604,7 +590,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	Phone Type:\n";
+		echo "	Phone Type\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<select name='phonetype2' class='formfld'>\n";
@@ -632,11 +618,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</form>";
 	}
 	*/
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 require_once "resources/footer.php";
 ?>

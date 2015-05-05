@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the ID
 	if (count($_GET) > 0) {
@@ -51,16 +49,27 @@ else {
 		exit;
 	}
 
+//add the dialplan permission
+	$permission = "dialplan_delete";
+	$p = new permissions;
+	$p->add($permission, 'temp');
+
 //get the dialplan_uuid
 	$orm = new orm;
 	$orm->name('destinations');
 	$orm->uuid($id);
 	$result = $orm->find()->get();
 	foreach ($result as &$row) {
+		if (permission_exists('destination_domain')) {
+			$domain_uuid = $row["domain_uuid"];
+		}
 		$dialplan_uuid = $row["dialplan_uuid"];
 		$destination_context = $row["destination_context"];
 	}
 	unset ($prep_statement);
+
+//remove the temporary permission
+	$p->delete($permission, 'temp');
 
 //start the atomic transaction
 	$db->beginTransaction();
@@ -68,22 +77,22 @@ else {
 //delete the dialplan
 	if (isset($dialplan_uuid)) {
 		$sql = "delete from v_dialplan_details ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+		$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
 		$sql = "delete from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+		$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
 	 }
 
 //delete the destination
 	$sql = "delete from v_destinations ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and destination_uuid = '$id' ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "and destination_uuid = '".$id."' ";
 	$db->exec(check_sql($sql));
 	unset($sql);
 
@@ -93,12 +102,9 @@ else {
 //synchronize the xml config
 	save_dialplan_xml();
 
-//clear memcache
-	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-	if ($fp) {
-		$switch_cmd = "memcache delete dialplan:".$destination_context;
-		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-	}
+//clear the cache
+	$cache = new cache;
+	$cache->delete("dialplan:".$destination_context);
 
 //redirect the user
 	$_SESSION["message"] = $text['message-delete'];

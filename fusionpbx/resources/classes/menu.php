@@ -51,11 +51,19 @@
 					$db = $this->db;
 
 				//get the $apps array from the installed apps from the core and mod directories
-					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
-					$x=0;
+					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_{menu}.php",GLOB_BRACE);
+					$x = 0;
 					foreach ($config_list as &$config_path) {
-						include($config_path);
-						$x++;
+						$y = 0;
+						try {
+							//echo "[".$x ."] ".$config_path."\n";
+							include($config_path);
+							$x++;
+						}
+						catch (Exception $e) {
+							echo 'exception caught: ' . $e->getMessage() . "\n";
+							exit;
+						}
 					}
 
 				//begin the transaction
@@ -193,6 +201,7 @@
 					if ($db_type == "sqlite") {
 						$db->commit();
 					}
+
 			} //end function
 
 			//restore the menu and group permissions
@@ -204,11 +213,18 @@
 					$db->beginTransaction();
 
 				//get the $apps array from the installed apps from the core and mod directories
-					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
-					$x=0;
+					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_{config,menu}.php",GLOB_BRACE);
+					$x = 0;
 					foreach ($config_list as &$config_path) {
-						include($config_path);
-						$x++;
+						$y = 0;
+						try {
+							include($config_path);
+							$x++;
+						}
+						catch (Exception $e) {
+							echo 'exception caught: ' . $e->getMessage() . "\n";
+							exit;
+						}
 					}
 
 				//use the app array to restore the default menu
@@ -479,7 +495,12 @@
 								//hide login and sign-up when the user is logged in
 							}
 							else {
-								$db_menu .= "<a ".$menu_tags." style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>".$menu_item_title."</h2></a>\n";
+								if (strlen($field['menu_item_link']) == 0) {
+									$db_menu .= "<h2 align='center' style=''>".$menu_item_title."</h2>\n";
+								}
+								else {
+									$db_menu .= "<a ".$menu_tags." style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>".$menu_item_title."</h2></a>\n";
+								}
 							}
 						}
 					}

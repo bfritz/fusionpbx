@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //additional includes
 	require_once "resources/header.php";
@@ -150,24 +148,18 @@ else {
 	$order = $_GET["order"];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "		<br />";
-
-	echo "<table width='100%' border='0'>\n";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "	<tr>\n";
 	echo "		<form method='get' action=''>\n";
-	echo "			<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-conference-rooms']."</b></td>\n";
-	echo "			<td width='50%' align='right'>\n";
+	echo "			<td width='50%' align='left' valign='top' nowrap='nowrap'><b>".$text['title-conference-rooms']."</b></td>\n";
+	echo "			<td width='50%' align='right' valign='top'>\n";
 	echo "				<input type='text' class='txt' style='width: 150px' name='search' value='$search'>";
 	echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
 	echo "			</td>\n";
 	echo "		</form>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
-	echo "<br />\n";
+	echo "<br /><br>\n";
 
 	//get the conference room count
 		require_once "app/conference_centers/resources/classes/conference_center.php";
@@ -210,11 +202,11 @@ else {
 		$row_style["1"] = "row_style1";
 
 	//table header
-		echo "<div align='center'>\n";
 		echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
 		//echo th_order_by('conference_center_uuid', 'Conference UUID', $order_by, $order);
 		//echo th_order_by('meeting_uuid', 'Meeting UUID', $order_by, $order);
+		echo "<th nowrap='nowrap'>".$text['label-name']."</th>\n";
 		echo "<th nowrap='nowrap'>".$text['label-moderator-pin']."</th>\n";
 		echo "<th nowrap='nowrap'>".$text['label-participant-pin']."</th>\n";
 		//echo th_order_by('profile', $text['label-profile'], $order_by, $order);
@@ -224,8 +216,6 @@ else {
 		echo th_order_by('announce', $text['label-announce'], $order_by, $order);
 		//echo th_order_by('enter_sound', 'Enter Sound', $order_by, $order);
 		echo th_order_by('mute', $text['label-mute'], $order_by, $order);
-		//echo th_order_by('created', 'Created', $order_by, $order);
-		//echo th_order_by('created_by', 'Created By', $order_by, $order);
 		echo th_order_by('sounds', $text['label-sounds'], $order_by, $order);
 		echo "<th>".$text['label-members']."</th>\n";
 		echo "<th>".$text['label-tools']."</th>\n";
@@ -247,6 +237,7 @@ else {
 		if ($result_count > 0) {
 			foreach($result as $row) {
 				$meeting_uuid = $row['meeting_uuid'];
+				$conference_room_name = $row['conference_room_name'];
 				$moderator_pin = $row['moderator_pin'];
 				$participant_pin = $row['participant_pin'];
 				if (strlen($moderator_pin) == 9)  {
@@ -258,6 +249,7 @@ else {
 
 				$tr_link = (permission_exists('conference_room_edit')) ? "href='conference_room_edit.php?id=".$row['conference_room_uuid']."'" : null;
 				echo "<tr ".$tr_link.">\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>".(($conference_room_name != '') ? "<a ".$tr_link.">".$conference_room_name."</a>" : "&nbsp;")."</td>\n";
 				echo "	<td valign='middle' class='".$row_style[$c]."'>".$moderator_pin."</td>\n";
 				echo "	<td valign='middle' class='".$row_style[$c]."'>".$participant_pin."</td>\n";
 				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_uuid']."&nbsp;</td>\n";
@@ -334,7 +326,7 @@ else {
 					echo "	</td>\n";
 				}
 
-				echo "	<td valign='middle' class='row_stylebg' width='20%'>";
+				echo "	<td valign='middle' class='row_stylebg'>";
 				echo "		".$row['description']."\n";
 				echo "		&nbsp;\n";
 				echo "	</td>\n";
@@ -356,7 +348,7 @@ else {
 
 	//show paging
 		echo "<tr>\n";
-		echo "<td colspan='12' align='left'>\n";
+		echo "<td colspan='13' align='left'>\n";
 		echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 		echo "	<tr>\n";
 		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
@@ -373,15 +365,7 @@ else {
 
 //close the tables
 	echo "</table>";
-	echo "</div>";
-	echo "<br /><br />";
-	echo "<br /><br />";
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br /><br />";
+	echo "<br><br>";
 
 //include the footer
 	require_once "resources/footer.php";

@@ -27,6 +27,7 @@
 	expire = {}
 	expire["directory"] = "3600";
 	expire["dialplan"] = "3600";
+	expire["languages"] = "3600";
 	expire["sofia.conf"] = "3600";
 	load_balancing = false;
 
@@ -111,4 +112,7 @@
 	end
 	if (XML_REQUEST["section"] == "dialplan") then
 		dofile(scripts_dir.."/app/xml_handler/resources/scripts/dialplan/dialplan.lua");
+	end
+	if (XML_REQUEST["section"] == "languages") then
+		dofile(scripts_dir.."/app/xml_handler/resources/scripts/languages/languages.lua");
 	end

@@ -22,11 +22,26 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 
 	if (!function_exists('software_version')) {
 		function software_version() {
-			return '3.6.3';
+			return '3.8';
+		}
+	}
+
+	if (!function_exists('version')) {
+		function version() {
+			return software_version();
+		}
+	}
+
+	if (!function_exists('numeric_version')) {
+		function numeric_version() {
+			$v = explode('.', software_version());
+			$n = ($v[0] * 10000 + $v[1] * 100 + $v[2]);
+			return $n;
 		}
 	}
 
@@ -756,20 +771,22 @@ function format_string ($format, $data) {
 
 //get the format and use it to format the phone number
 	function format_phone($phone_number) {
-		foreach ($_SESSION["format"]["phone"] as &$format) {
-			$format_count = substr_count($format, 'x');
-			$format_count = $format_count + substr_count($format, 'R');
-			$format_count = $format_count + substr_count($format, 'r');
-			if ($format_count == strlen($phone_number)) {
-				//format the number
-				$phone_number = format_string($format, $phone_number);
+		if (is_numeric($phone_number)) {
+			foreach ($_SESSION["format"]["phone"] as &$format) {
+				$format_count = substr_count($format, 'x');
+				$format_count = $format_count + substr_count($format, 'R');
+				$format_count = $format_count + substr_count($format, 'r');
+				if ($format_count == strlen($phone_number)) {
+					//format the number
+					$phone_number = format_string($format, $phone_number);
+				}
 			}
 		}
 		return $phone_number;
 	}
 
 //browser detection without browscap.ini dependency
-	function http_user_agent() {
+	function http_user_agent($info = '') {
 		$u_agent = $_SERVER['HTTP_USER_AGENT'];
 		$bname = 'Unknown';
 		$platform = 'Unknown';
@@ -844,13 +861,21 @@ function format_string ($format, $data) {
 		// check if we have a number
 			if ($version==null || $version=="") {$version="?";}
 
-		return array(
-			'userAgent' => $u_agent,
-			'name'      => $bname,
-			'version'   => $version,
-			'platform'  => $platform,
-			'pattern'    => $pattern
-		);
+		switch ($info) {
+			case "agent": return $u_agent; break;
+			case "name": return $bname; break;
+			case "version": return $version; break;
+			case "platform": return $platform; break;
+			case "pattern": return $pattern; break;
+			default :
+				return array(
+					'userAgent' => $u_agent,
+					'name' => $bname,
+					'version' => $version,
+					'platform' => $platform,
+					'pattern' => $pattern
+				);
+		}
 	}
 
 //tail php function for non posix systems
@@ -973,14 +998,14 @@ function number_pad($number,$n) {
 }
 
 // validate email address syntax
-	if(!function_exists('validate_email')) {
+	if(!function_exists('valid_email')) {
 		function valid_email($email) {
 			$regex = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,6}$/';
-			if ($email != "" && preg_match($regex, $email) == 0) {
-				return false; // email address does not have valid syntax
+			if ($email != "" && preg_match($regex, $email) == 1) {
+				return true; // email address has valid syntax
 			}
 			else {
-				return true; // email address has valid syntax
+				return false; // email address does not have valid syntax
 			}
 		}
 	}
@@ -1051,6 +1076,7 @@ function number_pad($number,$n) {
 					}
 				}
 			}
+			ksort($dir_array, SORT_STRING);
 			closedir($dir_list);
 		}
 	}
@@ -1080,4 +1106,184 @@ function number_pad($number,$n) {
 			}
 		}
 	}
+
+//function to send email
+	if (!function_exists('send_email')) {
+		function send_email($eml_recipients, $eml_subject, $eml_body, &$eml_error = '', $eml_from_address = '', $eml_from_name = '', $eml_priority = 3) {
+			/*
+			RECIPIENTS NOTE:
+
+				Pass in a single email address...
+
+					user@domain.com
+
+				Pass in a comma or semi-colon delimited string of e-mail addresses...
+
+					user@domain.com,user2@domain2.com,user3@domain3.com
+					user@domain.com;user2@domain2.com;user3@domain3.com
+
+				Pass in a simple array of email addresses...
+
+					Array (
+						[0] => user@domain.com
+						[1] => user2@domain2.com
+						[2] => user3@domain3.com
+					)
+
+				Pass in a multi-dimentional array of addresses (delivery, address, name)...
+
+					Array (
+						[0] => Array (
+							[delivery] => to
+							[address] => user@domain.com
+							[name] => user 1
+							)
+						[1] => Array (
+							[delivery] => cc
+							[address] => user2@domain2.com
+							[name] => user 2
+							)
+						[2] => Array (
+							[delivery] => bcc
+							[address] => user3@domain3.com
+							[name] => user 3
+							)
+					)
+
+
+			ERROR RESPONSE:
+
+				Error messages are stored in the variable passed into $eml_error BY REFERENCE
+
+			*/
+
+			include_once("resources/phpmailer/class.phpmailer.php");
+			include_once("resources/phpmailer/class.smtp.php");
+
+			$regexp = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,6}$/';
+
+			$mail = new PHPMailer();
+			$mail -> IsSMTP();
+			$mail -> Host = $_SESSION['email']['smtp_host']['var'];
+			if ($_SESSION['email']['smtp_port']['var'] != '') {
+				$mail -> Port = $_SESSION['email']['smtp_port']['var'];
+			}
+			if ($_SESSION['email']['smtp_auth']['var'] == "true") {
+				$mail -> SMTPAuth = $_SESSION['email']['smtp_auth']['var'];
+			}
+			if ($_SESSION['email']['smtp_username']['var']) {
+				$mail -> Username = $_SESSION['email']['smtp_username']['var'];
+				$mail -> Password = $_SESSION['email']['smtp_password']['var'];
+			}
+			if ($_SESSION['email']['smtp_secure']['var'] == "none") {
+				$_SESSION['email']['smtp_secure']['var'] = '';
+			}
+			if ($_SESSION['email']['smtp_secure']['var'] != '') {
+				$mail -> SMTPSecure = $_SESSION['email']['smtp_secure']['var'];
+			}
+			$eml_from_address = ($eml_from_address != '') ? $eml_from_address : $_SESSION['email']['smtp_from']['var'];
+			$eml_from_name = ($eml_from_name != '') ? $eml_from_name : $_SESSION['email']['smtp_from_name']['var'];
+			$mail -> SetFrom($eml_from_address, $eml_from_name);
+			$mail -> AddReplyTo($eml_from_address, $eml_from_name);
+			$mail -> Subject = $eml_subject;
+			$mail -> MsgHTML($eml_body);
+			$mail -> Priority = $eml_priority;
+
+			$address_found = false;
+
+			if (!is_array($eml_recipients)) { // must be a single or delimited recipient address(s)
+				$eml_recipients = str_replace(' ', '', $eml_recipients);
+				if (substr_count(',', $eml_recipients)) { $delim = ','; }
+				if (substr_count(';', $eml_recipients)) { $delim = ';'; }
+				if ($delim) { $eml_recipients = explode($delim, $eml_recipients); } // delimiter found, convert to array of addresses
+			}
+
+			if (is_array($eml_recipients)) { // check if multiple recipients
+				foreach ($eml_recipients as $eml_recipient) {
+					if (is_array($eml_recipient)) { // check if each recipient has multiple fields
+						if ($eml_recipient["address"] != '' && preg_match($regexp, $eml_recipient["address"]) == 1) { // check if valid address
+							switch ($eml_recipient["delivery"]) {
+								case "cc" :		$mail -> AddCC($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);			break;
+								case "bcc" :	$mail -> AddBCC($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);			break;
+								default :		$mail -> AddAddress($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);
+							}
+							$address_found = true;
+						}
+					}
+					else if ($eml_recipient != '' && preg_match($regexp, $eml_recipient) == 1) { // check if recipient value is simply (only) an address
+						$mail -> AddAddress($eml_recipient);
+						$address_found = true;
+					}
+				}
+
+				if (!$address_found) {
+					$eml_error = "No valid e-mail address provided.";
+					return false;
+				}
+
+			}
+			else { // just a single e-mail address found, not an array of addresses
+				if ($eml_recipients != '' && preg_match($regexp, $eml_recipients) == 1) { // check if email syntax is valid
+					$mail -> AddAddress($eml_recipients);
+				}
+				else {
+					$eml_error = "No valid e-mail address provided.";
+					return false;
+				}
+			}
+
+			if (!$mail -> Send()) {
+				$eml_error = $mail -> ErrorInfo;
+				return false;
+			}
+			else {
+				return true;
+			}
+
+			$mail	->	ClearAddresses();
+			$mail	->	SmtpClose();
+
+			unset($mail);
+		}
+	}
+
+//encrypt a string
+	if (!function_exists('encrypt')) {
+		function encrypt($key, $str_to_enc) {
+			return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $str_to_enc, MCRYPT_MODE_CBC, md5(md5($key))));
+		}
+	}
+
+//decrypt a string
+	if (!function_exists('decrypt')) {
+		function decrypt($key, $str_to_dec) {
+			return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($str_to_dec), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
+		}
+	}
+
+//json detection
+	if (!function_exists('is_json')) {
+		function is_json($str) {
+			return (is_string($str) && is_object(json_decode($str))) ? true : false;
+		}
+	}
+
+//mac detection
+	if (!function_exists('is_mac')) {
+		function is_mac($str) {
+			return (preg_match('/([a-fA-F0-9]{2}[:|\-]?){6}/', $str) == 1) ? true : false;
+		}
+	}
+
+//format mac address
+	if (!function_exists('format_mac')) {
+		function format_mac($str, $delim = '-', $case = 'lower') {
+			if (is_mac($str)) {
+				$str = join($delim, str_split($str, 2));
+				$str = ($case == 'upper') ? strtoupper($str) : strtolower($str);
+			}
+			return $str;
+		}
+	}
+
 ?>

@@ -39,14 +39,11 @@ else {
 	exit;
 }
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
-require_once "resources/header.php";
+	$language = new text;
+	$text = $language->get();
 
-echo "<br />";
-echo "<br />";
+require_once "resources/header.php";
+$document['title'] = $text['title-sys-status'];
 
 // OS Support
 //
@@ -71,14 +68,17 @@ echo "<br />";
 //
 
 //system information
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
+	echo "<b>".$text['header-sys-status']."</b>";
+	echo "<br><br>";
+
+	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>".$text['title-sys-info']."</th>\n";
 	echo "</tr>\n";
 	if (permission_exists('system_view_info')) {
 		echo "<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-		echo "		Version: \n";
+		echo "		Version\n";
 		echo "	</td>\n";
 		echo "	<td class=\"row_style1\">\n";
 		echo "		".software_version()."\n";
@@ -106,7 +106,7 @@ echo "<br />";
 		if (strlen($tmp_result) > 0) {
 			echo "<tr>\n";
 			echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-			echo "		Uptime: \n";
+			echo "		Uptime\n";
 			echo "	</td>\n";
 			echo "	<td class=\"row_style1\">\n";
 			echo "		".$tmp_result." \n";
@@ -117,18 +117,14 @@ echo "<br />";
 	}
 	echo "<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Date: \n";
+	echo "		Date\n";
 	echo "	</td>\n";
 	echo "	<td class=\"row_style1\">\n";
 	echo "		".date('r')." \n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
-
-	echo "<br />";
-	echo "<br />";
-	echo "<br />\n";
-
+	echo "<br /><br>";
 
 //memory information
 	if (permission_exists('system_view_ram')) {
@@ -155,9 +151,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-				echo "<br />";
-				echo "<br />";
-				echo "<br />";
+				echo "<br /><br />";
 			}
 		}
 
@@ -184,9 +178,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-				echo "<br />";
-				echo "<br />";
-				echo "<br />";
+				echo "<br /><br />";
 			}
 		}
 	}
@@ -224,9 +216,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-				echo "<br />";
-				echo "<br />";
-				echo "<br />";
+				echo "<br /><br />";
 			}
 		}
 
@@ -253,9 +243,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-				echo "<br />";
-				echo "<br />";
-				echo "<br />";
+				echo "<br /><br />";
 			}
 		}
 	}
@@ -320,11 +308,8 @@ echo "<br />";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
-			echo "\n";
 		}
-		echo "<br />";
-		echo "<br />";
-		echo "<br />";
+		echo "<br /><br />";
 	}
 
 //memcache information
@@ -336,14 +321,9 @@ echo "<br />";
 		echo "	</tr>\n";
 
 		$mc_fail = false;
-
-		require_once "resources/classes/modules.php";
-		$mod = new switch_modules;
-
+		$mod = new modules;
 		if ($mod -> active("mod_memcache")) {
-
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-
 			if ($fp) {
 				$switch_cmd = "memcache status verbose";
 				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
@@ -358,7 +338,7 @@ echo "<br />";
 				if (is_array($mc_status) && sizeof($mc_status) > 0) {
 					foreach($mc_status as $mc_field => $mc_value) {
 						echo "<tr>\n";
-						echo "	<td width='20%' class='vncell' style='text-align: left;'>".$mc_field.": </td>\n";
+						echo "	<td width='20%' class='vncell' style='text-align: left;'>".$mc_field."</td>\n";
 						echo "	<td class='row_style1'>".$mc_value."</td>\n";
 						echo "</tr>\n";
 					}
@@ -378,7 +358,7 @@ echo "<br />";
 		}
 
 		echo "</table>\n";
-		echo "<br /><br /><br />\n";
+		echo "<br /><br />\n";
 
 	}
 

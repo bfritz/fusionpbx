@@ -1,6 +1,6 @@
 --	conference_center/index.lua
 --	Part of FusionPBX
---	Copyright (C) 2013 - 2014 Mark J Crane <markjcrane@fusionpbx.com>
+--	Copyright (C) 2013 - 2015 Mark J Crane <markjcrane@fusionpbx.com>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -325,6 +325,9 @@
 		--answer the call
 			session:preAnswer();
 
+		--set the session sleep
+			session:sleep(1000);
+
 		--get session variables
 			sounds_dir = session:getVariable("sounds_dir");
 			hold_music = session:getVariable("hold_music");
@@ -335,6 +338,14 @@
 			caller_id_number = session:getVariable("caller_id_number");
 			--freeswitch.consoleLog("notice", "[conference center] destination_number: " .. destination_number .. "\n");
 			--freeswitch.consoleLog("notice", "[conference center] caller_id_number: " .. caller_id_number .. "\n");
+
+		--set the sounds path for the language, dialect and voice
+			default_language = session:getVariable("default_language");
+			default_dialect = session:getVariable("default_dialect");
+			default_voice = session:getVariable("default_voice");
+			if (not default_language) then default_language = 'en'; end
+			if (not default_dialect) then default_dialect = 'us'; end
+			if (not default_voice) then default_voice = 'callie'; end
 
 		--get the domain_uuid
 			if (domain_name ~= nil and domain_uuid == nil) then
@@ -354,11 +365,10 @@
 				AND conference_center_extension = ']] .. destination_number .. [[']];
 			status = dbh:query(sql, function(row)
 				conference_center_uuid = string.lower(row["conference_center_uuid"]);
-				conference_center_greeting = string.lower(row["conference_center_greeting"]);
+				conference_center_greeting = row["conference_center_greeting"];
 			end);
-			if (conference_center_greeting) then
-				session:sleep(1000);
-				session:execute("playback", conference_center_greeting);
+			if (conference_center_greeting == '') then
+				conference_center_greeting = sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/conference/conf-pin.wav";
 			end
 
 		--connect to the switch database
@@ -404,14 +414,6 @@
 				recordings_dir = recordings_dir.."/"..domain_name;
 			end
 
-		--set the sounds path for the language, dialect and voice
-			default_language = session:getVariable("default_language");
-			default_dialect = session:getVariable("default_dialect");
-			default_voice = session:getVariable("default_voice");
-			if (not default_language) then default_language = 'en'; end
-			if (not default_dialect) then default_dialect = 'us'; end
-			if (not default_voice) then default_voice = 'callie'; end
-
 		--sounds
 			enter_sound = "tone_stream://v=-20;%(100,1000,100);v=-20;%(90,60,440);%(90,60,620)";
 			exit_sound = "tone_stream://v=-20;%(90,60,620);/%(90,60,440)";
@@ -429,14 +431,14 @@
 			chan_name = session:getVariable("chan_name");
 
 		--define the function get_pin_number
-			function get_pin_number(domain_uuid)
+			function get_pin_number(domain_uuid, prompt_audio_file)
 				--if the pin number is provided then require it
 					if (not pin_number) then 
 						min_digits = 2;
 						max_digits = 20;
 						max_tries = 1;
 						digit_timeout = 5000;
-						pin_number = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/conference/conf-pin.wav", "", "\\d+");
+						pin_number = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", prompt_audio_file, "", "\\d+");
 					end
 				if (pin_number ~= "") then
 					sql = [[SELECT * FROM v_conference_rooms as r, v_meetings as m
@@ -444,7 +446,16 @@
 						AND r.meeting_uuid = m.meeting_uuid
 						AND m.domain_uuid = ']] .. domain_uuid ..[['
 						AND (m.moderator_pin = ']] .. pin_number ..[[' or m.participant_pin = ']] .. pin_number ..[[') 
-						AND r.enabled = 'true' ]];
+						AND r.enabled = 'true'
+						AND r.enabled = 'true'
+						AND (
+								( r.start_datetime <> '' AND r.start_datetime is not null AND r.start_datetime <= ']] .. os.date("%Y-%m-%d %X") .. [[' ) OR 
+								( r.start_datetime = '' OR r.start_datetime is null ) 
+							)
+						AND (
+								( r.stop_datetime <> '' AND r.stop_datetime is not null AND r.stop_datetime > ']] .. os.date("%Y-%m-%d %X") .. [[' ) OR 
+								( r.stop_datetime = '' OR r.stop_datetime is null ) 
+							) ]];
 					if (debug["sql"]) then
 						freeswitch.consoleLog("notice", "[conference center] SQL: " .. sql .. "\n");
 					end
@@ -463,18 +474,18 @@
 			pin_number = session:getVariable("pin_number");
 			if (not pin_number) then
 				pin_number = nil;
-				pin_number = get_pin_number(domain_uuid);
+				pin_number = get_pin_number(domain_uuid, conference_center_greeting);
 			end
 			if (pin_number == nil) then
-				pin_number = get_pin_number(domain_uuid);
-			end
-			if (pin_number == nil) then
-				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/conference/conf-bad-pin.wav");
-				pin_number = get_pin_number(domain_uuid);
+				pin_number = get_pin_number(domain_uuid, conference_center_greeting);
 			end
 			if (pin_number == nil) then
 				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/conference/conf-bad-pin.wav");
-				pin_number = get_pin_number(domain_uuid);
+				pin_number = get_pin_number(domain_uuid, conference_center_greeting);
+			end
+			if (pin_number == nil) then
+				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/conference/conf-bad-pin.wav");
+				pin_number = get_pin_number(domain_uuid, conference_center_greeting);
 			end
 			if (pin_number ~= nil) then
 				sql = [[SELECT * FROM v_conference_rooms as r, v_meetings as m
@@ -712,7 +723,9 @@
 
 				--send the call to the conference
 					cmd = meeting_uuid.."-"..domain_name.."@"..profile.."+flags{".. flags .."}";
+					freeswitch.consoleLog("INFO","[conference center] conference " .. cmd .. "\n");
 					session:execute("conference", cmd);
 			end
 		end
 	end
+

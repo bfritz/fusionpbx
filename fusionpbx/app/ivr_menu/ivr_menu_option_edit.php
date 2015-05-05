@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -182,15 +180,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$document['title'] = $text['title-option_edit'];
 	}
 
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	if ($action == "add") {
@@ -212,7 +203,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-option'].":\n";
+	echo "	".$text['label-option']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='ivr_menu_option_digits' maxlength='255' value='$ivr_menu_option_digits'>\n";
@@ -225,7 +216,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (if_group("superadmin")) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	Type:\n";
+		echo "	Type\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 
@@ -283,7 +274,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-destination'].":\n";
+	echo "	".$text['label-destination']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 
@@ -292,7 +283,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (strlen($ivr_menu_option_action.$ivr_menu_option_param) > 0) {
 		$tmp_select_value = $ivr_menu_option_action.':'.$ivr_menu_option_param;
 	}
-	switch_select_destination("ivr", $ivr_menu_options_label, "ivr_menu_option_param", $tmp_select_value, "", $ivr_menu_option_action);
+	switch_select_destination("ivr", $ivr_menu_options_label, "ivr_menu_option_param", $tmp_select_value, "width: 350px;", $ivr_menu_option_action);
 	unset($tmp_select_value);
 
 	echo "<br />\n";
@@ -302,7 +293,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-order'].":\n";
+	echo "	".$text['label-order']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select name='ivr_menu_option_order' class='formfld'>\n";
@@ -328,7 +319,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='ivr_menu_option_description' maxlength='255' value=\"$ivr_menu_option_description\">\n";
@@ -340,20 +331,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td colspan='2' align='right'>\n";
 	echo "			<input type='hidden' name='ivr_menu_uuid' value='$ivr_menu_uuid'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='ivr_menu_option_uuid' value='$ivr_menu_option_uuid'>\n";
+		echo "		<input type='hidden' name='ivr_menu_option_uuid' value='$ivr_menu_option_uuid'>\n";
 	}
+	echo "			<br>";
 	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 
 	echo "</table>\n";
-	echo "</div>\n";
+	echo "<br><br>";
 	echo "</form>\n";
-
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "</table>\n";
-	echo "</div>\n";
 
 require_once "resources/footer.php";
 ?>

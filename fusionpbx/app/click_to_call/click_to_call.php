@@ -42,12 +42,11 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-require_once "resources/header.php";
+//include the header
+	require_once "resources/header.php";
 
 if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])) {
 	//get the http variables and set them as variables
@@ -118,18 +117,18 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 
 	//source should see the destination caller id
 		if (strlen($src) < 7) {
-			$source = "{".$sip_auto_answer."origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number,instant_ringback=true,ringback=$ringback_value,presence_id=$src@".$_SESSION['domains'][$domain_uuid]['domain_name'].",call_direction=outbound,domain_uuid=".$domain_uuid.",domain_name=".$_SESSION['domains'][$domain_uuid]['domain_name']."}user/$src@".$_SESSION['domains'][$domain_uuid]['domain_name'];
+			$source = "{click_to_call=true,".$sip_auto_answer."origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number,instant_ringback=true,ringback=$ringback_value,presence_id=$src@".$_SESSION['domains'][$domain_uuid]['domain_name'].",call_direction=outbound,domain_uuid=".$domain_uuid.",domain_name=".$_SESSION['domains'][$domain_uuid]['domain_name']."}user/$src@".$_SESSION['domains'][$domain_uuid]['domain_name'];
 		}
 		else {
 			$bridge_array = outbound_route_to_bridge ($_SESSION['domain_uuid'], $src);
-			$source = "{origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number,instant_ringback=true,ringback=$ringback_value,presence_id=$src@".$_SESSION['domains'][$domain_uuid]['domain_name'].",call_direction=outbound}".$bridge_array[0];
+			$source = "{click_to_call=true,origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number,instant_ringback=true,ringback=$ringback_value,presence_id=$src@".$_SESSION['domains'][$domain_uuid]['domain_name'].",call_direction=outbound}".$bridge_array[0];
 		}
 
 	//destination needs to see the source caller id
 		if (strlen($dest) < 7) {
 			if (strpbrk($dest, '@') != FALSE) {
 				//echo "Found an @ 2<br><br>";
-				$switch_cmd = "api originate $source &bridge({origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number,call_direction=outbound}sofia/external/$dest)";
+				$switch_cmd = "api originate $source &bridge({origination_caller_id_name='$dest_cid_name',origination_caller_id_number=$dest_cid_number,call_direction=outbound}sofia/external/$dest)";
 				echo "$switch_cmd";
 			}
 			else {
@@ -160,7 +159,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 				if (strpbrk($dest, '@') != FALSE) {
 					//call a sip uri
 					//echo "Found an @ 4, do nothing for now<br><br>";
-					$switch_cmd = "api originate $source &bridge({origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number,call_direction=outbound}sofia/external/$dest)";
+					$switch_cmd = "api originate $source &bridge({origination_caller_id_name='$dest_cid_name',origination_caller_id_number=$dest_cid_number,call_direction=outbound}sofia/external/$dest)";
 					//echo "<br>SWITCH-CMD: $switch_cmd<br>";
 				}
 				else {
@@ -186,7 +185,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if (!$fp) {
 			//show the error message
-				$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
+				$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>";
 				echo "<div align='center'>\n";
 				echo "<table width='40%'>\n";
 				echo "<tr>\n";
@@ -245,9 +244,9 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "	<br />";
 
 	echo "<form>\n";
-	echo "<table border='0' width='100%' cellpadding='6' cellspacing='0'\n";
+	echo "<table border='0' width='100%' cellpadding='0' cellspacing='0'\n";
 	echo "<tr>\n";
-	echo "	<td class='vncellreq' width='40%'>".$text['label-src-caller-id-nam'].":</td>\n";
+	echo "	<td class='vncellreq' width='40%'>".$text['label-src-caller-id-nam']."</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<input name=\"src_cid_name\" value='$src_cid_name' class='formfld'>\n";
 	echo "		<br />\n";
@@ -256,7 +255,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "	<td class='vncellreq'>".$text['label-src-caller-id-num'].":</td>\n";
+	echo "	<td class='vncellreq'>".$text['label-src-caller-id-num']."</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<input name=\"src_cid_number\" value='$src_cid_number' class='formfld'>\n";
 	echo "		<br />\n";
@@ -265,7 +264,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "	<td class='vncell' width='40%'>".$text['label-dest-caller-id-nam'].":</td>\n";
+	echo "	<td class='vncell' width='40%'>".$text['label-dest-caller-id-nam']."</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<input name=\"dest_cid_name\" value='$dest_cid_name' class='formfld'>\n";
 	echo "		<br />\n";
@@ -274,7 +273,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "	<td class='vncell'>".$text['label-dest-caller-id-num'].":</td>\n";
+	echo "	<td class='vncell'>".$text['label-dest-caller-id-num']."</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<input name=\"dest_cid_number\" value='$dest_cid_number' class='formfld'>\n";
 	echo "		<br />\n";
@@ -283,7 +282,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "	<td class='vncellreq'>".$text['label-src-num'].":</td>\n";
+	echo "	<td class='vncellreq'>".$text['label-src-num']."</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<input name=\"src\" value='$src' class='formfld'>\n";
 	echo "		<br />\n";
@@ -292,7 +291,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "	<td class='vncellreq'>".$text['label-dest-num'].":</td>\n";
+	echo "	<td class='vncellreq'>".$text['label-dest-num']."</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<input name=\"dest\" value='$dest' class='formfld'>\n";
 	echo "		<br />\n";
@@ -302,7 +301,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 
 	echo" <tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-auto-answer'].":\n";
+	echo "	".$text['label-auto-answer']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='auto_answer'>\n";
@@ -327,18 +326,18 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-record'].":\n";
+	echo "    ".$text['label-record']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='rec'>\n";
 	echo "    <option value=''></option>\n";
-	if ($rec == "true") { 
+	if ($rec == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($rec == "false") { 
+	if ($rec == "false") {
 		echo "    <option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -352,18 +351,18 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-ringback'].":\n";
+	echo "    ".$text['label-ringback']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='ringback'>\n";
 	echo "    <option value=''></option>\n";
-	if ($ringback == "us-ring") { 
+	if ($ringback == "us-ring") {
 		echo "    <option value='us-ring' selected='selected'>".$text['opt-usring']."</option>\n";
 	}
 	else {
 		echo "    <option value='us-ring'>".$text['opt-usring']."</option>\n";
 	}
-	if ($ringback == "fr-ring") { 
+	if ($ringback == "fr-ring") {
 		echo "    <option value='fr-ring' selected='selected'>".$text['opt-frring']."</option>\n";
 	}
 	else {
@@ -375,25 +374,25 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	else {
 		echo "    <option value='pt-ring'>".$text['opt-ptring']."</option>\n";
 	}
-	if ($ringback == "uk-ring") { 
+	if ($ringback == "uk-ring") {
 		echo "    <option value='uk-ring' selected='selected'>".$text['opt-ukring']."</option>\n";
 	}
 	else {
 		echo "    <option value='uk-ring'>".$text['opt-ukring']."</option>\n";
 	}
-	if ($ringback == "rs-ring") { 
+	if ($ringback == "rs-ring") {
 		echo "    <option value='rs-ring' selected='selected'>".$text['opt-rsring']."</option>\n";
 	}
 	else {
 		echo "    <option value='rs-ring'>".$text['opt-rsring']."</option>\n";
 	}
-	if ($ringback == "it-ring") { 
+	if ($ringback == "it-ring") {
 		echo "    <option value='it-ring' selected='selected'>".$text['opt-itring']."</option>\n";
 	}
 	else {
 		echo "    <option value='it-ring'>".$text['opt-itring']."</option>\n";
 	}
-	if ($ringback == "music") { 
+	if ($ringback == "music") {
 		echo "    <option value='music' selected='selected'>".$text['opt-moh']."</option>\n";
 	}
 	else {
@@ -407,10 +406,12 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 
 	echo "<tr>\n";
 	echo "	<td colspan='2' align='right'>\n";
+	echo "		<br>";
 	echo "		<input type=\"submit\" class='btn' value=\"".$text['button-call']."\">\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+	echo "<br><br>";
 	echo "</form>";
 
 //show the footer

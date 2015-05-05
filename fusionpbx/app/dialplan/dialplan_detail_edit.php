@@ -44,10 +44,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //set the action as an add or update
 	if (isset($_REQUEST["id"])) {
@@ -165,7 +163,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				else {
 					$sql .= "dialplan_detail_group = '$dialplan_detail_group' ";
 				}
-				$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+				$sql .= "where (domain_uuid = '".$_SESSION['domain_uuid']."' or  domain_uuid is null) ";
 				$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -214,15 +212,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$document['title'] = $text['title-dialplan_detail'];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap=\"nowrap\"><span class=\"title\">".$text['header-dialplan_detail']."</span></td>\n";
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='dialplan_edit.php?id=".$dialplan_uuid."&app_uuid=".$app_uuid."';\" value='".$text['button-back']."'></td>\n";
@@ -236,7 +227,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-tag'].":\n";
+	echo "    ".$text['label-tag']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select name='dialplan_detail_tag' class='formfld' id='form_tag'>\n";
@@ -255,7 +246,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-order'].":\n";
+	echo "    ".$text['label-order']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "              <select name='dialplan_detail_order' class='formfld'>\n";
@@ -316,7 +307,7 @@ function replace_param(obj){
 <?php
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-type'].":\n";
+	echo "    ".$text['label-type']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "<select name='dialplan_detail_type' id='dialplan_detail_type' class='formfld' onchange='change_to_input(this);'>\n";
@@ -378,7 +369,7 @@ function replace_param(obj){
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-data'].":\n";
+	echo "    ".$text['label-data']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='dialplan_detail_data' value=\"".htmlspecialchars($dialplan_detail_data)."\">\n";
@@ -389,7 +380,7 @@ function replace_param(obj){
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-group'].":\n";
+	echo "    ".$text['label-group']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "              <select name='dialplan_detail_group' class='formfld'>\n";
@@ -412,7 +403,7 @@ function replace_param(obj){
 		if ($dialplan_detail_tag == "condition") {
 			echo "<tr>\n";
 			echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-			echo "    ".$text['label-break'].":\n";
+			echo "    ".$text['label-break']."\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
 			echo "              <select name='dialplan_detail_break' class='formfld'>\n";
@@ -451,7 +442,7 @@ function replace_param(obj){
 		if ($dialplan_detail_tag == "action") {
 			echo "<tr>\n";
 			echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-			echo "    ".$text['label-inline'].":\n";
+			echo "    ".$text['label-inline']."\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
 			echo "              <select name='dialplan_detail_inline' class='formfld'>\n";
@@ -478,18 +469,18 @@ function replace_param(obj){
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
-	echo "				<input type='hidden' name='app_uuid' value='$app_uuid'>\n";
+	echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
+	echo "			<input type='hidden' name='app_uuid' value='$app_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='dialplan_detail_uuid' value='$dialplan_detail_uuid'>\n";
+		echo "		<input type='hidden' name='dialplan_detail_uuid' value='$dialplan_detail_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
-	echo "</div>\n";
+	echo "<br><br>";
 	echo "</form>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

@@ -35,21 +35,23 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //additional includes
 	require_once "xml_cdr_statistics_inc.php";
 	require_once "resources/header.php";
 
 //page title and description
-	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "	<td width='30%' align='left' valign='top' nowrap='nowrap'><b>".$text['label-call-statistics']."</b></td>\n";
 	echo "	<td width='70%' align='right' valign='top'>\n";
+	if (permission_exists('xml_cdr_all')) {
+		if ($_GET['showall'] != 'true') {
+			echo "<input type='button' class='btn' value='".$text['button-show_all']."' onclick=\"window.location='xml_cdr_statistics.php?showall=true';\">\n";
+		}
+	}
 	echo "		<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='xml_cdr.php'\" value='".$text['button-back']."'>\n";
 	echo "		<input type='button' class='btn' value='".$text['button-extension_summary']."' onclick=\"document.location.href='xml_cdr_extension_summary.php';\">\n";
 	echo "		<input type='button' class='btn' value='".$text['button-download_csv']."' onclick=\"document.location.href='xml_cdr_statistics_csv.php';\">\n";
@@ -73,6 +75,7 @@ else {
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/flot/excanvas.min.js"></script><![endif]-->
 	<script language="javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery-1.8.3.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/flot/jquery.flot.js"></script>
+	<div align='center'>
 	<table>
 		<tr>
 			<td align='left'>
@@ -83,6 +86,7 @@ else {
 			</td>
 		</tr>
 	</table>
+	</div>
 	<script type="text/javascript">
 	$(function () {
 		var datasets = {
@@ -220,6 +224,7 @@ else {
 		$i++;
 	}
 	echo "</table>\n";
+	echo "<br><br>";
 
 //show the footer
 	require_once "resources/footer.php";

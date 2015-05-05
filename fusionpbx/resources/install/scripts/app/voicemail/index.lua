@@ -1,5 +1,5 @@
 --	Part of FusionPBX
---	Copyright (C) 2013 Mark J Crane <markjcrane@fusionpbx.com>
+--	Copyright (C) 2013-2015 Mark J Crane <markjcrane@fusionpbx.com>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 
 --direct dial
 	direct_dial = {}
-	direct_dial["enabled"] = "true";
+	direct_dial["enabled"] = "false";
 	direct_dial["max_digits"] = 4;
 
 --debug
@@ -43,7 +43,7 @@
 --get the argv values
 	script_name = argv[1];
 	voicemail_action = argv[2];
-	
+
 --starting values
 	dtmf_digits = '';
 	timeouts = 0;
@@ -58,19 +58,6 @@
 
 --if the session exists
 	if (session ~= nil) then
-		--answer the session
-			if (session:ready()) then
-				session:answer();
-			end
-
-		--unset bind meta app
-			session:execute("unbind_meta_app", "");
-
-		--set the callback function
-			if (session:ready()) then
-				session:setVariable("playback_terminators", "#");
-				session:setInputCallback("on_dtmf", "");
-			end
 
 		--get session variables
 			context = session:getVariable("context");
@@ -125,7 +112,7 @@
 		--if voicemail_id is non numeric then get the number-alias
 			if (voicemail_id ~= nil) then
 				if tonumber(voicemail_id) == nil then
-					 voicemail_id = api:execute("user_data", voicemail_id .. "@" .. domain_name .. " attr number-alias");	 
+					 voicemail_id = api:execute("user_data", voicemail_id .. "@" .. domain_name .. " attr number-alias");
 				end
 			end
 
@@ -133,6 +120,35 @@
 			voicemail_dir = voicemail_dir.."/default/"..domain_name;
 			if (debug["info"]) then
 				freeswitch.consoleLog("notice", "[voicemail] voicemail_dir: " .. voicemail_dir .. "\n");
+			end
+
+		--settings
+			dofile(scripts_dir.."/resources/functions/settings.lua");
+			settings = settings(domain_uuid);
+			storage_type = "";
+			storage_path = "";
+			if (settings['voicemail'] ~= nil) then
+				if (settings['voicemail']['storage_type'] ~= nil) then
+					if (settings['voicemail']['storage_type']['text'] ~= nil) then
+						storage_type = settings['voicemail']['storage_type']['text'];
+					end
+				end
+				if (settings['voicemail']['storage_path'] ~= nil) then
+					if (settings['voicemail']['storage_path']['text'] ~= nil) then
+						storage_path = settings['voicemail']['storage_path']['text'];
+						storage_path = storage_path:gsub("${domain_name}", domain_name);
+						storage_path = storage_path:gsub("${voicemail_id}", voicemail_id);
+						storage_path = storage_path:gsub("${voicemail_dir}", voicemail_dir);
+					end
+				end
+			end
+			temp_dir = "";
+			if (settings['server'] ~= nil) then
+				if (settings['server']['temp'] ~= nil) then
+					if (settings['server']['temp']['dir'] ~= nil) then
+						temp_dir = settings['server']['temp']['dir'];
+					end
+				end
 			end
 
 		--get the voicemail settings
@@ -160,6 +176,23 @@
 						end
 						if (voicemail_attach_file == nil) then
 							voicemail_attach_file = "true";
+						end
+						
+					--valid voicemail
+						if (voicemail_uuid ~= nil) then
+						--answer the session
+							if (session:ready()) then
+								session:answer();
+							end
+
+						--unset bind meta app
+							session:execute("unbind_meta_app", "");
+
+						--set the callback function
+							if (session:ready()) then
+								session:setVariable("playback_terminators", "#");
+								session:setInputCallback("on_dtmf", "");
+							end
 						end
 				end
 			end
@@ -271,86 +304,175 @@
 		--valid voicemail
 			if (voicemail_uuid ~= nil) then
 
-				--save the recording
+				--play the greeting
 					timeouts = 0;
 					play_greeting();
+
+				--save the message
 					record_message();
 
-				--save the message to the voicemail messages
-					if (message_length > 2) then
-						local sql = {}
-						table.insert(sql, "INSERT INTO v_voicemail_messages ");
-						table.insert(sql, "(");
-						table.insert(sql, "voicemail_message_uuid, ");
-						table.insert(sql, "domain_uuid, ");
-						table.insert(sql, "voicemail_uuid, ");
-						table.insert(sql, "created_epoch, ");
-						table.insert(sql, "caller_id_name, ");
-						table.insert(sql, "caller_id_number, ");
-						table.insert(sql, "message_length ");
-						--table.insert(sql, "message_status, ");
-						--table.insert(sql, "message_priority, ");
-						table.insert(sql, ") ");
-						table.insert(sql, "VALUES ");
-						table.insert(sql, "( ");
-						table.insert(sql, "'".. uuid .."', ");
-						table.insert(sql, "'".. domain_uuid .."', ");
-						table.insert(sql, "'".. voicemail_uuid .."', ");
-						table.insert(sql, "'".. start_epoch .."', ");
-						table.insert(sql, "'".. caller_id_name .."', ");
-						table.insert(sql, "'".. caller_id_number .."', ");
-						table.insert(sql, "'".. message_length .."' ");
-						--table.insert(sql, "'".. message_status .."', ");
-						--table.insert(sql, "'".. message_priority .."' ");
-						table.insert(sql, ") ");
-						sql = table.concat(sql, "\n");
-						if (debug["sql"]) then
-							freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
-						end
-						dbh:query(sql);
+				--process base64
+					if (storage_type == "base64") then
+						--show the storage type
+							freeswitch.consoleLog("notice", "[voicemail] ".. storage_type .. "\n");
+
+						--include the base64 function
+							dofile(scripts_dir.."/resources/functions/base64.lua");
+
+						--base64 encode the file
+							if (file_exists(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext)) then
+								--get the base
+									local f = io.open(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext, "rb");
+									local file_content = f:read("*all");
+									f:close();
+									message_base64 = base64.encode(file_content);
+									--freeswitch.consoleLog("notice", "[voicemail] ".. message_base64 .. "\n");
+
+								--delete the file
+									os.remove(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
+							end
 					end
 
-				--get saved and new message counts
-					sql = [[SELECT count(*) as new_messages FROM v_voicemail_messages
-						WHERE domain_uuid = ']] .. domain_uuid ..[['
-						AND voicemail_uuid = ']] .. voicemail_uuid ..[['
-						AND (message_status is null or message_status = '') ]];
-						if (debug["sql"]) then
-							freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
-						end
-					status = dbh:query(sql, function(row)
-						new_messages = row["new_messages"];
-					end);
-					sql = [[SELECT count(*) as saved_messages FROM v_voicemail_messages
-						WHERE domain_uuid = ']] .. domain_uuid ..[['
-						AND voicemail_uuid = ']] .. voicemail_uuid ..[['
-						AND message_status = 'saved' ]];
-						if (debug["sql"]) then
-							freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
-						end
-					status = dbh:query(sql, function(row)
-						saved_messages = row["saved_messages"];
-					end);
+				--get the voicemail destinations
+					sql = [[select * from v_voicemail_destinations 
+					where voicemail_uuid = ']]..voicemail_uuid..[[']]
+					--freeswitch.consoleLog("notice", "[voicemail][destinations] SQL:" .. sql .. "\n");
+					destinations = {};
+					x = 1;
+					table.insert(destinations, {domain_uuid=domain_uuid,voicemail_destination_uuid=voicemail_uuid,voicemail_uuid=voicemail_uuid,voicemail_uuid_copy=voicemail_uuid});
+					x = x + 1;
+					assert(dbh:query(sql, function(row)
+						destinations[x] = row;
+						x = x + 1;
+					end));
 
-				--set the message waiting event
-					if (message_length > 2) then
-						local event = freeswitch.Event("message_waiting");
-						event:addHeader("MWI-Messages-Waiting", "yes");
-						event:addHeader("MWI-Message-Account", "sip:"..voicemail_id.."@"..domain_name);
-						event:addHeader("MWI-Voice-Message", new_messages.."/"..saved_messages.." (0/0)");
-						event:fire();
-					end
+				--show the storage type
+					freeswitch.consoleLog("notice", "[voicemail] ".. storage_type .. "\n");
 
-				--send the email with the voicemail recording attached
-					if (message_length > 2) then
-						send_email(voicemail_id, uuid);
-					end
+				--loop through the voicemail destinations
+					y = 1;
+					for key,row in pairs(destinations) do
+						--determine uuid
+							if (y == 1) then
+								voicemail_message_uuid = uuid;
+							else 
+								voicemail_message_uuid = api:execute("create_uuid");
+							end
+							y = y + 1;
+						--save the message to the voicemail messages
+							if (tonumber(message_length) > 2) then
+								caller_id_name = string.gsub(caller_id_name,"'","''");
+								local sql = {}
+								table.insert(sql, "INSERT INTO v_voicemail_messages ");
+								table.insert(sql, "(");
+								table.insert(sql, "voicemail_message_uuid, ");
+								table.insert(sql, "domain_uuid, ");
+								table.insert(sql, "voicemail_uuid, ");
+								table.insert(sql, "created_epoch, ");
+								table.insert(sql, "caller_id_name, ");
+								table.insert(sql, "caller_id_number, ");
+								if (storage_type == "base64") then
+									table.insert(sql, "message_base64, ");
+								end
+								table.insert(sql, "message_length ");
+								--table.insert(sql, "message_status, ");
+								--table.insert(sql, "message_priority, ");
+								table.insert(sql, ") ");
+								table.insert(sql, "VALUES ");
+								table.insert(sql, "( ");
+								table.insert(sql, "'"..voicemail_message_uuid.."', ");
+								table.insert(sql, "'"..domain_uuid.."', ");
+								table.insert(sql, "'"..row.voicemail_uuid_copy.."', ");
+								table.insert(sql, "'"..start_epoch.."', ");
+								table.insert(sql, "'"..caller_id_name.."', ");
+								table.insert(sql, "'"..caller_id_number.."', ");
+								if (storage_type == "base64") then
+									table.insert(sql, "'"..message_base64.."', ");
+								end
+								table.insert(sql, "'"..message_length.."' ");
+								--table.insert(sql, "'"..message_status.."', ");
+								--table.insert(sql, "'"..message_priority.."' ");
+								table.insert(sql, ") ");
+								sql = table.concat(sql, "\n");
+								if (debug["sql"]) then
+									freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
+								end
+								if (storage_type == "base64") then
+									array = explode("://", database["system"]);
+									local luasql = require "luasql.postgres";
+									local env = assert (luasql.postgres());
+									local db = env:connect(array[2]);
+									res, serr = db:execute(sql);
+									db:close();
+									env:close();
+								else
+									dbh:query(sql);
+								end
+							end
+
+						--get saved and new message counts
+							sql = [[SELECT count(*) as new_messages FROM v_voicemail_messages
+								WHERE domain_uuid = ']] .. domain_uuid ..[['
+								AND voicemail_uuid = ']] .. row.voicemail_uuid_copy ..[['
+								AND (message_status is null or message_status = '') ]];
+								if (debug["sql"]) then
+									freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
+								end
+							status = dbh:query(sql, function(result)
+								new_messages = result["new_messages"];
+							end);
+							sql = [[SELECT count(*) as saved_messages FROM v_voicemail_messages
+								WHERE domain_uuid = ']] .. domain_uuid ..[['
+								AND voicemail_uuid = ']] .. row.voicemail_uuid_copy ..[['
+								AND message_status = 'saved' ]];
+								if (debug["sql"]) then
+									freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
+								end
+							status = dbh:query(sql, function(result)
+								saved_messages = result["saved_messages"];
+							end);
+
+						--get the voicemail_id
+							sql = [[SELECT voicemail_id FROM v_voicemails
+								WHERE voicemail_uuid = ']] .. row.voicemail_uuid_copy ..[[']];
+								if (debug["sql"]) then
+									freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
+								end
+							status = dbh:query(sql, function(result)
+								voicemail_id_copy = result["voicemail_id"];
+							end);
+
+						--make sure the voicemail directory exists
+							mkdir(voicemail_dir.."/"..voicemail_id_copy);
+
+						--copy the voicemail to each destination
+							if (file_exists(voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext)) then
+								os.execute("cp "..voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext.." "..voicemail_dir.."/"..voicemail_id_copy.."/msg_"..voicemail_message_uuid.."."..vm_message_ext);
+							end
+
+						--set the message waiting event
+							if (tonumber(message_length) > 2) then
+								local event = freeswitch.Event("message_waiting");
+								event:addHeader("MWI-Messages-Waiting", "yes");
+								event:addHeader("MWI-Message-Account", "sip:"..voicemail_id_copy.."@"..domain_name);
+								event:addHeader("MWI-Voice-Message", new_messages.."/"..saved_messages.." (0/0)");
+								event:fire();
+							end
+
+						--send the email with the voicemail recording attached
+							if (tonumber(message_length) > 2) then
+								send_email(voicemail_id_copy, voicemail_message_uuid);
+							end
+					end --for
+
 			else
 				--voicemail not enabled or does not exist
 					referred_by = session:getVariable("sip_h_Referred-By");
 					if (referred_by) then
 						referred_by = referred_by:match('[%d]+');
 						session:transfer(referred_by, "XML", context);
+					else
+						session:hangup("NO_ANSWER");
 					end
 			end
 	end

@@ -17,10 +17,11 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2012 All Rights Reserved.
+	Copyright (C) 2008-2015 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 include "root.php";
 require_once "resources/require.php";
@@ -34,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
@@ -146,12 +145,9 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 			}
 
-		//delete extension from memcache
-			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			if ($fp) {
-				$switch_cmd = "memcache delete directory:".$extension."@".$_SESSION['domain_name'];
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-			}
+		//clear the cache
+			$cache = new cache;
+			$cache->delete("directory:".$extension."@".$_SESSION['domain_name']);
 
 		//set message and redirect user
 			if ($action == "add") {
@@ -229,15 +225,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "}\n";
 	echo "</script>";
 
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "	<td width='30%' nowrap='nowrap' align='left' valign='top'>\n";
 	echo "		<b>".$text['header-hot_desking']."</b>\n";
@@ -250,7 +239,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    ".$text['label-extension'].":\n";
+	echo "    ".$text['label-extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	if ($action == "add") {
@@ -288,10 +277,10 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    ".$text['label-unique_id'].":\n";
+	echo "    ".$text['label-unique_id']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='unique_id' autocomplete='off' maxlength='255' value=\"$unique_id\">\n";
+	echo "    <input class='formfld' type='number' name='unique_id' autocomplete='off' maxlength='255' min='0' step='1' required='required' value=\"$unique_id\">\n";
 	echo "<br />\n";
 	echo $text['description-unique_id']."\n";
 	echo "</td>\n";
@@ -300,7 +289,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "    ".$text['label-voicemail_password'].":\n";
+		echo "    ".$text['label-voicemail_password']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "    <input class='formfld' type='password' name='vm_password' id='vm_password' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='255' value='$vm_password'>\n";
@@ -311,7 +300,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "    ".$text['label-dial_string'].":\n";
+		echo "    ".$text['label-dial_string']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "    <input class='formfld' type='text' name='dial_string' maxlength='255' value=\"$dial_string\">\n";
@@ -323,13 +312,16 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<input type='hidden' name='extension_uuid' maxlength='255' value=\"$extension_uuid\">\n";
 	}
 
-	echo "</table>";
-	echo "</form>";
+	echo "<tr>\n";
+	echo "<td colspan='2' align='right'>\n";
+	echo "	<br>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-	echo "	</td>";
-	echo "	</tr>";
 	echo "</table>";
-	echo "</div>";
+	echo "<br><br>";
+	echo "</form>";
 
 require_once "resources/footer.php";
 ?>

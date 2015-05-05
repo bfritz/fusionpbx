@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //additional includes
 	require_once "resources/header.php";
@@ -291,16 +289,7 @@ function type_onchange(dialplan_detail_type) {
 </script>
 
 <?php
-echo "<div align='center'>";
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
-echo "<tr class='border'>\n";
-echo "	<td align=\"left\">\n";
-echo "		<br>";
-
 echo "<form method='post' name='frm' action=''>\n";
-echo "<div align='center'>\n";
-
 echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
 echo "		<td align='left'>\n";
@@ -320,11 +309,11 @@ echo "	</tr>\n";
 echo "	</table>";
 echo "<br />\n";
 
-echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 echo "<tr>\n";
 echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    ".$text['label-name'].":\n";
+echo "    ".$text['label-name']."\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_name' maxlength='255' value=\"$dialplan_name\">\n";
@@ -335,7 +324,7 @@ echo "</tr>\n";
 
 //echo "<tr>\n";
 //echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-//echo "    Continue:\n";
+//echo "    Continue\n";
 //echo "</td>\n";
 //echo "<td class='vtable' align='left'>\n";
 //echo "    <select class='formfld' name='dialplan_continue' style='width: 60%;'>\n";
@@ -360,7 +349,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-echo "	".$text['label-condition_1'].":\n";
+echo "	".$text['label-condition_1']."\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 ?>
@@ -396,10 +385,10 @@ function Replace_condition_field_1(obj){
 }
 </script>
 <?php
-echo "	<table style='width: 60%;' border='0'>\n";
+echo "	<table width='70%' border='0'>\n";
 echo "	<tr>\n";
-echo "	<td style='width: 62px;'>".$text['label-field'].":</td>\n";
-echo "	<td style='width: 35%;' nowrap='nowrap'>\n";
+echo "	<td nowrap='nowrap'>".$text['label-field']."</td>\n";
+echo "	<td style='width: 50%;' nowrap='nowrap'>\n";
 echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='changeToInput_condition_field_1(this);this.style.visibility = \"hidden\";' style='width:85%'>\n";
 echo "    <option value=''></option>\n";
 if (strlen($condition_field_1) > 0) {
@@ -436,8 +425,8 @@ echo "    </select>\n";
 echo "    <input type='button' id='btn_select_to_input_condition_field_1' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_1(document.getElementById(\"condition_field_1\"));this.style.visibility = \"hidden\";' value='&#9665;'>\n";
 echo "    <br />\n";
 echo "	</td>\n";
-echo "	<td style='width: 73px;'>&nbsp; ".$text['label-expression'].":</td>\n";
-echo "	<td>\n";
+echo "	<td>&nbsp;&nbsp;&nbsp;".$text['label-expression']."</td>\n";
+echo "	<td width='50%'>\n";
 echo "		<input class='formfld' type='text' name='condition_expression_1' maxlength='255' style='width:100%' value=\"$condition_expression_1\">\n";
 echo "	</td>\n";
 echo "	</tr>\n";
@@ -448,16 +437,14 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "	".$text['label-condition_2'].":\n";
+echo "	".$text['label-condition_2']."\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
-echo "	<table style='width: 60%;' border='0'>\n";
+echo "	<table width='70%' border='0'>\n";
 echo "	<tr>\n";
-echo "	<td align='left' style='width: 62px;'>\n";
-echo "		".$text['label-field'].":\n";
-echo "	</td>\n";
-echo "	<td style='width: 35%;' align='left' nowrap='nowrap'>\n";
+echo "	<td align='left'>".$text['label-field']."</td>\n";
+echo "	<td style='width: 50%;' nowrap='nowrap'>\n";
 ?>
 <script>
 var Objs;
@@ -527,10 +514,9 @@ echo "	</select>\n";
 echo "  <input type='button' id='btn_select_to_input_condition_field_2' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_2(document.getElementById(\"condition_field_2\"));this.style.visibility = \"hidden\";' value='&#9665;'>\n";
 echo "	<br />\n";
 echo "	</td>\n";
-echo "	<td style='width: 73px;' align='left'>\n";
-echo "		&nbsp; ".$text['label-expression'].":\n";
+echo "	<td>&nbsp;&nbsp;&nbsp;".$text['label-expression']."\n";
 echo "	</td>\n";
-echo "	<td>\n";
+echo "	<td width='50%'>\n";
 echo "		<input class='formfld' type='text' name='condition_expression_2' maxlength='255' style='width:100%' value=\"$condition_expression_2\">\n";
 echo "	</td>\n";
 echo "	</tr>\n";
@@ -541,7 +527,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    ".$text['label-action_1'].":\n";
+echo "    ".$text['label-action_1']."\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
@@ -556,7 +542,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    ".$text['label-action_2'].":\n";
+echo "    ".$text['label-action_2']."\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
@@ -568,7 +554,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "	<td class='vncell' valign='top' align='left' nowrap>\n";
-echo " 		".$text['label-context'].":\n";
+echo " 		".$text['label-context']."\n";
 echo "	</td>\n";
 echo "	<td colspan='4' class='vtable' align='left'>\n";
 echo "		<input class='formfld' style='width: 60%;' type='text' name='dialplan_context' maxlength='255' value=\"$dialplan_context\">\n";
@@ -578,7 +564,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "	".$text['label-order'].":\n";
+echo "	".$text['label-order']."\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 echo "	<select name='dialplan_order' class='formfld'>\n";
@@ -598,7 +584,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "		".$text['label-enabled'].":\n";
+echo "		".$text['label-enabled']."\n";
 echo "	</td>\n";
 echo "	<td class='vtable' align='left'>\n";
 echo "		<select class='formfld' name='dialplan_enabled'>\n";
@@ -621,7 +607,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "	<td class='vncell' valign='top' align='left' nowrap>\n";
-echo " 		".$text['label-description'].":\n";
+echo " 		".$text['label-description']."\n";
 echo "	</td>\n";
 echo "	<td colspan='4' class='vtable' align='left'>\n";
 echo "		<input class='formfld' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
@@ -632,21 +618,17 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {
-	echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
+	echo "	<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 }
-echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+echo "		<br>";
+echo "		<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 echo "	</td>\n";
 echo "</tr>";
 
 echo "</table>";
-echo "</div>";
+echo "<br><br>";
 echo "</form>";
 
-echo "</td>\n";
-echo "</tr>";
-echo "</table>";
-echo "</div>";
-echo "<br><br>";
 
 require_once "resources/footer.php";
 

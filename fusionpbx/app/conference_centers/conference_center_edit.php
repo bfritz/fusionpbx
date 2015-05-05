@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -259,72 +257,26 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 					$db->query($sql);
 
-				//delete the dialplan context from memcache
-					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-					if ($fp) {
-						$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
-						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-					}
-
-				//save the xml
+				//syncrhonize configuration
 					save_dialplan_xml();
 
-				$_SESSION["message"] = $text['message-update'];
-				header("Location: conference_centers.php");
-				return;
+				//apply settings reminder
+					$_SESSION["reload_xml"] = true;
+
+				//clear the cache
+					$cache = new cache;
+					$cache->delete("dialplan:".$_SESSION["context"]);
+
+				//redirect the browser
+					$_SESSION["message"] = $text['message-update'];
+					header("Location: conference_centers.php");
+					return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //function to show the list of sound files
-	function recur_sounds_dir($dir) {
-		global $dir_array;
-		global $dir_path;
-		$dir_list = opendir($dir);
-		while ($file = readdir ($dir_list)) {
-			if ($file != '.' && $file != '..') {
-				$newpath = $dir.'/'.$file;
-				$level = explode('/',$newpath);
-				if (substr($newpath, -4) == ".svn") {
-					//ignore .svn dir and subdir
-				}
-				else {
-					if (is_dir($newpath)) { //directories
-						recur_sounds_dir($newpath);
-					}
-					else { //files
-						if (strlen($newpath) > 0) {
-							//make the path relative
-								$relative_path = substr($newpath, strlen($dir_path), strlen($newpath));
-							//remove the 8000-48000 khz from the path
-								$relative_path = str_replace("/8000/", "/", $relative_path);
-								$relative_path = str_replace("/16000/", "/", $relative_path);
-								$relative_path = str_replace("/32000/", "/", $relative_path);
-								$relative_path = str_replace("/48000/", "/", $relative_path);
-							//remove the default_language, default_dialect, and default_voice (en/us/callie) from the path
-								$file_array = explode( "/", $relative_path );
-								$x = 1;
-								$relative_path = '';
-								foreach( $file_array as $tmp) {
-									if ($x == 5) { $relative_path .= $tmp; }
-									if ($x > 5) { $relative_path .= '/'.$tmp; }
-									$x++;
-								}
-							//add the file if it does not exist in the array
-								if (isset($dir_array[$relative_path])) {
-									//already exists
-								}
-								else {
-									//add the new path
-										if (strlen($relative_path) > 0) { $dir_array[$relative_path] = '0'; }
-								}
-						}
-					}
-				}
-			}
-		}
-		closedir($dir_list);
-	}
+	// moved to functions.php
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
@@ -357,18 +309,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	require_once "resources/header.php";
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['title-conference-center']."</b></td>\n";
-	echo "<td width='70%' align='right'>\n";
+	echo "<td align='left' width='30%' nowrap='nowrap' valign='top'><b>".$text['title-conference-center']."</b></td>\n";
+	echo "<td width='70%' align='right' valign='top'>\n";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='conference_centers.php'\" value='".$text['button-back']."'>\n";
 	if (permission_exists('conference_active_advanced_view')) {
 		echo "	<input type='button' class='btn' name='' alt='".$text['button-view']."' onclick=\"window.location='".PROJECT_PATH."/app/conferences_active/conferences_active.php'\" value='".$text['button-view']."'>\n";
@@ -376,16 +321,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td align='left' colspan='2'>\n";
-	echo "	".$text['description-conference-center']."\n";
-	echo "	<br /><br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<br />";
+	echo $text['description-conference-center']."\n";
+	echo "<br /><br />\n";
 
+	echo "<table width='100%'  border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-name'].":\n";
+	echo "	".$text['label-name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='conference_center_name' maxlength='255' value=\"$conference_center_name\">\n";
@@ -396,7 +340,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-extension'].":\n";
+	echo "	".$text['label-extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='conference_center_extension' maxlength='255' value=\"$conference_center_extension\">\n";
@@ -407,7 +351,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-greeting'].":\n";
+	echo "	".$text['label-greeting']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	if (if_group("superadmin")) {
@@ -419,6 +363,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	tb.type='text';\n";
 		echo "	tb.name=obj.name;\n";
 		echo "	tb.setAttribute('class', 'formfld');\n";
+		echo "	tb.setAttribute('style', 'width: 350px;');\n";
 		echo "	tb.value=obj.options[obj.selectedIndex].value;\n";
 		echo "	tbb=document.createElement('INPUT');\n";
 		echo "	tbb.setAttribute('class', 'btn');\n";
@@ -440,55 +385,57 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</script>\n";
 		echo "\n";
 	}
-	if (if_group("superadmin")) {
-		echo "		<select name='conference_center_greeting' class='formfld' onchange='changeToInput(this);'>\n";
-	}
-	else {
-		echo "		<select name='conference_center_greeting' class='formfld'>\n";
-	}
+	echo "	<select name='conference_center_greeting' class='formfld' ".((if_group("superadmin")) ? "onchange='changeToInput(this);'" : null).">\n";
 	echo "		<option></option>\n";
 	//recordings
 		if($dh = opendir($_SESSION['switch']['recordings']['dir']."/")) {
 			$tmp_selected = false;
 			$files = Array();
-			echo "<optgroup label='recordings'>\n";
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($_SESSION['switch']['recordings']['dir'] . "/" . $file)) {
-						//this is a directory
-					}
-					else {
-						if ($conference_center_greeting == $_SESSION['switch']['recordings']['dir']."/".$file && strlen($conference_center_greeting) > 0) {
-							$tmp_selected = true;
-							echo "		<option value='".$_SESSION['switch']['recordings']['dir']."/".$file."' selected=\"selected\">".$file."</option>\n";
-						}
-						else {
-							echo "		<option value='".$_SESSION['switch']['recordings']['dir']."/".$file."'>".$file."</option>\n";
-						}
+			echo "<optgroup label='Recordings'>\n";
+			while ($file = readdir($dh)) {
+				if ($file != "." && $file != ".." && $file[0] != '.') {
+					if (!is_dir($_SESSION['switch']['recordings']['dir']."/".$file)) {
+						$selected = ($conference_center_greeting == $_SESSION['switch']['recordings']['dir']."/".$file && strlen($conference_center_greeting) > 0) ? true : false;
+						echo "	<option value='".$_SESSION['switch']['recordings']['dir']."/".$file."' ".(($selected) ? "selected='selected'" : null).">".$file."</option>\n";
+						if ($selected) { $tmp_selected = true; }
 					}
 				}
 			}
 			closedir($dh);
 			echo "</optgroup>\n";
 		}
+	//phrases
+		$sql = "select * from v_phrases where domain_uuid = '".$domain_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		if (count($result) > 0) {
+			echo "<optgroup label='Phrases'>\n";
+			foreach ($result as &$row) {
+				$selected = ($conference_center_greeting == "phrase:".$row["phrase_name"].".".$domain_uuid) ? true : false;
+				echo "	<option value='phrase:".$row["phrase_name"].".".$domain_uuid."' ".(($selected) ? "selected='selected'" : null).">".$row["phrase_name"]."</option>\n";
+				if ($selected) { $tmp_selected = true; }
+			}
+			unset ($prep_statement);
+			echo "</optgroup>\n";
+		}
 	//sounds
 		$dir_path = $_SESSION['switch']['sounds']['dir'];
 		recur_sounds_dir($_SESSION['switch']['sounds']['dir']);
-		echo "<optgroup label='sounds'>\n";
-		foreach ($dir_array as $key => $value) {
-			if (strlen($value) > 0) {
-				if (substr($conference_center_greeting, 0, 71) == "\$\${sounds_dir}/\${default_language}/\${default_dialect}/\${default_voice}/") {
-					$conference_center_greeting = substr($conference_center_greeting, 71);
-				}
-				if ($conference_center_greeting == $key) {
-					$tmp_selected = true;
-					echo "		<option value='$key' selected='selected'>$key</option>\n";
-				} else {
-					echo "		<option value='$key'>$key</option>\n";
+		if (count($dir_array) > 0) {
+			echo "<optgroup label='Sounds'>\n";
+			foreach ($dir_array as $key => $value) {
+				if (strlen($value) > 0) {
+					if (substr($conference_center_greeting, 0, 71) == "\$\${sounds_dir}/\${default_language}/\${default_dialect}/\${default_voice}/") {
+						$conference_center_greeting = substr($conference_center_greeting, 71);
+					}
+					$selected = ($conference_center_greeting == $key) ? true : false;
+					echo "	<option value='".$key."' ".(($selected) ? "selected='selected'" : null).">".$key."</option>\n";
+					if ($selected) { $tmp_selected = true; }
 				}
 			}
+			echo "</optgroup>\n";
 		}
-		echo "</optgroup>\n";
 	//select
 		if (strlen($conference_center_greeting) > 0) {
 			if (if_group("superadmin")) {
@@ -496,9 +443,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					echo "<optgroup label='selected'>\n";
 					if (file_exists($_SESSION['switch']['recordings']['dir']."/".$conference_center_greeting)) {
 						echo "		<option value='".$_SESSION['switch']['recordings']['dir']."/".$conference_center_greeting."' selected='selected'>".$ivr_menu_greet_long."</option>\n";
-					} elseif (substr($conference_center_greeting, -3) == "wav" || substr($conference_center_greeting, -3) == "mp3") {
+					}
+					else if (substr($conference_center_greeting, -3) == "wav" || substr($conference_center_greeting, -3) == "mp3") {
 						echo "		<option value='".$conference_center_greeting."' selected='selected'>".$conference_center_greeting."</option>\n";
-					} else {
+					}
+					else {
 						echo "		<option value='".$conference_center_greeting."' selected='selected'>".$conference_center_greeting."</option>\n";
 					}
 					echo "</optgroup>\n";
@@ -506,7 +455,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($tmp_selected);
 			}
 		}
-	echo "		</select>\n";
+	echo "	</select>\n";
 	echo "<br />\n";
 	echo $text['description-greeting']."\n";
 	echo "</td>\n";
@@ -514,7 +463,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-pin-length'].":\n";
+	echo "	".$text['label-pin-length']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='conference_center_pin_length' maxlength='255' value=\"$conference_center_pin_length\">\n";
@@ -525,7 +474,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-enabled'].":\n";
+	echo "	".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='conference_center_enabled'>\n";
@@ -549,7 +498,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='conference_center_description' maxlength='255' value=\"$conference_center_description\">\n";
@@ -561,19 +510,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='dialplan_uuid' value=\"$dialplan_uuid\">\n";
-		echo "				<input type='hidden' name='conference_center_uuid' value='$conference_center_uuid'>\n";
+		echo "		<input type='hidden' name='dialplan_uuid' value=\"$dialplan_uuid\">\n";
+		echo "		<input type='hidden' name='conference_center_uuid' value='$conference_center_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

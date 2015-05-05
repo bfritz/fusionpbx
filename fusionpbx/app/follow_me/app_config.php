@@ -1,4 +1,5 @@
 <?php
+
 	//application details
 		$apps[$x]['name'] = "Follow Me";
 		$apps[$x]['uuid'] = "f5210fba-337d-4e05-86b6-7a2fd9dc7c42";
@@ -17,25 +18,6 @@
 		$apps[$x]['description']['fr-ch'] = "";
 		$apps[$x]['description']['pt-pt'] = "";
 		$apps[$x]['description']['pt-br'] = "";
-
-	//menu details
-		$apps[$x]['menu'][0]['title']['en-us'] = "Follow Me";
-		$apps[$x]['menu'][0]['title']['es-mx'] = "Sígueme";
-		$apps[$x]['menu'][0]['title']['de-de'] = "";
-		$apps[$x]['menu'][0]['title']['de-ch'] = "";
-		$apps[$x]['menu'][0]['title']['de-at'] = "";
-		$apps[$x]['menu'][0]['title']['fr-fr'] = "Follow Me";
-		$apps[$x]['menu'][0]['title']['fr-ca'] = "";
-		$apps[$x]['menu'][0]['title']['fr-ch'] = "";
-		$apps[$x]['menu'][0]['title']['pt-pt'] = "";
-		$apps[$x]['menu'][0]['title']['pt-br'] = "";
-		$apps[$x]['menu'][0]['uuid'] = "a1144e12-873e-4722-9818-02da1adb6ba3";
-		$apps[$x]['menu'][0]['parent_uuid'] = "fd29e39c-c936-f5fc-8e2b-611681b266b5";
-		$apps[$x]['menu'][0]['category'] = "internal";
-		$apps[$x]['menu'][0]['path'] = "/app/calls/calls.php";
-		$apps[$x]['menu'][0]['groups'][] = "user";
-		$apps[$x]['menu'][0]['groups'][] = "admin";
-		$apps[$x]['menu'][0]['groups'][] = "superadmin";
 
 	//permission details
 		$y = 0;
@@ -93,6 +75,8 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$apps[$x]['permissions'][$y]['groups'][] = "user";
 		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "follow_me_cid_set";
+		$y++;
 
 	//schema details
 		$y = 0; //table array index
@@ -130,6 +114,12 @@
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "follow_me_enabled";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "follow_me_caller_id_uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "";
 		$z++;
 

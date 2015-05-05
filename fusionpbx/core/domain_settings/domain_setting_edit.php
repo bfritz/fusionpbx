@@ -17,7 +17,7 @@
 
  The Initial Developer of the Original Code is
  Mark J Crane <markjcrane@fusionpbx.com>
- Portions created by the Initial Developer are Copyright (C) 2008-2012
+ Portions created by the Initial Developer are Copyright (C) 2008-2015
  the Initial Developer. All Rights Reserved.
 
  Contributor(s):
@@ -35,13 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text['button-save'] as $key => $value) {
-		$languages[$key] = '';
-	}
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -272,17 +267,10 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%'  border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left' width='30%' nowrap='nowrap'><b>";
+	echo "<td align='left' valign='top' width='30%' nowrap='nowrap'><b>";
 	if ($action == "update") {
 		echo $text['header-domain_setting-edit'];
 	}
@@ -290,7 +278,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 		echo $text['header-domain_setting-add'];
 	}
 	echo "</b></td>\n";
-	echo "<td width='70%' align='right'>";
+	echo "<td width='70%' align='right' valign='top'>";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='domain_edit.php?id=$domain_uuid'\" value='".$text['button-back']."'>";
 	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
@@ -309,7 +297,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-category'].":\n";
+	echo "	".$text['label-category']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='domain_setting_category' maxlength='255' value=\"$domain_setting_category\">\n";
@@ -320,7 +308,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-subcategory'].":\n";
+	echo "	".$text['label-subcategory']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='domain_setting_subcategory' maxlength='255' value=\"$domain_setting_subcategory\">\n";
@@ -331,7 +319,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-type'].":\n";
+	echo "	".$text['label-type']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='domain_setting_name' maxlength='255' value=\"$domain_setting_name\">\n";
@@ -342,7 +330,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-value'].":\n";
+	echo "	".$text['label-value']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$category = $row['domain_setting_category'];
@@ -391,12 +379,12 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	} elseif ($category == "domain" && $subcategory == "language" && $name == "code" ) {
 		echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
-		foreach ($languages as $key => $value) {
-			if ($row['domain_setting_value'] == $key) {
-				echo "		<option value='$key' selected='selected'>$key</option>\n";
+		foreach ($_SESSION['app']['languages'] as $key => $value) {
+			if ($row['default_setting_value'] == $key) {
+				echo "		<option value='$value' selected='selected'>$value</option>\n";
 			}
 			else {
-				echo "		<option value='$key'>$key</option>\n";
+				echo "		<option value='$value'>$value</option>\n";
 			}
 		}
 		echo "		</select>\n";
@@ -441,16 +429,25 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		echo "		</select>\n";
 	}
-	elseif ($category == "email" && $subcategory == "smtp_password" && $name == "var" ) {
+	elseif ($subcategory == 'password' || substr_count($subcategory, '_password') > 0 || $category == "login" && $subcategory == "password_reset_key" && $name == "text") {
 		echo "	<input class='formfld' type='password' name='domain_setting_value' maxlength='255' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" value=\"".$row['domain_setting_value']."\">\n";
 	}
-	elseif ($category == "provision" && $subcategory == "password" && $name == "var" ) {
-		echo "	<input class='formfld' type='password' name='domain_setting_value' maxlength='255' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" value=\"".$row['domain_setting_value']."\">\n";
-	}
-	elseif ($category == "theme" && $subcategory == "background_color" && $name == "array") {
-		// source: http://rightjs.org
-		echo "	<script src='".PROJECT_PATH."/resources/rightjs/right.js'></script>";
-		echo "	<script src='".PROJECT_PATH."/resources/rightjs/right-colorpicker-src.js' type='text/javascript'></script>";
+	elseif (
+		$category == "theme" && $subcategory == "background_color" && $name == "array" ||
+		$category == "theme" && $subcategory == "login_shadow_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "login_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "domain_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "domain_shadow_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "domain_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "footer_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "footer_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_default_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_default_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_negative_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_negative_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_alert_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_alert_color" && $name == "text"
+		) {
 		echo "	<style>";
 		echo "		DIV.rui-colorpicker  { width: 253px; }";
 		echo "		DIV.rui-colorpicker DIV.controls { width: 61px; }";
@@ -462,6 +459,30 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<input class='formfld' id='domain_setting_value' name='domain_setting_value' data-colorpcker=\"{format: 'hex'}\" value=\"".$row['domain_setting_value']."\">\n";
 		echo "	<script type='text/javascript'>new Colorpicker().assignTo('domain_setting_value');</script>";
 	}
+	elseif ($category == "fax" && $subcategory == "page_size" && $name == "text" ) {
+		echo "	<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
+		echo "		<option value='letter' ".(($row['default_setting_value'] == 'letter') ? 'selected' : null).">Letter</option>";
+		echo "		<option value='legal' ".(($row['default_setting_value'] == 'legal') ? 'selected' : null).">Legal</option>";
+		echo "		<option value='a4' ".(($row['default_setting_value'] == 'a4') ? 'selected' : null).">A4</option>";
+		echo "	</select>";
+	}
+	elseif ($category == "fax" && $subcategory == "resolution" && $name == "text" ) {
+		echo "	<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
+		echo "		<option value='normal' ".(($row['default_setting_value'] == 'normal') ? 'selected' : null).">".$text['label-normal']."</option>";
+		echo "		<option value='fine' ".(($row['default_setting_value'] == 'fine') ? 'selected' : null).">".$text['label-fine']."</option>";
+		echo "		<option value='superfine' ".(($row['default_setting_value'] == 'superfine') ? 'selected' : null).">".$text['label-superfine']."</option>";
+		echo "	</select>";
+	} elseif ($category == "theme" && $subcategory == "domain_visible" && $name == "text" ) {
+		echo "    <select class='formfld' name='default_setting_value'>\n";
+		echo "    	<option value='false' ".(($row['default_setting_value'] == "false") ? "selected='selected'" : null).">".$text['label-false']."</option>\n";
+		echo "    	<option value='true' ".(($row['default_setting_value'] == "true") ? "selected='selected'" : null).">".$text['label-true']."</option>\n";
+		echo "    </select>\n";
+	} elseif ($category == "theme" && $subcategory == "cache" && $name == "boolean" ) {
+		echo "    <select class='formfld' name='default_setting_value'>\n";
+		echo "    	<option value='true' ".(($row['default_setting_value'] == "true") ? "selected='selected'" : null).">".$text['label-true']."</option>\n";
+		echo "    	<option value='false' ".(($row['default_setting_value'] == "false") ? "selected='selected'" : null).">".$text['label-false']."</option>\n";
+		echo "    </select>\n";
+	}
 	else {
 		echo "	<input class='formfld' type='text' name='domain_setting_value' maxlength='255' value=\"".$row['domain_setting_value']."\">\n";
 	}
@@ -470,7 +491,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if ($name == "array") {
+	if ($name == "array" || $name == '') {
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap' width='30%'>\n";
 		echo "    ".$text['label-order']."\n";
@@ -500,7 +521,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-enabled'].":\n";
+	echo "    ".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='domain_setting_enabled'>\n";
@@ -518,16 +539,16 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "    </select>\n";
 	echo "<br />\n";
-	echo $text['description-enabled']."\n";
+	echo $text['description-setting_enabled']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='domain_setting_description' maxlength='255' value=\"$domain_setting_description\">\n";
+	echo "	<input class='formfld' type='text' name='domain_setting_description' maxlength='255' value=\"".$domain_setting_description."\">\n";
 	echo "<br />\n";
 	echo $text['description-description']."\n";
 	echo "</td>\n";
@@ -535,20 +556,17 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='domain_uuid' value='$domain_uuid'>\n";
+	echo "			<input type='hidden' name='domain_uuid' value='$domain_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='domain_setting_uuid' value='$domain_setting_uuid'>\n";
+		echo "		<input type='hidden' name='domain_setting_uuid' value='$domain_setting_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br />";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br />";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

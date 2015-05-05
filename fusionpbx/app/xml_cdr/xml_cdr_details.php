@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the http values and set them to a variable
 	if (strlen($_REQUEST["uuid"]) > 0) {
@@ -48,8 +46,11 @@ else {
 
 //get the cdr string from the database
 	$sql = "select * from v_xml_cdr ";
-	$sql .= "where domain_uuid  = '$domain_uuid' ";
-	$sql .= "and uuid  = '$uuid' ";
+	if ($_GET['showall'] && permission_exists('xml_cdr_all')) {
+		if ($sql_where) { $sql .= "where uuid  = '$uuid' "; }
+	} else {
+		$sql .= "where uuid  = '$uuid' and domain_uuid  = '$domain_uuid' ";
+	}
 	$row = $db->query($sql)->fetch();
 	$start_stamp = trim($row["start_stamp"]);
 	$xml_string = trim($row["xml"]);
@@ -98,12 +99,11 @@ else {
 	require_once "resources/header.php";
 
 //page title and description
-	echo "<br>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td width='30%' align='left' valign='top' nowrap='nowrap'><b>".$text['title2']."</b></td>\n";
 	echo "<td width='70%' align='right' valign='top'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='".$text['button-back']."'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php".(($_SESSION['xml_cdr']['last_query'] != '') ? "?".$_SESSION['xml_cdr']['last_query'] : null)."'\" value='".$text['button-back']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -168,7 +168,6 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'><b>".$text['label-summary']."</b>&nbsp;</td>\n";
@@ -224,16 +223,12 @@ else {
 	echo "	<td valign='top' class='".$row_style[$c]."'>".$duration."</td>\n";
 	echo "	<td valign='top' class='".$row_style[$c]."'>".$hangup_cause."</td>\n";
 	echo "</table>";
-	echo "</div>";
-
-//breaking space
 	echo "<br /><br />\n";
 
 //channel data loop
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'><b>".$text['label-channel']."</b>&nbsp;</td>\n";
@@ -243,8 +238,8 @@ else {
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>Name</th>\n";
-	echo "<th>Value</th>\n";
+	echo "<th width='30%'>".$text['label-name']."</th>\n";
+	echo "<th width='70%'>".$text['label-value']."</th>\n";
 	echo "</tr>\n";
 	foreach($array["channel_data"] as $key => $value) {
 		$value = urldecode($value);
@@ -255,27 +250,23 @@ else {
 		if ($c==0) { $c=1; } else { $c=0; }
 	}
 	echo "</table>";
-	echo "</div>";
-
-//breaking space
 	echo "<br /><br />\n";
 
 //variable loop
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "	<td align='left'><b>Variables</b>&nbsp;</td>\n";
+	echo "	<td align='left'><b>".$text['label-variables']."</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>".$text['label-name']."</th>\n";
-	echo "<th>".$text['label-value']."</th>\n";
+	echo "<th width='30%'>".$text['label-name']."</th>\n";
+	echo "<th width='70%'>".$text['label-value']."</th>\n";
 	echo "</tr>\n";
 	foreach($array["variables"] as $key => $value) {
 		$value = urldecode($value);
@@ -319,16 +310,12 @@ else {
 		if ($c==0) { $c=1; } else { $c=0; }
 	}
 	echo "</table>";
-	echo "</div>";
-
-//breaking space
 	echo "<br /><br />\n";
 
 //app_log
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'><b>".$text['label-application-log']."</b>&nbsp;</td>\n";
@@ -338,8 +325,8 @@ else {
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>".$text['label-name']."</th>\n";
-	echo "<th>".$text['label-data']."</th>\n";
+	echo "<th width='30%'>".$text['label-name']."</th>\n";
+	echo "<th width='70%'>".$text['label-data']."</th>\n";
 	echo "</tr>\n";
 
 	//foreach($array["variables"] as $key => $value) {
@@ -353,9 +340,6 @@ else {
 		if ($c==0) { $c=1; } else { $c=0; }
 	}
 	echo "</table>";
-	echo "</div>";
-
-//breaking space
 	echo "<br /><br />\n";
 
 //call flow
@@ -372,14 +356,14 @@ else {
 			echo "	<table width='95%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>".$text['label-call-flow']."</b>&nbsp;</td>\n";
-			echo "			<td></td>\n";
+			echo "			<td>&nbsp;</td>\n";
 			echo "		</tr>\n";
 			echo "	</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>".$text['label-name']."</th>\n";
-			echo "			<th>".$text['label-value']."</th>\n";
+			echo "			<th width='30%'>".$text['label-name']."</th>\n";
+			echo "			<th width='70%'>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row["@attributes"] as $key => $value) {
 				$value = urldecode($value);
@@ -398,14 +382,14 @@ else {
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>".$text['label-call-flow-2']."</b>&nbsp;</td>\n";
-			echo "			<td></td>\n";
+			echo "			<td>&nbsp;</td>\n";
 			echo "		</tr>\n";
 			echo "</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>".$text['label-name']."</th>\n";
-			echo "			<th>".$text['label-value']."</th>\n";
+			echo "			<th width='30%'>".$text['label-name']."</th>\n";
+			echo "			<th width='70%'>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row["extension"]["@attributes"] as $key => $value) {
 				$value = urldecode($value);
@@ -424,14 +408,14 @@ else {
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>".$text['label-call-flow-3']."</b>&nbsp;</td>\n";
-			echo "			<td></td>\n";
+			echo "			<td>&nbsp;</td>\n";
 			echo "		</tr>\n";
 			echo "</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>".$text['label-name']."</th>\n";
-			echo "			<th>".$text['label-data']."</th>\n";
+			echo "			<th width='30%'>".$text['label-name']."</th>\n";
+			echo "			<th width='70%'>".$text['label-data']."</th>\n";
 			echo "		</tr>\n";
 			foreach ($row["extension"]["application"] as $tmp_row) {
 				$app_name = $tmp_row["@attributes"]["app_name"];
@@ -451,14 +435,14 @@ else {
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>".$text['label-call-flow-4']."</b>&nbsp;</td>\n";
-			echo "			<td></td>\n";
+			echo "			<td>&nbsp;</td>\n";
 			echo "		</tr>\n";
 			echo "</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>".$text['label-name']."</th>\n";
-			echo "			<th>".$text['label-value']."</th>\n";
+			echo "			<th width='30%'>".$text['label-name']."</th>\n";
+			echo "			<th width='70%'>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row["caller_profile"] as $key => $value) {
 				$value = urldecode($value);
@@ -469,8 +453,8 @@ else {
 					echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				}
 				else {
-					echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".$key."</td>\n";
-					echo "			<td>\n";
+					echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".$key."&nbsp;</td>\n";
+					echo "			<td class='".$row_style[$c]."'>\n";
 					echo "				<table width='100%'>\n";
 					foreach($child["originatee_caller_profile"] as $key => $value) {
 						//print_r($tmp_child);
@@ -503,8 +487,8 @@ else {
 			echo "		</tr>\n";
 
 			echo "		<tr>\n";
-			echo "			<th>".$text['label-name']."</th>\n";
-			echo "			<th>".$text['label-value']."</th>\n";
+			echo "			<th width='30%'>".$text['label-name']."</th>\n";
+			echo "			<th width='70%'>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row["times"] as $key => $value) {
 				$value = urldecode($value);
@@ -526,12 +510,6 @@ else {
 		echo "</tr>\n";
 		echo "</table>";
 	}
-
-//testing
-	//echo "<pre>\n";
-	//echo htmlentities($xml_string);
-	//print_r($xml);
-	//echo "</pre>\n";
 
 //get the footer
 	require_once "resources/footer.php";

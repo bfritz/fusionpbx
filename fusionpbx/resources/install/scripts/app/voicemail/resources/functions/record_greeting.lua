@@ -24,16 +24,18 @@
 --	POSSIBILITY OF SUCH DAMAGE.
 
 --define a function to record the greeting
-	function record_greeting()
+	function record_greeting(greeting_id)
 
 		--flush dtmf digits from the input buffer
 			session:flushDigits();
 
-		--Choose a greeting between 1 and 9
-			if (session:ready()) then
-				dtmf_digits = '';
-				greeting_id = macro(session, "choose_greeting_choose", 1, 5000, '');
-				freeswitch.consoleLog("notice", "[voicemail] greeting_id: " .. greeting_id .. "\n");
+		--choose a greeting between 1 and 9
+			if (greeting_id == nil) then
+				if (session:ready()) then
+					dtmf_digits = '';
+					greeting_id = macro(session, "choose_greeting_choose", 1, 5000, '');
+					freeswitch.consoleLog("notice", "[voicemail] greeting_id: " .. greeting_id .. "\n");
+				end
 			end
 
 		--validate the greeting_id
@@ -52,15 +54,22 @@
 						macro(session, "record_greeting", 1, 100, '');
 					end
 
-				--record the greeting
-					if (session:ready()) then
-						max_len_seconds = 30;
-						silence_threshold = 30;
-						silence_seconds = 5;
-						mkdir(voicemail_dir.."/"..voicemail_id);
-						-- syntax is session:recordFile(file_name, max_len_secs, silence_threshold, silence_secs)
-						result = session:recordFile(voicemail_dir.."/"..voicemail_id.."/greeting_"..greeting_id..".wav", max_len_seconds, silence_threshold, silence_seconds);
-						--session:execute("record", voicemail_dir.."/"..uuid.." 180 200");
+				--store the voicemail greeting
+					if (storage_type == "http_cache") then
+						freeswitch.consoleLog("notice", "[voicemail] ".. storage_type .. " ".. storage_path .."\n");
+						storage_path = storage_path:gsub("${domain_name}", domain_name);
+						session:execute("record", storage_path .."/"..recording_name);
+					else 
+						--prepare to record the greeting
+							if (session:ready()) then
+								max_len_seconds = 30;
+								silence_threshold = 30;
+								silence_seconds = 5;
+								mkdir(voicemail_dir.."/"..voicemail_id);
+								-- syntax is session:recordFile(file_name, max_len_secs, silence_threshold, silence_secs)
+								result = session:recordFile(voicemail_dir.."/"..voicemail_id.."/greeting_"..greeting_id..".tmp.wav", max_len_seconds, silence_threshold, silence_seconds);
+								--session:execute("record", voicemail_dir.."/"..uuid.." 180 200");
+							end
 					end
 
 				--play the greeting
@@ -73,7 +82,7 @@
 				--option to play, save, and re-record the greeting
 					if (session:ready()) then
 						timeouts = 0;
-						record_menu("greeting", voicemail_dir.."/"..voicemail_id.."/greeting_"..greeting_id..".wav");
+						record_menu("greeting", voicemail_dir.."/"..voicemail_id.."/greeting_"..greeting_id..".tmp.wav", greeting_id);
 					end
 			else
 				--invalid greeting_id
@@ -93,4 +102,12 @@
 						end
 					end
 			end
+			
+		--clean up any tmp greeting files
+			for gid = 1, 9, 1 do
+				if (file_exists(voicemail_dir.."/"..voicemail_id.."/greeting_"..gid..".tmp.wav")) then
+					os.remove(voicemail_dir.."/"..voicemail_id.."/greeting_"..gid..".tmp.wav");
+				end
+			end
+			
 	end

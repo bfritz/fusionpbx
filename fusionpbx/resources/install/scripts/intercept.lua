@@ -45,6 +45,12 @@
 		dbh = database_handle('switch');
 	end
 
+--prepare the api object
+	api = freeswitch.API();
+
+--add the function
+	dofile(scripts_dir.."/resources/functions/trim.lua");
+
 --exits the script if we didn't connect properly
 	assert(dbh:connected());
 
@@ -109,6 +115,11 @@ if ( session:ready() ) then
 				end
 		end
 
+	--predefined variables
+		uuid = '';
+		call_hostname = '';
+		callee_num = '';
+
 	--check the database to get the uuid of a ringing call
 		sql = "select call_uuid as uuid, hostname, callee_num, ip_addr from channels ";
 		sql = sql .. "where callstate = 'RINGING' ";
@@ -129,26 +140,27 @@ if ( session:ready() ) then
 			uuid = result.uuid;
 			call_hostname = result.hostname;
 			callee_num = result.callee_num;
-			ip_addr = result.ip_addr;
 		end);
 end
 
 --get the hostname
-	hostname = freeswitch.getGlobalVariable("hostname");
+	hostname = trim(api:execute("hostname", ""));
 	freeswitch.consoleLog("NOTICE", "Hostname:"..hostname.."  Call Hostname:"..call_hostname.."\n");
 
 --intercept a call that is ringing
 	if (uuid) then
-		if (hostname == call_hostname) then
-			session:execute("intercept", uuid);
-		else
-			session:execute("export", "sip_h_X-intercept_uuid="..uuid);
-			session:execute("export", "sip_h_X-domain_uuid="..domain_uuid);
-			session:execute("export", "sip_h_X-domain_name="..domain_name);
-			session:execute("export", "sip_h_X-callee_num="..callee_num);
-			port = freeswitch.getGlobalVariable(sofia_profile_name.."_sip_port");
-			session:execute("bridge", "sofia/"..sofia_profile_name.."/**@"..call_hostname..":"..port);
-			freeswitch.consoleLog("NOTICE", "Send call to other host.... \n");
+		if (session:getVariable("billmsec") == nil) then
+			if (hostname == call_hostname) then
+				session:execute("intercept", uuid);
+			else
+				session:execute("export", "sip_h_X-intercept_uuid="..uuid);
+				session:execute("export", "sip_h_X-domain_uuid="..domain_uuid);
+				session:execute("export", "sip_h_X-domain_name="..domain_name);
+				session:execute("export", "sip_h_X-callee_num="..callee_num);
+				port = freeswitch.getGlobalVariable(sofia_profile_name.."_sip_port");
+				session:execute("bridge", "sofia/"..sofia_profile_name.."/**@"..call_hostname..":"..port);
+				freeswitch.consoleLog("NOTICE", "Send call to other host.... \n");
+			end
 		end
 	end
 

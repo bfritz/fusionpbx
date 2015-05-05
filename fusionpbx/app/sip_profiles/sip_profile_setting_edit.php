@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -54,14 +52,14 @@ if (strlen($_GET["sip_profile_uuid"]) > 0) {
 }
 
 //get http post variables and set them to php variables
-	if (count($_POST)>0) {
+	if (count($_POST) > 0) {
 		$sip_profile_setting_name = check_str($_POST["sip_profile_setting_name"]);
 		$sip_profile_setting_value = check_str($_POST["sip_profile_setting_value"]);
 		$sip_profile_setting_enabled = check_str($_POST["sip_profile_setting_enabled"]);
 		$sip_profile_setting_description = check_str($_POST["sip_profile_setting_description"]);
 	}
 
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
+if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
@@ -172,15 +170,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$document['title'] = $text['title-setting'];
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-setting']."</b></td>\n";
 	echo "<td width='70%' align='right'>";
@@ -196,7 +187,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-setting_name'].":\n";
+	echo "	".$text['label-setting_name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='sip_profile_setting_name' maxlength='255' value=\"$sip_profile_setting_name\">\n";
@@ -207,7 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-setting_value'].":\n";
+	echo "	".$text['label-setting_value']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='sip_profile_setting_value' maxlength='255' value=\"$sip_profile_setting_value\">\n";
@@ -218,7 +209,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-setting_enabled'].":\n";
+	echo "	".$text['label-setting_enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='sip_profile_setting_enabled'>\n";
@@ -242,7 +233,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-setting_description'].":\n";
+	echo "	".$text['label-setting_description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='sip_profile_setting_description' maxlength='255' value=\"$sip_profile_setting_description\">\n";
@@ -252,20 +243,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='sip_profile_uuid' value='$sip_profile_uuid'>\n";
+	echo "			<input type='hidden' name='sip_profile_uuid' value='$sip_profile_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='sip_profile_setting_uuid' value='$sip_profile_setting_uuid'>\n";
+		echo "		<input type='hidden' name='sip_profile_setting_uuid' value='$sip_profile_setting_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //include the footer
 	require_once "resources/footer.php";

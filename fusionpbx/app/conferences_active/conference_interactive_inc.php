@@ -27,7 +27,7 @@
 include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-if (permission_exists('conference_active_view')) {
+if (permission_exists('conference_interactive_view')) {
 	//access granted
 }
 else {
@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the http get or post and set it as php variables
 	$conference_uuid = check_str($_REQUEST["c"]);
@@ -97,20 +95,14 @@ else {
 		$row_style["0"] = "row_style0";
 		$row_style["1"] = "row_style1";
 
-		echo "<div id='cmd_reponse'>\n";
-		echo "</div>\n";
+		echo "<div id='cmd_reponse'></div>\n";
 
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
-		echo "<td colspan='3' >\n";
-		echo "	<strong>\n";
-		echo "		Members: ".$member_count."\n";
-		echo "	</strong>\n";
-		echo "</td>\n";
-		echo "<td colspan='2'>\n";
-		echo "	&nbsp;\n";
-		echo "</td>\n";
-		echo "<td colspan='7' align='right'>\n";
+		echo "	<td>";
+		echo "		<strong style='color: #000;'>".$text['label-members'].": ".$member_count."</strong>\n";
+		echo "	</td>\n";
+		echo "<td align='right'>\n";
 
 		$recording_dir = $_SESSION['switch']['recordings']['dir'].'/archive/'.date("Y").'/'.date("M").'/'.date("d");
 		$recording_name = '';
@@ -121,50 +113,33 @@ else {
 			$recording_name = $session_uuid.".mp3";
 		}
 
-		if ($recording == "true") {
-			echo "	".$text['label-recording']." &nbsp;";
-		}
-		else {
-			echo "	".$text['label-not-recording']." &nbsp;";
-		}
-		if (permission_exists('conference_active_lock')) {
-			if ($locked == "true") {
-				echo "		<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=unlock');\" value='".$text['label-unlock']."'>\n";
-			}
-			else {
-				echo "		<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=lock');\" value='".$text['label-lock']."'>\n";
-			}
-		}
+		echo "<img src='resources/images/".(($recording == "true") ? "recording.png" : "not_recording.png")."' style='width: 16px; height: 16px; border: none;' align='absmiddle' title=\"".$text['label-'.(($recording == "true") ? 'recording' : 'not-recording')]."\">&nbsp;&nbsp;";
 
-		if ($mute_all == "true") {
-			echo "		<input type='button' class='btn' title=\"".$text['label-mute-all-alt']."\" onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=unmute+non_moderator');\" value='".$text['label-unmute-all']."'>\n";
+		if (permission_exists('conference_interactive_lock')) {
+			$action_locked = ($locked == "true") ? 'unlock' : 'lock';
+			echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=".$action_locked."');\" value='".$text['label-'.$action_locked]."'>\n";
 		}
-		else {
-			echo "		<input type='button' class='btn' title=\"".$text['label-mute-all-alt']."\" onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=mute+non_moderator');\" value='".$text['label-mute-all']."'>\n";
+		if (permission_exists('conference_interactive_mute')) {
+			$action_mute_all = ($mute_all == "true") ? 'unmute' : 'mute';
+			echo "	<input type='button' class='btn' title=\"".$text['label-mute-all-alt']."\" onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=".$action_mute_all."+non_moderator');\" value='".$text['label-'.$action_mute_all.'-all']."'>\n";
 		}
-
-		echo "		<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=kick+all');\" value='".$text['label-end-conference']."'>\n";
+		echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=kick+all');\" value='".$text['label-end-conference']."'>\n";
 
 		echo "</td>\n";
 		echo "</tr>\n";
-		echo "<tr><td colspan='30'>&nbsp;</td></tr>\n";
+		echo "</table>\n";
+		echo "<br />\n";
 
+		echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
-		echo "<th>".$text['label-id']."</th>\n";
-		//echo "<th>UUID</th>\n";
+		echo "<th width='1'>&nbsp;</th>\n";
 		echo "<th>".$text['label-cid-name']."</th>\n";
 		echo "<th>".$text['label-cid-num']."</th>\n";
-		echo "<th>".$text['label-moderator']."</th>\n";
+		echo "<th>".$text['label-capabilities']."</th>\n";
 		echo "<th>".$text['label-joined']."</th>\n";
-		echo "<th>".$text['label-hear']."</th>\n";
-		echo "<th>".$text['label-speak']."</th>\n";
-		echo "<th>".$text['label-talking']."</th>\n";
-		echo "<th>".$text['label-last-talk']."</th>\n";
-		if (permission_exists('conference_active_video')) {
-			echo "<th>".$text['label-video']."</th>\n";
-		}
+		echo "<th>".$text['label-quiet']."</th>\n";
 		echo "<th>".$text['label-floor']."</th>\n";
-		echo "<th>".$text['label-tool']."</th>\n";
+		echo "<th>&nbsp;</th>\n";
 		echo "</tr>\n";
 
 		foreach ($xml->conference->members->member as $row) {
@@ -184,110 +159,65 @@ else {
 			$caller_id_name = urldecode($caller_id_name);
 			$caller_id_number = $row->caller_id_number;
 
-			//format the seconds
-			$join_time_formatted = sprintf("%02s", floor($join_time/3600)).":".sprintf("%02s",floor($join_time/60)).":".sprintf("%02s",($join_time - (floor($join_time/60))*60));
-			$last_talking_formatted = sprintf("%02s",floor($last_talking/3600)).":".sprintf("%02s",floor($last_talking/60)).":".sprintf("%02s",($last_talking - (floor($last_talking/60))*60));
+			//format seconds
+			$join_time_formatted = sprintf('%02d:%02d:%02d', ($join_time/3600), ($join_time/60%60), $join_time%60);
+			$last_talking_formatted = sprintf('%02d:%02d:%02d', ($last_talking/3600), ($last_talking/60%60), $last_talking%60);
 
 			if (strlen($record_path) == 0) {
+				if (permission_exists('conference_interactive_mute')) {
+					$action_mute = ($flag_can_speak == "true") ? 'mute' : 'unmute';
+					$td_onclick = "onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=".$action_mute."&id=".$id."');\"";
+					$td_title = "title=\"".$text['message-click_to_'.$action_mute]."\"";
+				}
 				echo "<tr>\n";
-				echo "<td valign='top' class='".$row_style[$c]."'>$id</td>\n";
-				//echo "<td valign='top' class='".$row_style[$c]."'>$uuid</td>\n";
-				echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_name</td>\n";
-				echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_number</td>\n";
-				if ($is_moderator == "true") {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-yes']."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title." style='padding: 4px 6px;'><img src='resources/images/".(($is_moderator == "true") ? 'moderator' : 'participant').".png' style='width: 16px; height: 16px; border: none;' title=\"".$text['label-'.(($is_moderator == "true") ? 'moderator' : 'participant')]."\"></td>\n";
+				$talking_icon = ($flag_talking == "true") ? "<img src='resources/images/talking.png' style='width: 16px; height: 16px; border: none; margin: -2px 10px -2px 15px;' align='absmiddle' title=\"".$text['label-talking']."\">" : null;
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title.">".$caller_id_name.$talking_icon."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title.">".$caller_id_number."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title." style='padding-top: 5px;'>";
+				echo 	($flag_can_hear == "true") ? "<img src='resources/images/hear.png' style='width: 16px; height: 16px; border: none; margin: 0px 4px -2px 0px;' align='absmiddle' title=\"".$text['label-hear']."\">" : null;
+				echo 	($flag_can_speak == "true") ? "<img src='resources/images/speak.png' style='width: 16px; height: 16px; border: none; margin: 0px 6px -2px 0px;' align='absmiddle' title=\"".$text['label-speak']."\">" : null;
+				if (permission_exists('conference_interactive_video')) {
+					echo ($flag_has_video == "true") ? "<img src='resources/images/video.png' style='width: 16px; height: 16px; border: none; margin: 0px 4px -2px 0px;' align='absmiddle' title=\"".$text['label-video']."\">" : null;
 				}
-				else {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-no']."</td>\n";
-				}
-				echo "<td valign='top' class='".$row_style[$c]."'>".$join_time_formatted."</td>\n";
-				if ($flag_can_hear == "true") {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-yes']."</td>\n";
-				}
-				else {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-no']."</td>\n";
-				}
-				if ($flag_can_speak == "true") {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-yes']."</td>\n";
-				}
-				else {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-no']."</td>\n";
-				}
-				if ($flag_talking == "true") {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-yes']."</td>\n";
-				}
-				else {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-no']."</td>\n";
-				}
-				echo "<td valign='top' class='".$row_style[$c]."'>$last_talking_formatted</td>\n";
-				if (permission_exists('conference_active_video')) {
-					if ($flag_has_video == "true") {
-						echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-yes']."</td>\n";
-					}
-					else {
-						echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-no']."</td>\n";
-					}
-				}
-				if ($flag_has_floor == "true") {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-yes']."</td>\n";
-				}
-				else {
-					echo "<td valign='top' class='".$row_style[$c]."'>".$text['label-no']."</td>\n";
-				}
-				echo "<td valign='top' class='".$row_style[$c]."' style='text-align:right;'>\n";
+				echo "</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title.">".$join_time_formatted."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title.">".$last_talking_formatted."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' ".$td_onclick." ".$td_title.">".$text['label-'.(($flag_has_floor == "true") ? 'yes' : 'no')]."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' style='text-align: right; padding: 1px 2px; white-space: nowrap;'>\n";
 				//energy
-					if (permission_exists('conference_active_energy')) {
+					if (permission_exists('conference_interactive_energy')) {
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?direction=up&cmd=conference&name=".$conference_name."&data=energy&id=".$id."');\" value='+".$text['label-energy']."'>\n";
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=energy&id=".$id."');\" value='-".$text['label-energy']."'>\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?direction=up&cmd=conference&name=".$conference_name."&data=energy&id=".$id."');\">+".$text['label-energy']."</a>&nbsp;\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=energy&id=".$id."');\">-".$text['label-energy']."</a>&nbsp;\n";
 					}
 				//volume
-					if (permission_exists('conference_active_volume')) {
+					if (permission_exists('conference_interactive_volume')) {
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?direction=up&cmd=conference&name=".$conference_name."%&data=volume_in&id=".$id."');\" value='+".$text['label-volume']."'>\n";
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=volume_in&id=".$id."');\" value='-".$text['label-volume']."'>\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?direction=up&cmd=conference&name=".$conference_name."%&data=volume_in&id=".$id."');\">+".$text['label-volume']."</a>&nbsp;\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=volume_in&id=".$id."');\">-".$text['label-volume']."</a>&nbsp;\n";
 					}
-					if (permission_exists('conference_active_gain')) {
+					if (permission_exists('conference_interactive_gain')) {
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?direction=up&cmd=conference&name=".$conference_name."&data=volume_out&id=".$id."');\" value='+".$text['label-gain']."'>\n";
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=volume_out&id=".$id."');\" value='-".$text['label-gain']."'>\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?direction=up&cmd=conference&name=".$conference_name."&data=volume_out&id=".$id."');\">+".$text['label-gain']."</a>&nbsp;\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=volume_out&id=".$id."');\">-".$text['label-gain']."</a>&nbsp;\n";
 					}
 				//mute and unmute
-					if (permission_exists('conference_active_mute')) {
-						if ($flag_can_speak == "true") {
-							echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=mute&id=".$id."');\" value='".$text['label-mute']."'>\n";
-							//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('');\">".$text['label-mute']."</a>&nbsp;\n";
-						}
-						else {
-							echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=unmute&id=".$id."');\" value='".$text['label-unmute']."'>\n";
-							//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=unmute&id=".$id."');\">".$text['label-unmute']."</a>&nbsp;\n";
-						}
+					if (permission_exists('conference_interactive_mute')) {
+						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=".$action_mute."&id=".$id."');\" value='".$text['label-'.$action_mute]."'>\n";
 					}
 				//deaf and undeaf
-					if (permission_exists('conferences_active_deaf')) {
-						if ($flag_can_hear == "true") {
-							echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=deaf&id=".$id."');\" value='".$text['label-deaf']."'>\n";
-							//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=deaf&id=".$id."');\">".$text['label-deaf']."</a>&nbsp;\n";
-						}
-						else {
-							echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=undeaf&id=".$id."');\" value='".$text['label-undeaf']."'>\n";
-							//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=undeaf&id=".$id."');\">".$text['label-undeaf']."</a>&nbsp;\n";
-						}
+					if (permission_exists('conference_interactive_deaf')) {
+						$action_deaf = ($flag_can_hear == "true") ? 'deaf' : 'undeaf';
+						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=".$action_deaf."&id=".$id."');\" value='".$text['label-'.$action_deaf]."'>\n";
 					}
 				//kick someone from the conference
-					if (permission_exists('conference_active_kick')) {
+					if (permission_exists('conference_interactive_kick')) {
 						echo "	<input type='button' class='btn' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=kick&id=".$id."&uuid=".$uuid."');\" value='".$text['label-kick']."'>\n";
-						//echo "	<a href='javascript:void(0);' onclick=\"send_cmd('conference_exec.php?cmd=conference&name=".$conference_name."&data=kick&id=".$id."&uuid=".$uuid."');\">".$text['label-kick']."</a>&nbsp;\n";
 					}
-				echo "	&nbsp;";
 				echo "</td>\n";
 				echo "</tr>\n";
 			}
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = ($c == 0) ? 1 : 0;
 		}
 		echo "</table>\n";
+		echo "<br /><br />";
 	}
 ?>

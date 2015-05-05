@@ -26,7 +26,7 @@
 require_once "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-if (permission_exists('contact_delete')) {
+if (permission_exists('contact_note_delete')) {
 	//access granted
 }
 else {
@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
@@ -46,8 +44,7 @@ if (count($_GET)>0) {
 }
 
 if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from v_contact_notes ";
+	$sql = "delete from v_contact_notes ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and contact_note_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));

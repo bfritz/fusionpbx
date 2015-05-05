@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the number of rows in v_extensions
 	$sql = " select count(*) as num_rows from v_settings ";
@@ -214,15 +212,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	require_once "resources/header.php";
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	if ($action == "add") {
@@ -318,7 +309,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	/*
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP Host:\n";
+	echo "    SMTP Host\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='smtp_host' maxlength='255' value=\"$smtp_host\">\n";
@@ -329,7 +320,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP Secure:\n";
+	echo "    SMTP Secure\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='smtp_secure'>\n";
@@ -360,7 +351,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP Auth:\n";
+	echo "    SMTP Auth\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='smtp_auth'>\n";
@@ -385,7 +376,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP Username:\n";
+	echo "    SMTP Username\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='smtp_username' maxlength='255' value=\"$smtp_username\">\n";
@@ -396,7 +387,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP Password:\n";
+	echo "    SMTP Password\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='password' name='smtp_password' id='smtp_password' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='50' value=\"$smtp_password\">\n";
@@ -407,7 +398,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP From:\n";
+	echo "    SMTP From\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='smtp_from' maxlength='255' value=\"$smtp_from\">\n";
@@ -418,7 +409,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    SMTP From Name:\n";
+	echo "    SMTP From Name\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='smtp_from_name' maxlength='255' value=\"$smtp_from_name\">\n";
@@ -433,7 +424,39 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    ".$text['label-shout-decoder']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='mod_shout_decoder' maxlength='255' value=\"$mod_shout_decoder\">\n";
+	echo "    <select class='formfld' name='mod_shout_decoder'>\n";
+	echo "    <option value=''></option>\n";
+	if ($mod_shout_decoder == "i486") {
+		echo "    <option value='i486' selected='selected'>i486</option>\n";
+	}
+	else {
+		echo "    <option value='i486'>i486</option>\n";
+	}
+	if ($mod_shout_decoder == "i586") {
+		echo "    <option value='i586' selected='selected'>i586</option>\n";
+	}
+	else {
+		echo "    <option value='i586'>i586</option>\n";
+	}
+	if ($mod_shout_decoder == "i686") {
+		echo "    <option value='i686' selected='selected'>i686</option>\n";
+	}
+	else {
+		echo "    <option value='i686'>i686</option>\n";
+	}
+	if ($mod_shout_decoder == "amd64") {
+		echo "    <option value='amd64' selected='selected'>amd64</option>\n";
+	}
+	else {
+		echo "    <option value='amd64'>amd64</option>\n";
+	}
+	if ($mod_shout_decoder == "generic") {
+		echo "    <option value='generic' selected='selected'>generic</option>\n";
+	}
+	else {
+		echo "    <option value='generic'>generic</option>\n";
+	}
+	echo "    </select>\n";
 	echo "<br />\n";
 	echo $text['description-shout-decoder']."\n";
 	echo "</td>\n";
@@ -452,17 +475,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (permission_exists('setting_edit')) {
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
+		echo "			<br>";
 		echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
 	}
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
-
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
 
 //show the footer
 	require_once "resources/footer.php";

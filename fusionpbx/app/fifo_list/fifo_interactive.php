@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the fifo_name from http and set it to a php variable
 	$fifo_name = trim($_REQUEST["c"]);
@@ -125,26 +123,20 @@ var record_count = 0;
 </script>
 
 <?php
-echo "<div align='center'>";
-
-echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
-echo "	<td align='left'><b>".$text['header-queue']."</b><br>\n";
+echo "	<td align='left'>";
+echo "		<b>".$text['header-queue']."</b>";
+echo "		<br><br>\n";
 echo "		".$text['description-queue']."\n";
 echo "	</td>\n";
 echo "	</tr>\n";
 echo "</table>\n";
+echo "<br>";
 
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-echo "	<tr class='border'>\n";
-echo "	<td align=\"left\">\n";
-echo "		<div id=\"ajax_reponse\"></div>\n";
-echo "		<div id=\"time_stamp\" style=\"visibility:hidden\">".date('Y-m-d-s')."</div>\n";
-echo "	</td>";
-echo "	</tr>";
-echo "</table>";
-
-echo "</div>";
+echo "<div id=\"ajax_reponse\"></div>\n";
+echo "<div id=\"time_stamp\" style=\"visibility:hidden\">".date('Y-m-d-s')."</div>\n";
+echo "<br><br>";
 
 require_once "resources/footer.php";
 ?>

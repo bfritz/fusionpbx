@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //define variables
 	$c = 0;
@@ -72,9 +70,6 @@ if (permission_exists('log_download')) {
 }
 
 require_once "resources/header.php";
-
-echo "<br />\n";
-echo "<div align='center'>\n";
 
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 echo "	<tr>\n";
@@ -283,8 +278,6 @@ if (permission_exists('log_view')) {
 echo "		</td>";
 echo "	</tr>\n";
 echo "</table>\n";
-echo "</div>\n";
 
 require_once "resources/footer.php";
-
 ?>

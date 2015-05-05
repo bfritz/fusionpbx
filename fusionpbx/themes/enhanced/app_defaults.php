@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,11 +36,18 @@ if ($domains_processed == 1) {
 		$array[$x]['default_setting_description'] = 'Set the opacity of the login box (decimal).';
 		$x++;
 		$array[$x]['default_setting_category'] = 'theme';
+		$array[$x]['default_setting_subcategory'] = 'login_shadow_color';
+		$array[$x]['default_setting_name'] = 'text';
+		$array[$x]['default_setting_value'] = '#888888';
+		$array[$x]['default_setting_enabled'] = 'true';
+		$array[$x]['default_setting_description'] = 'Set the shadow color (HTML compatible) of the login box.';
+		$x++;
+		$array[$x]['default_setting_category'] = 'theme';
 		$array[$x]['default_setting_subcategory'] = 'login_background_color';
 		$array[$x]['default_setting_name'] = 'text';
 		$array[$x]['default_setting_value'] = '#ffffff';
 		$array[$x]['default_setting_enabled'] = 'true';
-		$array[$x]['default_setting_description'] = 'Set the background color (HTML compatible) for the login box.';
+		$array[$x]['default_setting_description'] = 'Set the background color (hexadecimal) for the login box.';
 		$x++;
 		$array[$x]['default_setting_category'] = 'theme';
 		$array[$x]['default_setting_subcategory'] = 'domain_visible';
@@ -55,6 +62,13 @@ if ($domains_processed == 1) {
 		$array[$x]['default_setting_value'] = '#000000';
 		$array[$x]['default_setting_enabled'] = 'true';
 		$array[$x]['default_setting_description'] = 'Set the text color for domain name.';
+		$x++;
+		$array[$x]['default_setting_category'] = 'theme';
+		$array[$x]['default_setting_subcategory'] = 'domain_shadow_color';
+		$array[$x]['default_setting_name'] = 'text';
+		$array[$x]['default_setting_value'] = '#ffffff';
+		$array[$x]['default_setting_enabled'] = 'true';
+		$array[$x]['default_setting_description'] = 'Set the text shadow color for domain name (Enhanced theme only).';
 		$x++;
 		$array[$x]['default_setting_category'] = 'theme';
 		$array[$x]['default_setting_subcategory'] = 'domain_background_color';
@@ -146,6 +160,20 @@ if ($domains_processed == 1) {
 		$array[$x]['default_setting_value'] = '1.75';
 		$array[$x]['default_setting_enabled'] = 'true';
 		$array[$x]['default_setting_description'] = 'Set the hide delay of the message bar (seconds).';
+		$x++;
+		$array[$x]['default_setting_category'] = 'theme';
+		$array[$x]['default_setting_subcategory'] = 'body_opacity';
+		$array[$x]['default_setting_name'] = 'text';
+		$array[$x]['default_setting_value'] = '0.93';
+		$array[$x]['default_setting_enabled'] = 'false';
+		$array[$x]['default_setting_description'] = 'Set the opacity of the body and content (decimal).';
+		$x++;
+		$array[$x]['default_setting_category'] = 'theme';
+		$array[$x]['default_setting_subcategory'] = 'menu_opacity';
+		$array[$x]['default_setting_name'] = 'text';
+		$array[$x]['default_setting_value'] = '0.96';
+		$array[$x]['default_setting_enabled'] = 'false';
+		$array[$x]['default_setting_description'] = 'Set the opacity of the main menu (decimal, Minimized theme only).';
 
 	//iterate and add each, if necessary
 		foreach ($array as $index => $default_settings) {
@@ -256,6 +284,9 @@ if ($domains_processed == 1) {
 				//print_r($message);
 			}
 		}
+
+	//unset the array variable
+		unset($array);
 }
 
 ?>

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2013 All Rights Reserved.
+	Copyright (C) 2015 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -34,29 +34,32 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the id
-	if (count($_GET)>0) {
-		$id = check_str($_GET["id"]);
+	if (isset($_GET["id"])) {
+		$id = $_GET["id"];
 		$device_uuid = check_str($_GET["device_uuid"]);
+		$device_profile_uuid = check_str($_GET["device_profile_uuid"]);
 	}
 
-if (strlen($id)>0) {
-	//delete device_key
+//delete device keys
+	if (is_uuid($id)) {
 		$sql = "delete from v_device_keys ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and device_key_uuid = '$id' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
+		$sql .= "where (domain_uuid = '".$_SESSION["domain_uuid"]."' or domain_uuid is null) ";
+		$sql .= "and device_key_uuid = '".$id."' ";
+		$db->exec($sql);
 		unset($sql);
-}
+	}
 
-$_SESSION["message"] = $text['message-delete'];
-header("Location: device_edit.php?id=".$device_uuid);
-return;
-
+//send a redirect
+	$_SESSION["message"] = $text['message-delete'];
+	if ($device_uuid != '') {
+		header("Location: device_edit.php?id=".$device_uuid);
+	}
+	else if ($device_profile_uuid != '') {
+		header("Location: device_profile_edit.php?id=".$device_profile_uuid);
+	}
+	return;
 ?>

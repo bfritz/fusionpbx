@@ -17,7 +17,7 @@
 
  The Initial Developer of the Original Code is
  Mark J Crane <markjcrane@fusionpbx.com>
- Portions created by the Initial Developer are Copyright (C) 2008-2014
+ Portions created by the Initial Developer are Copyright (C) 2008-2015
  the Initial Developer. All Rights Reserved.
 
  Contributor(s):
@@ -41,13 +41,18 @@
 					$voicemail_uuid = check_str($_REQUEST["id"]);
 				}
 
-			//set the voicemail_id array
-				foreach ($_SESSION['user']['extension'] as $row) {
+			//set the voicemail id and voicemail uuid arrays
+				foreach ($_SESSION['user']['extension'] as $index => $row) {
 					if (strlen($row['number_alias']) > 0) {
-						$voicemail_ids[]['voicemail_id'] = $row['number_alias'];
+						$voicemail_ids[$index]['voicemail_id'] = $row['number_alias'];
 					}
 					else {
-						$voicemail_ids[]['voicemail_id'] = $row['user'];
+						$voicemail_ids[$index]['voicemail_id'] = $row['user'];
+					}
+				}
+				foreach ($_SESSION['user']['voicemail'] as $row) {
+					if (strlen($row['voicemail_uuid']) > 0) {
+						$voicemail_uuids[]['voicemail_uuid'] = $row['voicemail_uuid'];
 					}
 				}
 
@@ -60,18 +65,18 @@
 						$sql .= "and voicemail_uuid = '".$this->voicemail_uuid."' ";
 					}
 					else {
-						//ensure that the requested voicemail id is assigned to this user
+						//ensure that the requested voicemail box is assigned to this user
 						$found = false;
-						foreach($voicemail_ids as $row) {
-							if ($voicemail_uuid == $row['voicemail_id']) {
-								$sql .= "and voicemail_id = '".$row['voicemail_id']."' ";
+						foreach($voicemail_uuids as $row) {
+							if ($voicemail_uuid == $row['voicemail_uuid']) {
+								$sql .= "and voicemail_uuid = '".$row['voicemail_uuid']."' ";
 								$found = true;
 							}
 							$x++;
 						}
 						//id requested is not owned by the user return no results
 						if (!$found) {
-							$sql .= "and voicemail_uuid = '' ";
+							$sql .= "and voicemail_uuid is null ";
 						}
 					}
 				}
@@ -93,9 +98,10 @@
 					}
 					else {
 						//no assigned voicemail ids so return no results
-						$sql .= "and voicemail_uuid = '' ";
+						$sql .= "and voicemail_uuid is null ";
 					}
 				}
+				$sql .= "order by voicemail_id asc ";
 				$prep_statement = $this->db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -129,7 +135,7 @@
 				$sql .= "and (";
 				$x = 0;
 				foreach($this->voicemail_id as $row) {
-					if ($x > 0) { 
+					if ($x > 0) {
 						$sql .= "or ";
 					}
 					$sql .= "v.voicemail_id = '".$row['voicemail_id']."' ";
@@ -271,15 +277,57 @@
 			//clear the cache
 				session_cache_limiter('public');
 
-			//prepare and stream the file
+			//set source folder path
 				$path = $_SESSION['switch']['storage']['dir'].'/voicemail/default/'.$_SESSION['domain_name'].'/'.$this->voicemail_id;
+
+			//prepare base64 content from db, if enabled
+				if ($_SESSION['voicemail']['storage_type']['text'] == 'base64') {
+					$sql = "select message_base64 from ";
+					$sql .= "v_voicemail_messages as m, ";
+					$sql .= "v_voicemails as v ";
+					$sql .= "where ";
+					$sql .= "m.voicemail_uuid = v.voicemail_uuid ";
+					$sql .= "and v.voicemail_id = '".$this->voicemail_id."' ";
+					$sql .= "and m.voicemail_uuid = '".$this->voicemail_uuid."' ";
+					$sql .= "and m.domain_uuid = '".$this->domain_uuid."' ";
+					$sql .= "and m.voicemail_message_uuid = '".$this->voicemail_message_uuid."' ";
+					$prep_statement = $this->db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+					if (count($result) > 0) {
+						foreach($result as &$row) {
+							if ($row['message_base64'] != '') {
+								$message_decoded = base64_decode($row['message_base64']);
+								file_put_contents($path.'/msg_'.$this->voicemail_message_uuid.'.ext', $message_decoded);
+								$finfo = finfo_open(FILEINFO_MIME_TYPE); //determine mime type (requires PHP >= 5.3.0, must be manually enabled on Windows)
+								$file_mime = finfo_file($finfo, $path.'/msg_'.$this->voicemail_message_uuid.'.ext');
+								finfo_close($finfo);
+								switch ($file_mime) {
+									case 'audio/x-wav':
+									case 'audio/wav':
+										$file_ext = 'wav';
+										break;
+									case 'audio/mpeg':
+									case 'audio/mp3':
+										$file_ext = 'mp3';
+										break;
+								}
+								rename($path.'/msg_'.$this->voicemail_message_uuid.'.ext', $path.'/msg_'.$this->voicemail_message_uuid.'.'.$file_ext);
+							}
+							break;
+						}
+					}
+					unset ($sql, $prep_statement, $result, $message_decoded);
+				}
+
+			//prepare and stream the file
 				if (file_exists($path.'/msg_'.$this->voicemail_message_uuid.'.wav')) {
 					$file_path = $path.'/msg_'.$this->voicemail_message_uuid.'.wav';
 				}
 				if (file_exists($path.'/msg_'.$this->voicemail_message_uuid.'.mp3')) {
 					$file_path = $path.'/msg_'.$this->voicemail_message_uuid.'.mp3';
 				}
-				if (file_exists($file_path)) {
+				if ($file_path != '') {
 					$fd = fopen($file_path, "rb");
 					if ($_GET['t'] == "bin") {
 						header("Content-Type: application/force-download");
@@ -288,19 +336,19 @@
 						header("Content-Description: File Transfer");
 						$file_ext = substr($file_path, -3);
 						if ($file_ext == "wav") {
-							header('Content-Disposition: attachment; filename="voicemail.wav"');
+							header('Content-Disposition: attachment; filename="msg_'.$this->voicemail_message_uuid.'.wav"');
 						}
 						if ($file_ext == "mp3") {
-							header('Content-Disposition: attachment; filename="voicemail.mp3"');
+							header('Content-Disposition: attachment; filename="msg_'.$this->voicemail_message_uuid.'.mp3"');
 						}
 					}
 					else {
 						$file_ext = substr($file_path, -3);
 						if ($file_ext == "wav") {
-							header("Content-Type: audio/x-wav");
+							header("Content-Type: audio/wav");
 						}
 						if ($file_ext == "mp3") {
-							header("Content-Type: audio/mp3");
+							header("Content-Type: audio/mpeg");
 						}
 					}
 					header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
@@ -308,6 +356,12 @@
 					header("Content-Length: " . filesize($file_path));
 					fpassthru($fd);
 				}
+
+			//if base64, remove temp file
+				if ($_SESSION['voicemail']['storage_type']['text'] == 'base64') {
+					@unlink($path.'/msg_'.$this->voicemail_message_uuid.'.'.$file_ext);
+				}
+
 		} // download
 	}
 

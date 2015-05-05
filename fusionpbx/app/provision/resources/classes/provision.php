@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2014
+	Copyright (C) 2014-2015
 	All Rights Reserved.
 
 	Contributor(s):
@@ -127,7 +127,10 @@ include "root.php";
 		}
 
 		function render() {
-
+			
+			//debug
+				$debug = $_REQUEST['debug']; // array
+			
 			//get the variables
 				$domain_uuid = $this->domain_uuid;
 				$device_template = $this->device_template;
@@ -135,8 +138,16 @@ include "root.php";
 				$mac = $this->mac;
 				$file = $this->file;
 
+			//get the device template
+				if (strlen($_REQUEST['template']) > 0) {
+					$device_template = $_REQUEST['template'];
+					$search = array('..', '/./');
+					$device_template = str_replace($search, "", $device_template);
+					$device_template = str_replace('//', '/', $device_template);
+				}
+
 			//remove ../ and slashes in the file name
-				$search = array('..', '/', '\\');
+				$search = array('..', '/', '\\', '/./', '//');
 				$file = str_replace($search, "", $file);
 
 			//get the domain_name
@@ -163,143 +174,177 @@ include "root.php";
 				}
 
 			//check to see if the mac_address exists in devices
-				if ($this->mac_exists($mac)) {
-					//get the device_template
-						//if (strlen($device_template) == 0) {
-							$sql = "SELECT * FROM v_devices ";
-							$sql .= "WHERE device_mac_address=:mac ";
-							//$sql .= "WHERE device_mac_address= '$mac' ";
-							$prep_statement_2 = $this->db->prepare(check_sql($sql));
-							if ($prep_statement_2) {
-								//use the prepared statement
-									$prep_statement_2->bindParam(':mac', $mac);
-									$prep_statement_2->execute();
-									$row = $prep_statement_2->fetch();
-								//set the variables from values in the database
-									$device_uuid = $row["device_uuid"];
+				if (strlen($_REQUEST['user_id']) == 0 || strlen($_REQUEST['userid']) == 0) {
+					if ($this->mac_exists($mac)) {
+						//get the device_template
+							if (strlen($device_template) == 0) {
+								$sql = "SELECT * FROM v_devices ";
+								$sql .= "WHERE device_mac_address=:mac ";
+								//$sql .= "WHERE device_mac_address= '$mac' ";
+								$prep_statement_2 = $this->db->prepare(check_sql($sql));
+								if ($prep_statement_2) {
+									//use the prepared statement
+										$prep_statement_2->bindParam(':mac', $mac);
+										$prep_statement_2->execute();
+										$row = $prep_statement_2->fetch();
+									//set the variables from values in the database
+										$device_uuid = $row["device_uuid"];
+										$device_label = $row["device_label"];
+										if (strlen($row["device_vendor"]) > 0) {
+											$device_vendor = strtolower($row["device_vendor"]);
+										}
+										$device_model = $row["device_model"];
+										$device_firmware_version = $row["device_firmware_version"];
+										$device_provision_enable = $row["device_provision_enable"];
+										$device_template = $row["device_template"];
+										$device_profile_uuid = $row["device_profile_uuid"];
+										$device_description = $row["device_description"];
+								}
+							}
+
+						//find a template that was defined on another phone and use that as the default.
+							if (strlen($device_template) == 0) {
+								$sql = "SELECT * FROM v_devices ";
+								$sql .= "WHERE domain_uuid=:domain_uuid ";
+								$sql .= "limit 1 ";
+								$prep_statement_3 = $this->db->prepare(check_sql($sql));
+								if ($prep_statement_3) {
+									$prep_statement_3->bindParam(':domain_uuid', $domain_uuid);
+									$prep_statement_3->execute();
+									$row = $prep_statement_3->fetch();
 									$device_label = $row["device_label"];
-									if (strlen($row["device_vendor"]) > 0) {
-										$device_vendor = strtolower($row["device_vendor"]);
-									}
+									$device_vendor = strtolower($row["device_vendor"]);
 									$device_model = $row["device_model"];
 									$device_firmware_version = $row["device_firmware_version"];
 									$device_provision_enable = $row["device_provision_enable"];
 									$device_template = $row["device_template"];
-									$device_username = $row["device_username"];
-									$device_password = $row["device_password"];
+									$device_profile_uuid = $row["device_profile_uuid"];
 									$device_description = $row["device_description"];
+								}
 							}
-						//}
-
-					//find a template that was defined on another phone and use that as the default.
-						if (strlen($device_template) == 0) {
-							$sql = "SELECT * FROM v_devices ";
-							$sql .= "WHERE device_template LIKE '%/%' ";
-							$sql .= "AND domain_uuid=:domain_uuid ";
-							$prep_statement_3 = $this->db->prepare(check_sql($sql));
-							if ($prep_statement_3) {
-								$prep_statement_3->bindParam(':domain_uuid', $domain_uuid);
-								$prep_statement_3->bindParam(':mac', $mac);
-								$prep_statement_3->execute();
-								$row = $prep_statement_3->fetch();
-								$device_label = $row["device_label"];
-								$device_vendor = strtolower($row["device_vendor"]);
-								$device_model = $row["device_model"];
-								$device_firmware_version = $row["device_firmware_version"];
-								$device_provision_enable = $row["device_provision_enable"];
-								$device_template = $row["device_template"];
-								$device_username = $row["device_username"];
-								$device_password = $row["device_password"];
-								$device_description = $row["device_description"];
+					}
+					else {
+						//use the user_agent to pre-assign a template for 1-hit provisioning. Enter the a unique string to match in the user agent, and the template it should match.
+							$template_list=array(  
+								"Linksys/SPA-2102"=>"linksys/spa2102",
+								"Linksys/SPA-3102"=>"linksys/spa3102",
+								"Linksys/SPA-9212"=>"linksys/spa921",
+								"Cisco/SPA301"=>"cisco/spa301",
+								"Cisco/SPA301D"=>"cisco/spa302d",
+								"Cisco/SPA303"=>"cisco/spa303",
+								"Cisco/SPA501G"=>"cisco/spa501g",
+								"Cisco/SPA502G"=>"cisco/spa502g",
+								"Cisco/SPA504G"=>"cisco/spa504g",
+								"Cisco/SPA508G"=>"cisco/spa508g",
+								"Cisco/SPA509G"=>"cisco/spa509g",
+								"Cisco/SPA512G"=>"cisco/spa512g",
+								"Cisco/SPA514G"=>"cisco/spa514g",
+								"Cisco/SPA525G2"=>"cisco/spa525g2",
+								"snom300-SIP"=>"snom/300",
+								"snom320-SIP"=>"snom/320",
+								"snom360-SIP"=>"snom/360",
+								"snom370-SIP"=>"snom/370",
+								"snom820-SIP"=>"snom/820",
+								"snom-m3-SIP"=>"snom/m3",
+								"yealink SIP-T20"=>"yealink/t20",
+								"yealink SIP-T22"=>"yealink/t22",
+								"yealink SIP-T26"=>"yealink/t26",
+								"Yealink SIP-T32"=>"yealink/t32",
+								"HW GXP1450"=>"grandstream/gxp1450",
+								"HW GXP2124"=>"grandstream/gxp2124",
+								"HW GXV3140"=>"grandstream/gxv3140",
+								"HW GXV3175"=>"grandstream/gxv3175",
+								"Wget/1.11.3"=>"konftel/kt300ip"
+								);
+	
+							foreach ($template_list as $key=>$val){
+								if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
+									$device_template = $val;
+									break;
+								}
 							}
-						}
+							unset($template_list);
+	
+						//mac address does not exist in the table so add it
+							if (strlen($domain_uuid) > 0) {
+								$device_uuid = uuid();
+								$sql = "INSERT INTO v_devices ";
+								$sql .= "(";
+								$sql .= "domain_uuid, ";
+								$sql .= "device_uuid, ";
+								$sql .= "device_mac_address, ";
+								$sql .= "device_vendor, ";
+								$sql .= "device_model, ";
+								$sql .= "device_provision_enable, ";
+								$sql .= "device_template, ";
+								$sql .= "device_description ";
+								$sql .= ") ";
+								$sql .= "VALUES ";
+								$sql .= "(";
+								$sql .= "'".$domain_uuid."', ";
+								$sql .= "'$device_uuid', ";
+								$sql .= "'$mac', ";
+								$sql .= "'$device_vendor', ";
+								$sql .= "'', ";
+								$sql .= "'true', ";
+								$sql .= "'$device_template', ";
+								$sql .= "'auto {$_SERVER['HTTP_USER_AGENT']}' ";
+								$sql .= ")";
+								$this->db->exec(check_sql($sql));
+								unset($sql);
+							}
+					}
 				}
-				else {
-					//use the user_agent to pre-assign a template for 1-hit provisioning. Enter the a unique string to match in the user agent, and the template it should match.
-						$template_list=array(  
-							"Linksys/SPA-2102"=>"linksys/spa2102",
-							"Linksys/SPA-3102"=>"linksys/spa3102",
-							"Linksys/SPA-9212"=>"linksys/spa921",
-							"Cisco/SPA301"=>"cisco/spa301",
-							"Cisco/SPA301D"=>"cisco/spa302d",
-							"Cisco/SPA303"=>"cisco/spa303",
-							"Cisco/SPA501G"=>"cisco/spa501g",
-							"Cisco/SPA502G"=>"cisco/spa502g",
-							"Cisco/SPA504G"=>"cisco/spa504g",
-							"Cisco/SPA508G"=>"cisco/spa508g",
-							"Cisco/SPA509G"=>"cisco/spa509g",
-							"Cisco/SPA512G"=>"cisco/spa512g",
-							"Cisco/SPA514G"=>"cisco/spa514g",
-							"Cisco/SPA525G2"=>"cisco/spa525g2",
-							"snom300-SIP"=>"snom/300",
-							"snom320-SIP"=>"snom/320",
-							"snom360-SIP"=>"snom/360",
-							"snom370-SIP"=>"snom/370",
-							"snom820-SIP"=>"snom/820",
-							"snom-m3-SIP"=>"snom/m3",
-							"yealink SIP-T20"=>"yealink/t20",
-							"yealink SIP-T22"=>"yealink/t22",
-							"yealink SIP-T26"=>"yealink/t26",
-							"Yealink SIP-T32"=>"yealink/t32",
-							"HW GXP1450"=>"grandstream/gxp1450",
-							"HW GXP2124"=>"grandstream/gxp2124",
-							"HW GXV3140"=>"grandstream/gxv3140",
-							"HW GXV3175"=>"grandstream/gxv3175",
-							"Wget/1.11.3"=>"konftel/kt300ip"
-							);
 
-						foreach ($template_list as $key=>$val){
-							if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
-								$device_template = $val;
-								break;
-							}
+			//alternate device_uuid
+				if (strlen($device_uuid) > 0) {
+					$sql = "SELECT * FROM v_devices ";
+					$sql .= "WHERE device_uuid = '".$device_uuid."' ";
+					$prep_statement_3 = $this->db->prepare(check_sql($sql));
+					if ($prep_statement_3) {
+						$prep_statement_3->execute();
+						$row = $prep_statement_3->fetch();
+						$device_uuid_alternate = $row["device_uuid_alternate"];
+						if (is_uuid($device_uuid_alternate)) {
+							//override the original device_uuid
+								$device_uuid = $device_uuid_alternate;
+							//get the new devices information
+								$sql = "SELECT * FROM v_devices ";
+								$sql .= "WHERE device_uuid = '".$device_uuid."' ";
+								$prep_statement_4 = $this->db->prepare(check_sql($sql));
+								if ($prep_statement_4) {
+									$prep_statement_4->execute();
+									$row = $prep_statement_4->fetch();
+									$device_label = $row["device_label"];
+									$device_vendor = strtolower($row["device_vendor"]);
+									$device_firmware_version = $row["device_firmware_version"];
+									$device_provision_enable = $row["device_provision_enable"];
+									//keep the original template
+									$device_profile_uuid = $row["device_profile_uuid"];
+									$device_description = $row["device_description"];
+								}
+								unset($prep_statement_4);
 						}
-						unset($template_list);
-
-					//mac address does not exist in the table so add it
-						if (strlen($domain_uuid) > 0) {
-							$device_uuid = uuid();
-							$sql = "INSERT INTO v_devices ";
-							$sql .= "(";
-							$sql .= "domain_uuid, ";
-							$sql .= "device_uuid, ";
-							$sql .= "device_mac_address, ";
-							$sql .= "device_vendor, ";
-							$sql .= "device_model, ";
-							$sql .= "device_provision_enable, ";
-							$sql .= "device_template, ";
-							$sql .= "device_description ";
-							$sql .= ") ";
-							$sql .= "VALUES ";
-							$sql .= "(";
-							$sql .= "'".$domain_uuid."', ";
-							$sql .= "'$device_uuid', ";
-							$sql .= "'$mac', ";
-							$sql .= "'$device_vendor', ";
-							$sql .= "'', ";
-							$sql .= "'true', ";
-							$sql .= "'$device_template', ";
-							$sql .= "'auto {$_SERVER['HTTP_USER_AGENT']}' ";
-							$sql .= ")";
-							$this->db->exec(check_sql($sql));
-							unset($sql);
-						}
+					}
+					unset($prep_statement_3);
 				}
 
 			//get the device settings table in the provision category and update the provision array
-				$sql = "SELECT * FROM v_device_settings ";
-				$sql .= "WHERE device_uuid = '".$device_uuid."' ";
-				$sql .= "AND device_setting_enabled = 'true' ";
-				$prep_statement = $this->db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-				$result_count = count($result);
-				foreach($result as $row) {
-					$key = $row['device_setting_subcategory'];
-					$value = $row['device_setting_value'];
-					$provision[$key] = $value;
+				if (strlen($device_uuid) > 0) {
+					$sql = "SELECT * FROM v_device_settings ";
+					$sql .= "WHERE device_uuid = '".$device_uuid."' ";
+					$sql .= "AND device_setting_enabled = 'true' ";
+					$prep_statement = $this->db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+					$result_count = count($result);
+					foreach($result as $row) {
+						$key = $row['device_setting_subcategory'];
+						$value = $row['device_setting_value'];
+						$provision[$key] = $value;
+					}
+					unset ($prep_statement);
 				}
-				unset ($prep_statement);
 
 			//initialize a template object
 				$view = new template();
@@ -338,60 +383,128 @@ include "root.php";
 					$mac_dash = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
 
 				//get the provisioning information from device lines table
-					$sql = "SELECT * FROM v_device_lines ";
-					$sql .= "WHERE device_uuid = '".$device_uuid."' ";
-					$sql .= "AND domain_uuid = '".$domain_uuid."' ";
-					$prep_statement = $this->db->prepare(check_sql($sql));
-					$prep_statement->execute();
-					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-					$result_count = count($result);
-				//assign the keys array
-					$view->assign("lines", $result);
-				//set the variables
-					foreach($result as $row) {
+					if (strlen($device_uuid) > 0) {
+						//get the device lines array
+							$sql = "SELECT * FROM v_device_lines ";
+							$sql .= "WHERE device_uuid = '".$device_uuid."' ";
+							//$sql .= "AND domain_uuid = '".$domain_uuid."' ";
+							$prep_statement = $this->db->prepare(check_sql($sql));
+							$prep_statement->execute();
+							$device_lines = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+						//assign the keys array
+							$view->assign("lines", $device_lines);
 						//set the variables
-							$line_number = $row['line_number'];
-							$register_expires = $row['register_expires'];
-							$sip_transport = strtolower($row['sip_transport']);
-							$sip_port = $row['sip_port'];
-
-						//set defaults
-							if (strlen($register_expires) == 0) { $register_expires = "120"; }
-							if (strlen($sip_transport) == 0) { $sip_transport = "tcp"; }
-							if (strlen($sip_port) == 0) {
-								if ($line_number == "" || $line_number == "1") {
-									$sip_port = "5060";
-								}
-								else {
-									$sip_port = "506".($line_number + 1);
-								}
+							foreach($device_lines as $row) {
+								//set the variables
+									$line_number = $row['line_number'];
+									$register_expires = $row['register_expires'];
+									$sip_transport = strtolower($row['sip_transport']);
+									$sip_port = $row['sip_port'];
+		
+								//set defaults
+									if (strlen($register_expires) == 0) { $register_expires = "120"; }
+									if (strlen($sip_transport) == 0) { $sip_transport = "tcp"; }
+									if (strlen($sip_port) == 0) {
+										if ($line_number == "" || $line_number == "1") {
+											$sip_port = "5060";
+										}
+										else {
+											$sip_port = "506".($line_number + 1);
+										}
+									}
+		
+								//set a lines array index is the line number
+									$lines[$line_number]['register_expires'] = $register_expires;
+									$lines[$line_number]['sip_transport'] = strtolower($sip_transport);
+									$lines[$line_number]['sip_port'] = $sip_port;
+									$lines[$line_number]['server_address'] = $row["server_address"];
+									$lines[$line_number]['outbound_proxy'] = $row["outbound_proxy"];
+									$lines[$line_number]['display_name'] = $row["display_name"];
+									$lines[$line_number]['auth_id'] = $row["auth_id"];
+									$lines[$line_number]['user_id'] = $row["user_id"];
+									$lines[$line_number]['password'] = $row["password"];
+		
+								//assign the variables
+									$view->assign("server_address_".$line_number, $row["server_address"]);
+									$view->assign("outbound_proxy_".$line_number, $row["outbound_proxy"]);
+									$view->assign("display_name_".$line_number, $row["display_name"]);
+									$view->assign("auth_id_".$line_number, $row["auth_id"]);
+									$view->assign("user_id_".$line_number, $row["user_id"]);
+									$view->assign("user_password_".$line_number, $row["password"]);
+									$view->assign("sip_transport_".$line_number, $sip_transport);
+									$view->assign("sip_port_".$line_number, $sip_port);
+									$view->assign("register_expires_".$line_number, $register_expires);
 							}
-
-						//assign the variables
-							$view->assign("server_address_".$line_number, $row["server_address"]);
-							$view->assign("outbound_proxy_".$line_number, $row["outbound_proxy"]);
-							$view->assign("display_name_".$line_number, $row["display_name"]);
-							$view->assign("auth_id_".$line_number, $row["auth_id"]);
-							$view->assign("user_id_".$line_number, $row["user_id"]);
-							$view->assign("user_password_".$line_number, $row["password"]);
-							$view->assign("sip_transport_".$line_number, $sip_transport);
-							$view->assign("sip_port_".$line_number, $sip_port);
-							$view->assign("register_expires_".$line_number, $register_expires);
+							unset ($prep_statement);
 					}
-					unset ($prep_statement);
 
-				//get the provisioning information from device keys table
-					$sql = "SELECT * FROM v_device_keys ";
-					$sql .= "WHERE device_uuid = '".$device_uuid."' ";
-					$sql .= "AND domain_uuid = '".$domain_uuid."' ";
-					$sql .= "ORDER BY device_key_id asc ";
-					$prep_statement = $this->db->prepare(check_sql($sql));
-					$prep_statement->execute();
-					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+				//get the provisioning information from device keys
+					if (strlen($device_uuid) > 0) {
+						//get the vendor
+							$vendor = $template_name;
+							$template_name = 'yealink/t46g';
+							$array = explode('/', $template_name);
+							$vendor = strtolower($array[0]);
+						//get the device keys array
+							$sql = "SELECT * FROM v_device_keys ";
+							$sql .= "WHERE (";
+							$sql .= "device_uuid = '".$device_uuid."' ";
+							if (strlen($device_profile_uuid) > 0) {
+								$sql .= "or device_profile_uuid = '".$device_profile_uuid."' ";
+							}
+							$sql .= ") ";
+							$sql .= "AND (device_key_extension = '".$vendor."' OR device_key_extension = '' OR device_key_extension is null) ";
+							//$sql .= "AND domain_uuid = '".$domain_uuid."' ";
+							$sql .= "ORDER BY device_key_category asc, device_key_id asc, device_uuid desc";
+							$prep_statement = $this->db->prepare(check_sql($sql));
+							$prep_statement->execute();
+							$device_keys = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		
+						//rebuild the array to allow profile keys to be overridden by keys assigned to this device
+							$x = 0;
+							$previous_category = '';
+							$previous_id = '';
+							foreach($device_keys as $row) {
+								//set the variables
+									if ($row['device_key_category'] == $previous_category && $row['device_key_id'] == $previous_id) {
+										$device_keys[$x]['device_key_override'] = "true";
+										$device_keys[$x]['device_key_message'] = "value=".$device_keys[$x-1]['device_key_value']."&label=".$device_keys[$x-1]['device_key_label'];
+										unset($device_keys[$x-1]);
+									}
+									$device_keys[$x]['device_key_category'] = $row['device_key_category'];
+									$device_keys[$x]['device_key_id'] = $row['device_key_id']; //1
+									$device_keys[$x]['device_key_type'] = $row['device_key_type']; //line, memory, expansion
+									$device_keys[$x]['device_key_line'] = $row['device_key_line'];
+									$device_keys[$x]['device_key_value'] = $row['device_key_value']; //1
+									$device_keys[$x]['device_key_extension'] = $row['device_key_extension'];
+									$device_keys[$x]['device_key_label'] = $row['device_key_label']; //label
+									if (is_uuid($row['device_profile_uuid'])) {
+										$device_keys[$x]['device_key_owner'] = "profile";
+									}
+									else {
+										$device_keys[$x]['device_key_owner'] = "device";
+									}
+								//set previous values
+									$previous_category = $row['device_key_category'];
+									$previous_id = $row['device_key_id'];
+								//increment the key
+									$x++;
+							}
+					}
+
+				//debug information
+					if ($debug == "array") {
+						echo "<pre>\n";
+						print_r($device_keys);
+						echo "<pre>\n";
+						exit;
+					}
+
 				//assign the keys array
-					$view->assign("keys", $result);
+					$view->assign("keys", $device_keys);
+
 				//set the variables
-					foreach($result as $row) {
+					foreach($device_keys as $row) {
 						//set the variables
 							$device_key_category = $row['device_key_category'];
 							$device_key_id = $row['device_key_id']; //1
@@ -400,6 +513,84 @@ include "root.php";
 							$device_key_value = $row['device_key_value']; //1
 							$device_key_extension = $row['device_key_extension'];
 							$device_key_label = $row['device_key_label']; //label
+
+						//set the line key
+							$x = $device_key_line;
+
+						//add a simple variable with the index
+							if ($x === 0 || $x === 1) {
+								$device_key_value = str_replace("\${user_id}", $lines[$x]['user_id'], $device_key_value);
+								$device_key_value = str_replace("\${auth_id}", $lines[$x]['auth_id'], $device_key_value);
+								$device_key_value = str_replace("\${extension}", $lines[$x]['user_id'], $device_key_value);
+								$device_key_value = str_replace("\${password}", $lines[$x]['password'], $device_key_value);
+								$device_key_value = str_replace("\${register_expires}", $lines[$x]['register_expires'], $device_key_value);
+								$device_key_value = str_replace("\${sip_transport}", $lines[$x]['sip_transport'], $device_key_value);
+								$device_key_value = str_replace("\${sip_port}", $lines[$x]['sip_port'], $device_key_value);
+								$device_key_value = str_replace("\${server_address}", $lines[$x]['server_address'], $device_key_value);
+								$device_key_value = str_replace("\${outbound_proxy}", $lines[$x]['outbound_proxy'], $device_key_value);
+								$device_key_value = str_replace("\${display_name}", $lines[$x]['display_name'], $device_key_value);
+
+								$device_key_extension = str_replace("\${user_id}", $lines[$x]['user_id'], $device_key_extension);
+								$device_key_extension = str_replace("\${auth_id}", $lines[$x]['auth_id'], $device_key_extension);
+								$device_key_extension = str_replace("\${extension}", $lines[$x]['user_id'], $device_key_extension);
+								$device_key_extension = str_replace("\${password}", $lines[$x]['password'], $device_key_extension);
+								$device_key_extension = str_replace("\${register_expires}", $lines[$x]['register_expires'], $device_key_extension);
+								$device_key_extension = str_replace("\${sip_transport}", $lines[$x]['sip_transport'], $device_key_extension);
+								$device_key_extension = str_replace("\${sip_port}", $lines[$x]['sip_port'], $device_key_extension);
+								$device_key_extension = str_replace("\${server_address}", $lines[$x]['server_address'], $device_key_extension);
+								$device_key_extension = str_replace("\${outbound_proxy}", $lines[$x]['outbound_proxy'], $device_key_extension);
+								$device_key_extension = str_replace("\${display_name}", $lines[$x]['display_name'], $device_key_extension);
+
+								$device_key_label = str_replace("\${user_id}", $lines[$x]['user_id'], $device_key_label);
+								$device_key_label = str_replace("\${auth_id}", $lines[$x]['auth_id'], $device_key_label);
+								$device_key_label = str_replace("\${extension}", $lines[$x]['user_id'], $device_key_label);
+								$device_key_label = str_replace("\${password}", $lines[$x]['password'], $device_key_label);
+								$device_key_label = str_replace("\${register_expires}", $lines[$x]['register_expires'], $device_key_label);
+								$device_key_label = str_replace("\${sip_transport}", $lines[$x]['sip_transport'], $device_key_label);
+								$device_key_label = str_replace("\${sip_port}", $lines[$x]['sip_port'], $device_key_label);
+								$device_key_label = str_replace("\${server_address}", $lines[$x]['server_address'], $device_key_label);
+								$device_key_label = str_replace("\${outbound_proxy}", $lines[$x]['outbound_proxy'], $device_key_label);
+								$device_key_label = str_replace("\${display_name}", $lines[$x]['display_name'], $device_key_label);
+							}
+
+						//add variables with the index
+							$device_key_value = str_replace("\${user_id_$x}", $lines[$x]['user_id'], $device_key_value);
+							$device_key_value = str_replace("\${auth_id_$x}", $lines[$x]['auth_id'], $device_key_value);
+							$device_key_value = str_replace("\${extension_$x}", $lines[$x]['user_id'], $device_key_value);
+							$device_key_value = str_replace("\${password_$x}", $lines[$x]['password'], $device_key_value);
+							$device_key_value = str_replace("\${register_expires_$x}", $lines[$x]['register_expires'], $device_key_value);
+							$device_key_value = str_replace("\${sip_transport_$x}", $lines[$x]['sip_transport'], $device_key_value);
+							$device_key_value = str_replace("\${sip_port_$x}", $lines[$x]['sip_port'], $device_key_value);
+							$device_key_value = str_replace("\${server_address_$x}", $lines[$x]['server_address'], $device_key_value);
+							$device_key_value = str_replace("\${outbound_proxy_$x}", $lines[$x]['outbound_proxy'], $device_key_value);
+							$device_key_value = str_replace("\${display_name_$x}", $lines[$x]['display_name'], $device_key_value);
+
+							$device_key_extension = str_replace("\${user_id_$x}", $lines[$x]['user_id'], $device_key_label);
+							$device_key_extension = str_replace("\${auth_id_$x}", $lines[$x]['auth_id'], $device_key_label);
+							$device_key_extension = str_replace("\${extension_$x}", $lines[$x]['user_id'], $device_key_label);
+							$device_key_extension = str_replace("\${password_$x}", $lines[$x]['password'], $device_key_label);
+							$device_key_extension = str_replace("\${register_expires_$x}", $lines[$x]['register_expires'], $device_key_label);
+							$device_key_extension = str_replace("\${sip_transport_$x}", $lines[$x]['sip_transport'], $device_key_label);
+							$device_key_extension = str_replace("\${sip_port_$x}", $lines[$x]['sip_port'], $device_key_label);
+							$device_key_extension = str_replace("\${server_address_$x}", $lines[$x]['server_address'], $device_key_label);
+							$device_key_extension = str_replace("\${outbound_proxy_$x}", $lines[$x]['outbound_proxy'], $device_key_label);
+							$device_key_extension = str_replace("\${display_name_$x}", $lines[$x]['display_name'], $device_key_label);
+
+							$device_key_label = str_replace("\${user_id_$x}", $lines[$x]['user_id'], $device_key_label);
+							$device_key_label = str_replace("\${auth_id_$x}", $lines[$x]['auth_id'], $device_key_label);
+							$device_key_label = str_replace("\${extension_$x}", $lines[$x]['user_id'], $device_key_label);
+							$device_key_label = str_replace("\${password_$x}", $lines[$x]['password'], $device_key_label);
+							$device_key_label = str_replace("\${register_expires_$x}", $lines[$x]['register_expires'], $device_key_label);
+							$device_key_label = str_replace("\${sip_transport_$x}", $lines[$x]['sip_transport'], $device_key_label);
+							$device_key_label = str_replace("\${sip_port_$x}", $lines[$x]['sip_port'], $device_key_label);
+							$device_key_label = str_replace("\${server_address_$x}", $lines[$x]['server_address'], $device_key_label);
+							$device_key_label = str_replace("\${outbound_proxy_$x}", $lines[$x]['outbound_proxy'], $device_key_label);
+							$device_key_label = str_replace("\${display_name_$x}", $lines[$x]['display_name'], $device_key_label);
+
+						//add general variables
+							$device_key_value = str_replace("\${domain_name}", $domain_name, $device_key_value);
+							$device_key_extension = str_replace("\${domain_name}", $domain_name, $device_key_extension);
+							$device_key_label = str_replace("\${domain_name}", $domain_name, $device_key_label);
 
 						//grandstream modes are different based on the category
 							if ($device_vendor == "grandstream") {
@@ -483,7 +674,9 @@ include "root.php";
 					$view->assign("project_path", PROJECT_PATH);
 					$view->assign("server1_address", $server1_address);
 					$view->assign("proxy1_address", $proxy1_address);
+					$view->assign("user_id",$user_id);
 					$view->assign("password",$password);
+					$view->assign("template",$device_template);
 
 				//replace the dynamic provision variables that are defined in default, domain, and device settings
 					foreach($provision as $key=>$val) {
@@ -520,6 +713,12 @@ include "root.php";
 						//make sure the file exists
 						if (!file_exists($template_dir."/".$device_template ."/".$file)) {
 							echo "file not found";
+							if ($_SESSION['provision']['debug']['boolean'] == 'true'){
+								echo ":$template_dir/$device_template/$file<br/>";
+								echo "template_dir: $template_dir<br/>";
+								echo "device_template: $device_template<br/>";
+								echo "file: $file";
+							}
 							exit;
 						}
 					}
@@ -528,12 +727,13 @@ include "root.php";
 					$file_contents = $view->render($file);
 
 				//log file for testing
-					//$tmp_file = "/tmp/provisioning_log.txt";
-					//$fh = fopen($tmp_file, 'w') or die("can't open file");
-					//$tmp_string = $mac."\n";
-					//fwrite($fh, $tmp_string);
-					//fclose($fh);
-
+					if ($_SESSION['provision']['debug']['boolean'] == 'true'){
+						$tmp_file = "/tmp/provisioning_log.txt";
+						$fh = fopen($tmp_file, 'w') or die("can't open file");
+						$tmp_string = $mac."\n";
+						fwrite($fh, $tmp_string);
+						fclose($fh);
+					}
 				//returned the rendered template
 					return $file_contents;
 

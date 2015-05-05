@@ -22,6 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 require_once "root.php";
 require_once "resources/require.php";
@@ -35,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -47,6 +46,26 @@ else {
 	}
 	else {
 		$action = "add";
+	}
+
+//get total call center queues count from the database, check limit, if defined
+	if ($action == 'add') {
+		if ($_SESSION['limit']['call_center_queues']['numeric'] != '') {
+			$sql = "select count(*) as num_rows from v_call_center_queues where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$prep_statement = $db->prepare($sql);
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+				$total_call_center_queues = $row['num_rows'];
+			}
+			unset($prep_statement, $row);
+			if ($total_call_center_queues >= $_SESSION['limit']['call_center_queues']['numeric']) {
+				$_SESSION['message_mood'] = 'negative';
+				$_SESSION['message'] = $text['message-maximum_queues'].' '.$_SESSION['limit']['call_center_queues']['numeric'];
+				header('Location: call_center_queues.php');
+				return;
+			}
+		}
 	}
 
 //get http post variables and set them to php variables
@@ -282,12 +301,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//syncrhonize the configuration
 				save_call_center_xml();
 
-			//delete the dialplan context from memcache
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-				if ($fp) {
-					$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
-					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-				}
+			//clear the cache
+				$cache = new cache;
+				$cache->delete("memcache delete dialplan:".$_SESSION["context"]);
 
 			$_SESSION["message"] = $text['message-update'];
 		} //if ($action == "update")
@@ -402,13 +418,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (strlen($queue_moh_sound) == 0) { $queue_moh_sound = "\$\${hold_music}"; }
 	if (strlen($queue_time_base_score) == 0) { $queue_time_base_score = "system"; }
 	if (strlen($queue_max_wait_time) == 0) { $queue_max_wait_time = "0"; }
-	if (strlen($queue_max_wait_time_with_no_agent) == 0) { $queue_max_wait_time_with_no_agent = "30"; }
-	if (strlen($queue_max_wait_time_with_no_agent_time_reached) == 0) { $queue_max_wait_time_with_no_agent_time_reached = "60"; }
+	if (strlen($queue_max_wait_time_with_no_agent) == 0) { $queue_max_wait_time_with_no_agent = "90"; }
+	if (strlen($queue_max_wait_time_with_no_agent_time_reached) == 0) { $queue_max_wait_time_with_no_agent_time_reached = "30"; }
 	if (strlen($queue_tier_rules_apply) == 0) { $queue_tier_rules_apply = "false"; }
-	if (strlen($queue_tier_rule_wait_second) == 0) { $queue_tier_rule_wait_second = "3"; }
+	if (strlen($queue_tier_rule_wait_second) == 0) { $queue_tier_rule_wait_second = "30"; }
 	if (strlen($queue_tier_rule_wait_multiply_level) == 0) { $queue_tier_rule_wait_multiply_level = "true"; }
 	if (strlen($queue_tier_rule_no_agent_no_wait) == 0) { $queue_tier_rule_no_agent_no_wait = "true"; }
-	if (strlen($queue_discard_abandoned_after) == 0) { $queue_discard_abandoned_after = "60"; }
+	if (strlen($queue_discard_abandoned_after) == 0) { $queue_discard_abandoned_after = "900"; }
 	if (strlen($queue_abandoned_resume_allowed) == 0) { $queue_abandoned_resume_allowed = "false"; }
 
 //show the header
@@ -449,7 +465,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td width='30%' class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-queue_name'].":\n";
+	echo "	".$text['label-queue_name']."\n";
 	echo "</td>\n";
 	echo "<td width='70%' class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='queue_name' maxlength='255' value=\"$queue_name\" required='required'>\n";
@@ -460,10 +476,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-extension'].":\n";
+	echo "	".$text['label-extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='queue_extension' maxlength='255' value=\"$queue_extension\">\n";
+	echo "	<input class='formfld' type='number' name='queue_extension' maxlength='255' min='0' step='1' value=\"$queue_extension\" required='required'>\n";
 	echo "<br />\n";
 	echo $text['description-extension']."\n";
 	echo "</td>\n";
@@ -471,7 +487,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-strategy'].":\n";
+	echo "	".$text['label-strategy']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='queue_strategy'>\n";
@@ -538,7 +554,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	if (permission_exists('call_center_tier_view')) {
 		echo "<tr>";
-		echo "	<td class='vncell' valign='top'>".$text['label-tiers'].":</td>";
+		echo "	<td class='vncell' valign='top'>".$text['label-tiers']."</td>";
 		echo "	<td class='vtable' align='left'>";
 		echo "		<table width='45%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "			<tr>\n";
@@ -630,7 +646,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-music_on_hold'].":\n";
+	echo "	".$text['label-music_on_hold']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 
@@ -686,7 +702,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-record_template'].":\n";
+	echo "	".$text['label-record_template']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$record_ext=($_SESSION['record_ext']=='mp3'?'mp3':'wav');
@@ -712,7 +728,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-time_base_score'].":\n";
+	echo "	".$text['label-time_base_score']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='queue_time_base_score'>\n";
@@ -736,10 +752,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-max_wait_time'].":\n";
+	echo "	".$text['label-max_wait_time']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='queue_max_wait_time' maxlength='255' value='$queue_max_wait_time'>\n";
+	echo "  <input class='formfld' type='number' name='queue_max_wait_time' maxlength='255' min='0' step='1' value='$queue_max_wait_time'>\n";
 	echo "<br />\n";
 	echo $text['description-max_wait_time']."\n";
 	echo "</td>\n";
@@ -747,10 +763,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-max_wait_time_with_no_agent'].":\n";
+	echo "	".$text['label-max_wait_time_with_no_agent']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='queue_max_wait_time_with_no_agent' maxlength='255' value='$queue_max_wait_time_with_no_agent'>\n";
+	echo "  <input class='formfld' type='number' name='queue_max_wait_time_with_no_agent' maxlength='255' min='1' step='1' value='$queue_max_wait_time_with_no_agent'>\n";
 	echo "<br />\n";
 	echo $text['description-max_wait_time_with_no_agent']."\n";
 	echo "</td>\n";
@@ -758,10 +774,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-max_wait_time_with_no_agent_time_reached'].":\n";
+	echo "	".$text['label-max_wait_time_with_no_agent_time_reached']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='queue_max_wait_time_with_no_agent_time_reached' maxlength='255' value='$queue_max_wait_time_with_no_agent_time_reached'>\n";
+	echo "  <input class='formfld' type='number' name='queue_max_wait_time_with_no_agent_time_reached' maxlength='255' min='1' step='1' value='$queue_max_wait_time_with_no_agent_time_reached'>\n";
 	echo "<br />\n";
 	echo $text['description-max_wait_time_with_no_agent_time_reached']."\n";
 	echo "</td>\n";
@@ -769,7 +785,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-timeout_action'].":\n";
+	echo "    ".$text['label-timeout_action']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
@@ -781,7 +797,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-tier_rules_apply'].":\n";
+	echo "	".$text['label-tier_rules_apply']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='queue_tier_rules_apply'>\n";
@@ -805,10 +821,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-tier_rule_wait_second'].":\n";
+	echo "	".$text['label-tier_rule_wait_second']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='queue_tier_rule_wait_second' maxlength='255' value='$queue_tier_rule_wait_second'>\n";
+	echo "  <input class='formfld' type='number' name='queue_tier_rule_wait_second' maxlength='255' min='1' step='1' value='$queue_tier_rule_wait_second'>\n";
 	echo "<br />\n";
 	echo $text['description-tier_rule_wait_second']."\n";
 	echo "</td>\n";
@@ -816,7 +832,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-tier_rule_wait_multiply_level'].":\n";
+	echo "	".$text['label-tier_rule_wait_multiply_level']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='queue_tier_rule_wait_multiply_level'>\n";
@@ -840,7 +856,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-tier_rule_no_agent_no_wait'].":\n";
+	echo "	".$text['label-tier_rule_no_agent_no_wait']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='queue_tier_rule_no_agent_no_wait'>\n";
@@ -864,10 +880,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-discard_abandoned_after'].":\n";
+	echo "	".$text['label-discard_abandoned_after']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='queue_discard_abandoned_after' maxlength='255' value='$queue_discard_abandoned_after'>\n";
+	echo "  <input class='formfld' type='number' name='queue_discard_abandoned_after' maxlength='255' min='1' step='1' value='$queue_discard_abandoned_after'>\n";
 	echo "<br />\n";
 	echo $text['description-discard_abandoned_after']."\n";
 	echo "</td>\n";
@@ -875,7 +891,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-abandoned_resume_allowed'].":\n";
+	echo "	".$text['label-abandoned_resume_allowed']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='queue_abandoned_resume_allowed'>\n";
@@ -899,7 +915,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-caller_id_name_prefix'].":\n";
+	echo "	".$text['label-caller_id_name_prefix']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='queue_cid_prefix' maxlength='255' value='$queue_cid_prefix'>\n";
@@ -910,7 +926,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "  ".$text['label-caller_announce_sound'].":\n";
+	echo "  ".$text['label-caller_announce_sound']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='queue_announce_sound' maxlength='255' value='$queue_announce_sound'>\n";
@@ -921,10 +937,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "  ".$text['label-caller_announce_frequency'].":\n";
+	echo "  ".$text['label-caller_announce_frequency']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='queue_announce_frequency' maxlength='255' value='$queue_announce_frequency'>\n";
+	echo "  <input class='formfld' type='number' name='queue_announce_frequency' maxlength='255' min='0' step='1' value='$queue_announce_frequency'>\n";
 	echo "<br />\n";
 	echo $text['description-caller_announce_frequency']."\n";
 	echo "</td>\n";
@@ -932,7 +948,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-description'].":\n";
+	echo "	".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='queue_description' maxlength='255' value=\"$queue_description\">\n";
@@ -948,10 +964,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<input type='hidden' name='delete_type' id='delete_type' value=''>";
 		echo "		<input type='hidden' name='delete_uuid' id='delete_uuid' value=''>";
 	}
-	echo "			<br /><input type='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<br />";
+	echo "			<input type='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "<br><br>";
 	echo "</form>";
 
 require_once "resources/footer.php";

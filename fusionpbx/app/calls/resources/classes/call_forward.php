@@ -23,6 +23,8 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
+	Errol Samuels <voiptology@gmail.com>
+	
 */
 include "root.php";
 
@@ -37,6 +39,7 @@ include "root.php";
 		public $forward_all_enabled;
 		private $dial_string;
 		public $accountcode;
+		public $forward_caller_id_uuid;
 
 		public function set() {
 			//set the global variable
@@ -67,20 +70,46 @@ include "root.php";
 					$dial_string .= ",domain=".$_SESSION['domain_name'];
 					$dial_string .= ",extension_uuid=".$this->extension_uuid;
 					if (strlen($this->accountcode) > 0) {
+						$dial_string .= ",sip_h_X-accountcode=".$this->accountcode;
 						$dial_string .= ",accountcode=".$this->accountcode;
 					}
+
+					if (strlen($this->forward_caller_id_uuid) > 0){
+						$sql_caller = "select destination_number, destination_description from v_destinations where domain_uuid = '$this->domain_uuid' and destination_type = 'inbound' and destination_uuid = '$this->forward_caller_id_uuid'";
+						$prep_statement_caller = $db->prepare($sql_caller);
+						if ($prep_statement_caller) {
+							$prep_statement_caller->execute();
+							$row_caller = $prep_statement_caller->fetch(PDO::FETCH_ASSOC);
+							if (strlen($row_caller['destination_description']) > 0) {
+								$dial_string_caller_id_name = $row_caller['destination_description'];
+								$dial_string .= ",origination_caller_id_name=$dial_string_caller_id_name";
+							}
+							if (strlen($row_caller['destination_number']) > 0) {
+								$dial_string_caller_id_number = $row_caller['destination_number'];
+								$dial_string .= ",origination_caller_id_number=$dial_string_caller_id_number";
+								$dial_string .= ",outbound_caller_id_number=$dial_string_caller_id_number";
+							}
+						}
+					}
+
 					$dial_string .= "}";
 					if (extension_exists($this->forward_all_destination)) {
 						$dial_string .= "user/".$this->forward_all_destination."@".$_SESSION['domain_name'];
 					}
 					else {
-						$bridge = outbound_route_to_bridge ($_SESSION['domain_uuid'], $this->forward_all_destination);
-						//if (strlen($bridge[0]) > 0) {
-						//	$dial_string .= $bridge[0];
-						//}
-						//else {
+						if ($_SESSION['domain']['bridge']['text'] == "outbound" || $_SESSION['domain']['bridge']['text'] == "bridge") {
+							$bridge = outbound_route_to_bridge ($_SESSION['domain_uuid'], $this->forward_all_destination);
+							$dial_string .= $bridge[0];
+						}
+						elseif ($_SESSION['domain']['bridge']['text'] == "lcr") {
+							$dial_string .= "lcr/".$_SESSION['lcr']['profile']['text']."/".$_SESSION['domain_name']."/".$this->forward_all_destination;
+						}
+						elseif ($_SESSION['domain']['bridge']['text'] === "loopback") {
 							$dial_string .= "loopback/".$this->forward_all_destination;
-						//}
+						}
+						else {
+							$dial_string .= "loopback/".$this->forward_all_destination;
+						}
 					}
 					$this->dial_string = $dial_string;
 				}

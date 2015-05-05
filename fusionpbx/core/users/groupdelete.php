@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -25,32 +25,72 @@
 */
 include "root.php";
 require_once "resources/require.php";
-require_once "resources/check_auth.php";
-if (permission_exists('group_delete') || if_group("superadmin")) {
-	//access allowed
-}
-else {
-	echo "access denied";
-	return;
-}
+
+//check permissions
+	require_once "resources/check_auth.php";
+	if (permission_exists('group_delete') || if_group("superadmin")) {
+		//access allowed
+	}
+	else {
+		echo "access denied";
+		return;
+	}
+
+//add multi-lingual support
+	$language = new text;
+	$text = $language->get();
 
 //get the http value and set as a variable
-	$id = check_str($_GET["id"]);
+	$group_uuid = check_str($_GET["id"]);
 
-//delete the group
-	$sqldelete = "delete from v_groups ";
-	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
-	$sqldelete .= "and group_uuid = '$id' ";
-	if (!$db->exec($sqldelete)) {
-		//echo $db->errorCode() . "<br>";
-		$info = $db->errorInfo();
-		print_r($info);
-		// $info[0] == $db->errorCode() unified error code
-		// $info[1] is the driver specific error code
-		// $info[2] is the driver specific error string
+//validate the uuid
+	if (is_uuid($group_uuid)) {
+		//get the group from v_groups
+			$sql = "select domain_uuid, group_name from v_groups ";
+			$sql .= "where group_uuid = '".$group_uuid."' ";
+			if (!permission_exists('group_domain')) {
+				$sql .= "and (domain_uuid = '".$_SESSION['domain_uuid']."' or domain_uuid is null); ";
+			}
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+			foreach ($result as &$row) {
+				$domain_uuid = $row["domain_uuid"];
+				$group_name = $row["group_name"];
+			}
+			unset ($prep_statement);
+
+		//delete the group users
+			$sql = "delete from v_group_users ";
+			$sql .= "where group_uuid = '".$group_uuid."' ";
+			if (!$db->exec($sql)) {
+				$error = $db->errorInfo();
+				print_r($error);
+			}
+
+		//delete the group permissions
+			if (strlen($group_name) > 0) {
+				$sql = "delete from v_group_permissions ";
+				$sql .= "where group_name = '".$group_name."' ";
+				$sql .= "and domain_uuid ".(($domain_uuid != '') ? " = '".$domain_uuid."' " : " is null ");
+				if (!$db->exec($sql)) {
+					$error = $db->errorInfo();
+					print_r($error);
+				}
+			}
+
+		//delete the group
+			$sql = "delete from v_groups ";
+			$sql .= "where group_uuid = '".$group_uuid."' ";
+			$sql .= "and domain_uuid ".(($domain_uuid != '') ? " = '".$domain_uuid."' " : " is null ");
+			if (!$db->exec($sql)) {
+				$error = $db->errorInfo();
+				print_r($error);
+			}
 	}
 
 //redirect the user
+	$_SESSION["message"] = $text['message-delete'];
 	header("Location: groups.php");
 
 ?>

@@ -34,64 +34,99 @@ else {
 	exit;
 }
 
-//add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+// check if included in another file
+if (!$included) {
+	//add multi-lingual support
+	$language = new text;
+	$text = $language->get();
 
-if (count($_GET)>0) {
-	$id = check_str($_GET["id"]);
+	if (count($_GET)>0) {
+		$contact_uuid = check_str($_GET["id"]);
+	}
 }
 
-if (strlen($id)>0) {
-	//delete a contact
-		$sql = "delete from v_contacts ";
-		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and contact_uuid = '$id' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		unset($prep_statement, $sql);
-
+if (strlen($contact_uuid) > 0) {
 	//delete addresses
 		$sql = "delete from v_contact_addresses ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and contact_uuid = '$id' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($prep_statement, $sql);
 
 	//delete phones
-		$sql = "";
-		$sql .= "delete from v_contact_phones ";
+		$sql = "delete from v_contact_phones ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and contact_uuid = '$id' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
+
+	//delete emails
+		$sql = "delete from v_contact_emails ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
+
+	//delete urls
+		$sql = "delete from v_contact_urls ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($prep_statement, $sql);
 
 	//delete notes
-		$sql = "";
-		$sql .= "delete from v_contact_notes ";
+		$sql = "delete from v_contact_notes ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and contact_uuid = '$id' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
+
+	//delete relations
+		$sql = "delete from v_contact_relations ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and ";
+		$sql .= "( ";
+		$sql .= "	contact_uuid = '".$contact_uuid."' ";
+		$sql .= "	or relation_contact_uuid = '".$contact_uuid."' ";
+		$sql .= ") ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($prep_statement, $sql);
 
 	//delete settings
-		$sql = "";
 		$sql = "delete from v_contact_settings ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and contact_uuid = '$id' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
+
+	//delete groups
+		$sql = "delete from v_contact_groups ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
+
+	//delete a contact
+		$sql = "delete from v_contacts ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and contact_uuid = '".$contact_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($prep_statement, $sql);
 }
 
-
-$_SESSION["message"] = $text['message-delete'];
-header("Location: contacts.php");
-return;
+if (!$included) {
+	$_SESSION["message"] = $text['message-delete'];
+	header("Location: contacts.php");
+	return;
+}
 
 ?>

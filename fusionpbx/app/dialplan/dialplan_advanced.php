@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 require_once "resources/header.php";
 $document['title'] = $text['title-default_dialplan'];
@@ -97,7 +95,6 @@ function sf() { document.forms[0].savetopath.focus(); }
 	});
 </script>
 
-<div align='center'>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
    <tr>
      <td class="" >
@@ -160,7 +157,6 @@ function sf() { document.forms[0].savetopath.focus(); }
 </td>
 </tr>
 </table>
-</div>
 
 <?php
 	require_once "resources/footer.php";

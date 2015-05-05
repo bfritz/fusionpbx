@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2013
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -34,7 +34,8 @@ require_once "resources/require.php";
 	session_start();
 
 //if the username session is not set the check username and password
-	if (strlen($_SESSION["username"]) == 0) {
+	 if (strlen($_SESSION['username']) == 0) {
+
 		//clear the menu
 			$_SESSION["menu"] = "";
 
@@ -45,7 +46,8 @@ require_once "resources/require.php";
 
 		//if the username is not provided then send to login.php
 			if (strlen(check_str($_REQUEST["username"])) == 0 && strlen(check_str($_REQUEST["key"])) == 0) {
-				$target_path = ($_REQUEST["path"] != '') ? $_REQUEST["path"] : $_SERVER["PHP_SELF"];
+				$target_path = ($_REQUEST["path"] != '') ? $_REQUEST["path"] : $_SERVER["REQUEST_URI"];
+				$_SESSION["message_mood"] = "negative";
 				$_SESSION["message"] = "Invalid Username and/or Password";
 				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($target_path));
 				exit;
@@ -60,6 +62,13 @@ require_once "resources/require.php";
 						$username_array = explode("@", check_str($_REQUEST["username"]));
 						if (count($username_array) > 1) {
 							$domain_name = $username_array[count($username_array) -1];
+							$_SESSION['domain_name'] = $domain_name;
+							foreach ($_SESSION['domains'] as $row) {
+								if ($row['domain_name'] == $domain_name) {
+									$_SESSION['domain_uuid'] = $row['domain_uuid'];
+									break;
+								}
+							}
 							$_REQUEST["username"] = substr(check_str($_REQUEST["username"]), 0, -(strlen($domain_name)+1));
 						}
 					}
@@ -91,46 +100,65 @@ require_once "resources/require.php";
 			}
 
 		//ldap authentication
-			if ($_SESSION["ldap"]["authentication"]["boolean"] == "true") {
+			if ($_SESSION["ldap"]["enabled"]["boolean"] == "true") {
 				//use ldap to validate the user credentials
 					if (strlen(check_str($_REQUEST["domain_name"])) > 0) {
 						$domain_name = check_str($_REQUEST["domain_name"]);
 					}
-					$ad = ldap_connect("ldap://".$_SESSION["ldap"]["server_host"]["text"].":".$_SESSION["ldap"]["server_port"]["numeric"])
-						or die("Couldn't connect to AD!");
-					ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
-					$bd = ldap_bind($ad,$username."@".$domain_name,check_str($_REQUEST["password"]));
-					if ($bd) {
-						//echo "success\n";
-						$auth_failed = false;
-					}
-					else {
-						//echo "failed\n";
-						$auth_failed = true;
+					$connect = ldap_connect($_SESSION["ldap"]["server_host"]["text"], $_SESSION["ldap"]["server_port"]["numeric"])
+						or die("Could not connect to the LDAP server.");
+					ldap_set_option($connect, LDAP_OPT_NETWORK_TIMEOUT, 10);
+					ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
+					$bind_dn = $_SESSION["ldap"]["user_attribute"]["text"]."=".$username.",".$_SESSION["ldap"]["user_dn"]["text"];
+					$bind = ldap_bind($connect, $bind_dn, $_REQUEST["password"]);
+					if ($bind) {
+						$_SESSION['username'] = $username;
 					}
 
 				//check to see if the user exists
-					if (!$auth_failed) {
+					 if (strlen($_SESSION['username']) > 0) {
 						$sql = "select * from v_users ";
 						$sql .= "where username=:username ";
-						if (count($_SESSION["domains"]) > 1) {
+						if ($_SESSION["user"]["unique"]["text"] == "global") {
+							//unique username - global (example: email address)
+						}
+						else {
+							//unique username - per domain
 							$sql .= "and domain_uuid=:domain_uuid ";
 						}
 						$prep_statement = $db->prepare(check_sql($sql));
-						if (count($_SESSION["domains"]) > 1) {
+						if ($_SESSION["user"]["unique"]["text"] != "global") {
 							$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 						}
 						$prep_statement->bindParam(':username', $username);
 						$prep_statement->execute();
 						$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-						if (count($result) == 0) {
+						if (count($result) > 0) {
+							foreach ($result as &$row) {
+								//get the domain uuid
+									$domain_uuid = $row["domain_uuid"];
+									$user_uuid = $row["user_uuid"];
+								//set the domain session variables
+									$_SESSION["domain_uuid"] = $domain_uuid;
+									$domain_name = $_SESSION['domains'][$domain_uuid]['domain_name'];
+									$_SESSION["domain_name"] = $domain_name;
+								//set the setting arrays
+									$domain = new domains();
+									$domain->db = $db;
+									$domain->set();
+							}
+						}
+						else {
 							//salt used with the password to create a one way hash
-								$salt = generate_password('20', '4');
-								$password = generate_password('20', '4');
+								$salt = generate_password('32', '4');
+								$password = generate_password('32', '4');
 
 							//prepare the uuids
 								$user_uuid = uuid();
 								$contact_uuid = uuid();
+
+							//set the user_id
+								$_SESSION["user_uuid"] = $user_uuid;
 
 							//add the user
 								$sql = "insert into v_users ";
@@ -147,9 +175,9 @@ require_once "resources/require.php";
 								$sql .= ") ";
 								$sql .= "values ";
 								$sql .= "(";
-								$sql .= "'$domain_uuid', ";
-								$sql .= "'$user_uuid', ";
-								$sql .= "'$contact_uuid', ";
+								$sql .= "'".$domain_uuid."', ";
+								$sql .= "'".$user_uuid."', ";
+								$sql .= "'".$contact_uuid."', ";
 								$sql .= "'".strtolower($username)."', ";
 								$sql .= "'".md5($salt.$password)."', ";
 								$sql .= "'".$salt."', ";
@@ -172,22 +200,23 @@ require_once "resources/require.php";
 								$sql .= "values ";
 								$sql .= "(";
 								$sql .= "'".uuid()."', ";
-								$sql .= "'$domain_uuid', ";
-								$sql .= "'$group_name', ";
-								$sql .= "'$user_uuid' ";
+								$sql .= "'".$domain_uuid."', ";
+								$sql .= "'".$group_name."', ";
+								$sql .= "'".$user_uuid."' ";
 								$sql .= ")";
 								$db->exec(check_sql($sql));
 								unset($sql);
 						}
 					}
 			}
+
 		//database authentication
-			else {
+			if (strlen($_SESSION['username']) == 0) {
 				//check the username and password if they don't match then redirect to the login
 					$sql = "select * from v_users ";
-					if (strlen($_REQUEST["key"]) > 30) {
-						$sql .= "where api_key=:key ";
-						//$sql .= "and api_key='".$key."' ";
+					if (strlen($key) > 30) {
+						//$sql .= "where api_key=:key ";
+						$sql .= "where api_key='".$key."' ";
 					}
 					else {
 						$sql .= "where username=:username ";
@@ -206,7 +235,7 @@ require_once "resources/require.php";
 					if ($_SESSION["user"]["unique"]["text"] != "global") {
 						$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 					}
-					if (strlen($_REQUEST["key"]) > 30) {
+					if (strlen($key) > 30) {
 						$prep_statement->bindParam(':key', $key);
 					}
 					else {
@@ -214,69 +243,68 @@ require_once "resources/require.php";
 					}
 					$prep_statement->execute();
 					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-					if (count($result) == 0) {
-						$auth_failed = true;
-					}
-					else {
-						if (isset($_REQUEST["key"])) {
-							$auth_failed = false;
-						}
-						else {
-							foreach ($result as &$row) {
-								//get the domain uuid
-									$domain_uuid = $row["domain_uuid"];
-								//set the domain session variables
-									$_SESSION["domain_uuid"] = $domain_uuid;
-									$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
-								//set the setting arrays
-									$domain = new domains();
-									$domain->db = $db;
-									$domain->set();
-								//get the salt from the database
-									$salt = $row["salt"];
-								//if salt is not defined then use the default salt for backwards compatibility
-									if (strlen($salt) == 0) {
-										$salt = 'e3.7d.12';
-									}
-								//compare the password provided by the user with the one in the database
-									if (md5($salt.check_str($_REQUEST["password"])) != $row["password"]) {
-										$auth_failed = true;
-									}
-								//end the loop
-									break;
-							}
+					if (count($result) > 0) {
+						foreach ($result as &$row) {
+							//get the domain uuid
+								$domain_uuid = $row["domain_uuid"];
+							//set the domain session variables
+								$_SESSION["domain_uuid"] = $domain_uuid;
+								$domain_name = $_SESSION['domains'][$domain_uuid]['domain_name'];
+								$_SESSION["domain_name"] = $domain_name;
+							//set the setting arrays
+								$domain = new domains();
+								$domain->db = $db;
+								$domain->set();
+							//get the salt from the database
+								$salt = $row["salt"];
+							//if salt is not defined then use the default salt for backwards compatibility
+								if (strlen($salt) == 0) {
+									$salt = 'e3.7d.12';
+								}
+							//compare the password provided by the user with the one in the database
+								if (md5($salt.check_str($_REQUEST["password"])) == $row["password"]) {
+									 $_SESSION['username'] = $row["username"];
+								} elseif (strlen($_REQUEST["key"]) >  30 && $_REQUEST["key"] == $row["api_key"]) {
+									$_SESSION['username'] = $row["username"];
+								} else {
+									unset($result);
+								}
+							//end the loop
+								break;
 						}
 					}
 			}
-			if ($auth_failed) {
+			if (strlen($_SESSION['username']) == 0) {
 				//log the failed auth attempt to the system, to be available for fail2ban.
 					openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
 					syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".check_str($_REQUEST["username"]));
 					closelog();
 				//redirect the user to the login page
 					$target_path = ($_REQUEST["path"] != '') ? $_REQUEST["path"] : $_SERVER["PHP_SELF"];
+					$_SESSION["message_mood"] = "negative";
 					$_SESSION["message"] = "Invalid Username and/or Password";
 					header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($target_path));
 					exit;
 			}
-			foreach ($result as &$row) {
-				//allow the user to choose a template only if the template has not been assigned by the superadmin
-					if (strlen($_SESSION['domain']['template']['name']) == 0) {
-						$_SESSION['domain']['template']['name'] = $row["user_template_name"];
-					}
-				//user defined time zone
-					$_SESSION["time_zone"]["user"] = '';
-					if (strlen($row["user_time_zone"]) > 0) {
-						//user defined time zone
-						$_SESSION["time_zone"]["user"] = $row["user_time_zone"];
-					}
-				// add session variables
-					$_SESSION["user_uuid"] = $row["user_uuid"];
-					$_SESSION["username"] = $row["username"];
-				// user session array
-					$_SESSION["user"]["username"] = $row["username"];
-					$_SESSION["user"]["user_uuid"] = $row["user_uuid"];
-					$_SESSION["user"]["contact_uuid"] = $row["contact_uuid"];
+			else {
+				foreach ($result as &$row) {
+					//allow the user to choose a template only if the template has not been assigned by the superadmin
+						if (strlen($_SESSION['domain']['template']['name']) == 0) {
+							$_SESSION['domain']['template']['name'] = $row["user_template_name"];
+						}
+					//user defined time zone
+						$_SESSION["time_zone"]["user"] = '';
+						if (strlen($row["user_time_zone"]) > 0) {
+							//user defined time zone
+							$_SESSION["time_zone"]["user"] = $row["user_time_zone"];
+						}
+					// add session variables
+						$_SESSION["user_uuid"] = $row["user_uuid"];
+					// user session array
+						$_SESSION["user"]["username"] = $row["username"];
+						$_SESSION["user"]["user_uuid"] = $row["user_uuid"];
+						$_SESSION["user"]["contact_uuid"] = $row["contact_uuid"];
+				}
 			}
 
 		//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
@@ -300,11 +328,12 @@ require_once "resources/require.php";
 				foreach($_SESSION["groups"] as $field) {
 					if (strlen($field['group_name']) > 0) {
 						if ($x == 0) {
-							$sql .= "where (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
+							$sql .= "where (domain_uuid = '".$domain_uuid."' and domain_uuid = null) ";
 						}
 						else {
-							$sql .= "or (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
+							$sql .= "or (domain_uuid = '".$domain_uuid."' and domain_uuid = null) ";
 						}
+						$sql .= "or group_name = '".$field['group_name']."' ";
 						$x++;
 					}
 				}
@@ -352,8 +381,12 @@ require_once "resources/require.php";
 		//redirect the user
 			if (check_str($_REQUEST["rdr"]) !== 'n'){
 				$path = check_str($_POST["path"]);
-				if(isset($path) && !empty($path) && $path!="index2.php" && $path!="/install.php") {
+				if (isset($path) && !empty($path) && $path!="index2.php" && $path!="/install.php") {
 					header("Location: ".$path);
+					exit();
+				}
+				else if ($_SESSION['login']['destination']['url'] != '') {
+					header("Location: ".$_SESSION['login']['destination']['url']);
 					exit();
 				}
 			}

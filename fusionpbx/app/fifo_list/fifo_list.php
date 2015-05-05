@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 require_once "resources/header.php";
 $document['title'] = $text['title-active_queues'];
@@ -94,27 +92,19 @@ else if (window.attachEvent) {
 </script>
 
 <?php
-echo "<div align='center'>";
-
-echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
-echo "	<td align='left'><b>".$text['header-active_queues']."</b><br>\n";
+echo "	<td align='left'>";
+echo "		<b>".$text['header-active_queues']."</b>";
+echo "		<br><br>";
 echo "		".$text['description-active_queues']."\n";
 echo "	</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo "<br>";
 
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-echo "<tr class='border'>\n";
-echo "	<td align=\"left\">\n";
-
-echo "	<div id=\"ajax_reponse\">\n";
-echo "	</div>\n";
-
-echo "	</td>";
-echo "	</tr>";
-echo "</table>";
-echo "</div>";
+echo "<div id=\"ajax_reponse\"></div>\n";
+echo "<br><br>";
 
 require_once "resources/footer.php";
 ?>

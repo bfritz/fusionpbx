@@ -1,6 +1,6 @@
 --	ring_groups.lua
 --	Part of FusionPBX
---	Copyright (C) 2010-2014 Mark J Crane <markjcrane@fusionpbx.com>
+--	Copyright (C) 2010-2015 Mark J Crane <markjcrane@fusionpbx.com>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -102,12 +102,16 @@
 		ring_group_forward_enabled = row["ring_group_forward_enabled"];
 		ring_group_forward_destination = row["ring_group_forward_destination"];
 		ring_group_cid_name_prefix = row["ring_group_cid_name_prefix"];
+		ring_group_cid_number_prefix = row["ring_group_cid_number_prefix"];
 	end);
 
 --set the caller id
 	if (session:ready()) then
 			if (string.len(ring_group_cid_name_prefix) > 0) then
 				session:execute("set", "effective_caller_id_name="..ring_group_cid_name_prefix.."#"..caller_id_name);
+			end
+			if (string.len(ring_group_cid_number_prefix) > 0) then
+				session:execute("set", "effective_caller_id_number="..ring_group_cid_number_prefix..caller_id_number);
 			end
 	end
 
@@ -117,14 +121,21 @@
 			session:execute("transfer", ring_group_forward_destination.." XML "..context);
 	else
 		--get the ring group destinations
-			sql = 
-			[[ SELECT r.ring_group_strategy, r.ring_group_timeout_app, d.destination_number, d.destination_delay, d.destination_timeout, d.destination_prompt, r.ring_group_timeout_data, r.ring_group_cid_name_prefix, r.ring_group_ringback, r.ring_group_skip_active
-			FROM v_ring_groups as r, v_ring_group_destinations as d
-			where d.ring_group_uuid = r.ring_group_uuid 
-			and d.ring_group_uuid = ']]..ring_group_uuid..[[' 
-			and r.ring_group_enabled = 'true' 
-			order by d.destination_delay, d.destination_number asc ]]
-			--freeswitch.consoleLog("notice", "SQL:" .. sql .. "\n");
+			sql = [[SELECT 
+					r.ring_group_strategy, r.ring_group_timeout_app, 
+					d.destination_number, d.destination_delay, d.destination_timeout, d.destination_prompt, 
+					r.ring_group_timeout_data, r.ring_group_cid_name_prefix, r.ring_group_cid_number_prefix, r.ring_group_ringback, r.ring_group_skip_active
+				FROM 
+					v_ring_groups as r, v_ring_group_destinations as d
+				WHERE 
+					d.ring_group_uuid = r.ring_group_uuid 
+					AND d.ring_group_uuid = ']]..ring_group_uuid..[[' 
+					AND r.domain_uuid = ']]..domain_uuid..[[' 
+					AND r.ring_group_enabled = 'true' 
+				ORDER BY 
+					d.destination_delay, d.destination_number asc 
+				]];
+				--freeswitch.consoleLog("notice", "SQL:" .. sql .. "\n");
 			destinations = {};
 			x = 1;
 			assert(dbh:query(sql, function(row)
@@ -189,6 +200,7 @@
 					ring_group_timeout_app = row.ring_group_timeout_app;
 					ring_group_timeout_data = row.ring_group_timeout_data;
 					ring_group_cid_name_prefix = row.ring_group_cid_name_prefix;
+					ring_group_cid_number_prefix = row.ring_group_cid_number_prefix;
 					ring_group_ringback = row.ring_group_ringback;
 					ring_group_skip_active = row.ring_group_skip_active;
 					destination_number = row.destination_number;
@@ -458,7 +470,7 @@
 										else
 											--not found: user is available
 											if (user_exists == "true") then
-												dial_string = "["..group_confirm.."sip_invite_domain="..domain_name.."dialed_extension=" .. destination_number .. ",extension_uuid="..extension_uuid.."]user/" .. destination_number .. "@" .. domain_name;
+												dial_string = "["..group_confirm.."sip_invite_domain="..domain_name..",dialed_extension=" .. destination_number .. ",extension_uuid="..extension_uuid.."]user/" .. destination_number .. "@" .. domain_name;
 												session:execute("bridge", dial_string);
 											elseif (tonumber(destination_number) == nil) then
 												--sip uri

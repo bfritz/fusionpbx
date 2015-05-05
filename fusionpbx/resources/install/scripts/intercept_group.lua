@@ -171,6 +171,7 @@
 				x = x + 1;
 			end
 			sql = sql .. ") ";
+			sql = sql .. "and call_uuid is not null ";
 			--if (domain_count > 1) then
 			--	sql = sql .. "and context = '"..context.."' ";
 			--end
@@ -194,15 +195,17 @@
 
 --intercept a call that is ringing
 	if (uuid ~= nil) then
-		if (hostname == call_hostname) then
-			session:execute("intercept", uuid);
-		else
-			session:execute("export", "sip_h_X-intercept_uuid="..uuid);
-			session:execute("export", "sip_h_X-domain_uuid="..domain_uuid);
-			session:execute("export", "sip_h_X-domain_name="..domain_name);
-			port = freeswitch.getGlobalVariable(sofia_profile_name.."_sip_port");
-			session:execute("bridge", "sofia/"..sofia_profile_name.."/*8@"..call_hostname..":"..port);
-			freeswitch.consoleLog("NOTICE", "Send call to other host.... \n");
+		if (session:getVariable("billmsec") == nil) then
+			if (hostname == call_hostname) then
+				session:execute("intercept", uuid);
+			else
+				session:execute("export", "sip_h_X-intercept_uuid="..uuid);
+				session:execute("export", "sip_h_X-domain_uuid="..domain_uuid);
+				session:execute("export", "sip_h_X-domain_name="..domain_name);
+				port = freeswitch.getGlobalVariable(sofia_profile_name.."_sip_port");
+				session:execute("bridge", "sofia/"..sofia_profile_name.."/*8@"..call_hostname..":"..port);
+				freeswitch.consoleLog("NOTICE", "Send call to other host.... \n");
+			end
 		end
 	end
 

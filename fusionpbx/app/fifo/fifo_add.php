@@ -22,6 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 include "root.php";
 require_once "resources/require.php";
@@ -35,15 +36,13 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
-require_once "resources/header.php";
-$document['title'] = $text['title-queue_add'];
-
-require_once "resources/paging.php";
+//includes and title
+	require_once "resources/header.php";
+	$document['title'] = $text['title-queue_add'];
+	require_once "resources/paging.php";
 
 //get http values and set them as variables
 	if (count($_POST)>0) {
@@ -107,7 +106,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$dialplan_detail_break = 'on-true';
 					} else {
 						$dialplan_detail_break = '';
-					}						
+					}
 					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data, $dialplan_detail_break);
 				//set the hold music
 					//if (strlen($hold_music) > 0) {
@@ -164,7 +163,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$dialplan_detail_break = 'on-true';
 					} else {
 						$dialplan_detail_break = '';
-					}						
+					}
 					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data, $dialplan_detail_break);
 				//set the hold music
 					//if (strlen($hold_music) > 0) {
@@ -272,12 +271,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//synchronize the xml config
 		save_dialplan_xml();
 
-	//delete the dialplan context from memcache
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"];
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		}
+	//clear the cache
+		$cache = new cache;
+		$cache->delete("dialplan:".$_SESSION["context"]);
 
 	//redirect the user
 		$_SESSION["message"] = $text['message-add'];
@@ -287,12 +283,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //show the content
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class=''>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
 	echo "<form method='post' name='frm' action=''>\n";
 	echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
@@ -314,13 +304,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<br />\n";
 	echo "<br />\n";
 
-	echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "	<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "		".$text['label-name'].":\n";
+	echo "		".$text['label-name']."\n";
 	echo "	</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+	echo "		<input class='formfld' type='text' name='extension_name' maxlength='255' value=\"$extension_name\" required='required'>\n";
 	echo "		<br />\n";
 	echo "		".$text['description-name']."\n";
 	echo "	</td>\n";
@@ -328,10 +318,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	".$text['label-extension'].":\n";
+	echo "	".$text['label-extension']."\n";
 	echo "	</td>\n";
 	echo "	<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' style='width: 60%;' type='text' name='queue_extension_number' maxlength='255' value=\"$queue_extension_number\">\n";
+	echo "		<input class='formfld' type='text' name='queue_extension_number' maxlength='255' min='0' step='1' value=\"$queue_extension_number\" required='required'>\n";
 	echo "		<br />\n";
 	echo "		".$text['description-extension']."\n";
 	echo "	</td>\n";
@@ -339,7 +329,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-order'].":\n";
+	echo "    ".$text['label-order']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select name='dialplan_order' class='formfld'>\n";
@@ -358,7 +348,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-enabled'].":\n";
+	echo "    ".$text['label-enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='dialplan_enabled'>\n";
@@ -382,10 +372,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-description'].":\n";
+	echo "    ".$text['label-description']."\n";
 	echo "</td>\n";
 	echo "<td colspan='4' class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -403,10 +393,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-agent_queue_extension'].":\n";
+	echo "    ".$text['label-agent_queue_extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_queue_extension_number' maxlength='255' value=\"$agent_queue_extension_number\">\n";
+	echo "    <input class='formfld' type='text' name='agent_queue_extension_number' maxlength='255' min='0' step='1' value=\"$agent_queue_extension_number\">\n";
 	echo "<br />\n";
 	echo $text['description-agent_queue_extension']."\n";
 	echo "</td>\n";
@@ -414,35 +404,30 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-agent_loginout_extension'].":\n";
+	echo "    ".$text['label-agent_loginout_extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_login_logout_extension_number' maxlength='255' value=\"$agent_login_logout_extension_number\">\n";
+	echo "    <input class='formfld' type='text' name='agent_login_logout_extension_number' maxlength='255' min='0' step='1' value=\"$agent_login_logout_extension_number\">\n";
 	echo "<br />\n";
 	echo $text['description-agent_loginout_extension']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
-
-	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
+		echo "	<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	}
-	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "		<br>";
+	echo "		<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "	</td>\n";
 	echo "</tr>";
 	echo "</table>";
-
+	echo "<br><br>";
 	echo "</form>";
 
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</div>";
-	echo "<br><br>";
 
 //show the footer
 	require_once "resources/footer.php";

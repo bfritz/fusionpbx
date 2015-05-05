@@ -36,10 +36,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
@@ -61,6 +59,17 @@ else {
 		$fax_extension = $row["fax_extension"];
 		$fax_name = $row["fax_name"];
 		$fax_email = $row["fax_email"];
+		$fax_email_connection_type = $row["fax_email_connection_type"];
+		$fax_email_connection_host = $row["fax_email_connection_host"];
+		$fax_email_connection_port = $row["fax_email_connection_port"];
+		$fax_email_connection_security = $row["fax_email_connection_security"];
+		$fax_email_connection_validate = $row["fax_email_connection_validate"];
+		$fax_email_connection_username = $row["fax_email_connection_username"];
+		$fax_email_connection_password = $row["fax_email_connection_password"];
+		$fax_email_connection_mailbox = $row["fax_email_connection_mailbox"];
+		$fax_email_inbound_subject_tag = $row["fax_email_inbound_subject_tag"];
+		$fax_email_outbound_subject_tag = $row["fax_email_outbound_subject_tag"];
+		$fax_email_outbound_authorized_senders = $row["fax_email_outbound_authorized_senders"];
 		$fax_pin_number = $row["fax_pin_number"];
 		$fax_caller_id_name = $row["fax_caller_id_name"];
 		$fax_caller_id_number = $row["fax_caller_id_number"];
@@ -80,6 +89,17 @@ else {
 	$sql .= "fax_extension, ";
 	$sql .= "fax_name, ";
 	$sql .= "fax_email, ";
+	$sql .= "fax_email_connection_type, ";
+	$sql .= "fax_email_connection_host, ";
+	$sql .= "fax_email_connection_port, ";
+	$sql .= "fax_email_connection_security, ";
+	$sql .= "fax_email_connection_validate, ";
+	$sql .= "fax_email_connection_username, ";
+	$sql .= "fax_email_connection_password, ";
+	$sql .= "fax_email_connection_mailbox, ";
+	$sql .= "fax_email_inbound_subject_tag, ";
+	$sql .= "fax_email_outbound_subject_tag, ";
+	$sql .= "fax_email_outbound_authorized_senders, ";
 	$sql .= "fax_pin_number, ";
 	$sql .= "fax_caller_id_name, ";
 	$sql .= "fax_caller_id_number, ";
@@ -96,6 +116,17 @@ else {
 	$sql .= "'$fax_extension', ";
 	$sql .= "'$fax_name', ";
 	$sql .= "'$fax_email', ";
+	$sql .= "'$fax_email_connection_type', ";
+	$sql .= "'$fax_email_connection_host', ";
+	$sql .= "'$fax_email_connection_port', ";
+	$sql .= "'$fax_email_connection_security', ";
+	$sql .= "'$fax_email_connection_validate', ";
+	$sql .= "'$fax_email_connection_username', ";
+	$sql .= "'$fax_email_connection_password', ";
+	$sql .= "'$fax_email_connection_mailbox', ";
+	$sql .= "'$fax_email_inbound_subject_tag', ";
+	$sql .= "'$fax_email_outbound_subject_tag', ";
+	$sql .= "'$fax_email_outbound_authorized_senders', ";
 	$sql .= "'$fax_pin_number', ";
 	$sql .= "'$fax_caller_id_name', ";
 	$sql .= "'$fax_caller_id_number', ";

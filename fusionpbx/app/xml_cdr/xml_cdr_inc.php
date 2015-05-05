@@ -45,8 +45,6 @@ else {
 
 //get post or get variables from http
 	if (count($_REQUEST) > 0) {
-		$order_by = check_str($_REQUEST["order_by"]);
-		$order = check_str($_REQUEST["order"]);
 		$cdr_id = check_str($_REQUEST["cdr_id"]);
 		$missed = check_str($_REQUEST["missed"]);
 		$direction = check_str($_REQUEST["direction"]);
@@ -73,6 +71,9 @@ else {
 		$write_codec = check_str($_REQUEST["write_codec"]);
 		$remote_media_ip = check_str($_REQUEST["remote_media_ip"]);
 		$network_addr = check_str($_REQUEST["network_addr"]);
+		$bridge_uuid = check_str($_REQUEST["network_addr"]);
+		$order_by = check_str($_REQUEST["order_by"]);
+		$order = check_str($_REQUEST["order"]);
 	}
 
 //build the sql where string
@@ -126,9 +127,7 @@ else {
 	if (strlen($remote_media_ip) > 0) { $sql_where_ands[] = "remote_media_ip like '%".$remote_media_ip."%'"; }
 	if (strlen($network_addr) > 0) { $sql_where_ands[] = "network_addr like '%".$network_addr."%'"; }
 
-	//example sql
-		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = ''
-		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
+	//if not admin or superadmin, only show own calls
 	if (!permission_exists('xml_cdr_domain')) {
 		if (count($_SESSION['user']['extension']) > 0) { // extensions are assigned to this user
 			// create simple user extension array
@@ -164,6 +163,9 @@ else {
 				$sql_where_ands[] = "( ".implode(" or ", $sql_where_ors)." )";
 			}
 		}
+		else {
+			$sql_where_ands[] = "1 <> 1"; //disable viewing of cdr records by users with no assigned extensions
+		}
 	}
 
 	// concatenate the 'ands's array, add to where clause
@@ -172,12 +174,12 @@ else {
 	}
 
 //set the param variable which is used with paging
-	$param = "";
+	$param = "&cdr_id=".$cdr_id;
 	$param .= "&missed=".$missed;
+	$param .= "&direction=".$direction;
 	$param .= "&caller_id_name=".$caller_id_name;
-	$param .= "&start_stamp=".$start_stamp;
-	$param .= "&hangup_cause=".$hangup_cause;
 	$param .= "&caller_id_number=".$caller_id_number;
+	$param .= "&caller_extension_uuid=".$caller_extension_uuid;
 	$param .= "&destination_number=".$destination_number;
 	$param .= "&context=".$context;
 	$param .= "&start_stamp_begin=".$start_stamp_begin;
@@ -190,18 +192,20 @@ else {
 	$param .= "&stop_epoch=".$stop_epoch;
 	$param .= "&duration=".$duration;
 	$param .= "&billsec=".$billsec;
+	$param .= "&hangup_cause=".$hangup_cause;
 	$param .= "&uuid=".$uuid;
-	$param .= "&bridge_uuid=".$bridge_uuid;
+	$param .= "&bleg_uuid=".$bleg_uuid;
 	$param .= "&accountcode=".$accountcode;
 	$param .= "&read_codec=".$read_codec;
 	$param .= "&write_codec=".$write_codec;
 	$param .= "&remote_media_ip=".$remote_media_ip;
 	$param .= "&network_addr=".$network_addr;
-	if (isset($order_by)) {
-		$param .= "&order_by=".$order_by;
+	$param .= "&bridge_uuid=".$bridge_uuid;
+	if ($_GET['showall'] && permission_exists('xml_cdr_all')) {
+		$param .= "&showall=" . $_GET['showall'];
 	}
-	if (isset($order)) {
-		$param .= "&order=".$order;
+	if (isset($order_by)) {
+		$param .= "&order_by=".$order_by."&order=".$order;
 	}
 
 //create the sql query to get the xml cdr records
@@ -232,7 +236,6 @@ else {
 				}
 			}
 			unset($prep_statement, $result);
-
 		//limit the number of results
 			if ($num_rows > $_SESSION['cdr']['limit']['numeric']) {
 				$num_rows = $_SESSION['cdr']['limit']['numeric'];
@@ -245,12 +248,49 @@ else {
 			//$rows_per_page = 150; //set on the page that includes this page
 			$page = $_GET['page'];
 			if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
-			list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
+			list($paging_controls_mini, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page, true); //top
+			list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); //bottom
 			$offset = $rows_per_page * $page;
 	}
 
 //get the results from the db
-	$sql = "select * from v_xml_cdr where domain_uuid = '".$domain_uuid."' ".$sql_where;
+	$sql = "select ";
+	$sql .= "start_stamp, ";
+	$sql .= "start_epoch, ";
+	$sql .= "hangup_cause, ";
+	$sql .= "duration, ";
+	$sql .= "billmsec, ";
+	$sql .= "recording_file, ";
+	$sql .= "uuid, ";
+	$sql .= "bridge_uuid, ";
+	$sql .= "direction, ";
+	$sql .= "billsec, ";
+	$sql .= "caller_id_name, ";
+	$sql .= "caller_id_number, ";
+	$sql .= "destination_number, ";
+	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/billing/app_config.php")){
+		$sql .= "accountcode, ";
+		$sql .= "call_sell, ";
+		$sql .= "xml, ";
+		$sql .= "json, ";
+	}
+	if (permission_exists("xml_cdr_pdd")) {
+		$sql .= "pdd_ms, ";
+	}
+	if (permission_exists("xml_cdr_mos")) {
+		$sql .= "rtp_audio_in_mos, ";
+	}
+	$sql .= "(answer_epoch - start_epoch) as tta ";
+	if ($_GET['showall'] && permission_exists('xml_cdr_all')) {
+		$sql .= ", domain_name ";
+	}
+	$sql .= "from v_xml_cdr ";
+	if ($_GET['showall'] && permission_exists('xml_cdr_all')) {
+		if ($sql_where) { $sql .= "where "; }
+	} else {
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	}
+	$sql .= $sql_where;
 	if (strlen($order_by)> 0) { $sql .= " order by ".$order_by." ".$order." "; }
 	if ($rows_per_page == 0) {
 		$sql .= " limit ".$_SESSION['cdr']['limit']['numeric']." offset 0 ";
@@ -267,5 +307,6 @@ else {
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
+	$row_style["2"] = "row_style2";
 
 ?>

@@ -35,10 +35,8 @@ else {
 }
 
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //get the queue_name and set it as a variable
 	$queue_name = $_GET[queue_name];
@@ -113,18 +111,8 @@ function send_cmd(url) {
 </script>
 
 <?php
-echo "<div align='center'>";
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-echo "<tr class='border'>\n";
-echo "	<td align=\"left\">\n";
-
-echo "	<div id=\"ajax_response\">\n";
-echo "	</div>\n";
-
-echo "	</td>";
-echo "	</tr>";
-echo "</table>";
-echo "</div>";
+echo "	<div id='ajax_response'></div>\n";
+echo "<br><br>";
 
 require_once "resources/footer.php";
 ?>

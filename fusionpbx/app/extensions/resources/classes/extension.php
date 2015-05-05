@@ -51,7 +51,7 @@
 		public $limit_destination;
 		public $voicemail_enabled;
 		public $voicemail_mail_to;
-		public $voicemail_attach_file;
+		public $voicemail_file;
 		public $voicemail_local_after_email;
 		public $user_context;
 		public $toll_allow;
@@ -117,7 +117,7 @@
 							$sql .= "greeting_id, ";
 						}
 						$sql .= "voicemail_mail_to, ";
-						$sql .= "voicemail_attach_file, ";
+						$sql .= "voicemail_file, ";
 						$sql .= "voicemail_local_after_email, ";
 						$sql .= "voicemail_enabled, ";
 						$sql .= "voicemail_description ";
@@ -129,7 +129,7 @@
 						$sql .= "'".$this->voicemail_id."', ";
 						$sql .= "'".$this->voicemail_password."', ";
 						$sql .= "'".$this->voicemail_mail_to."', ";
-						$sql .= "'".$this->voicemail_attach_file."', ";
+						$sql .= "'".$this->voicemail_file."', ";
 						$sql .= "'".$this->voicemail_local_after_email."', ";
 						$sql .= "'".$this->voicemail_enabled."', ";
 						$sql .= "'".$this->description."' ";
@@ -142,7 +142,7 @@
 						$sql = "update v_voicemails set ";
 						$sql .= "voicemail_password = '".$this->voicemail_password."', ";
 						$sql .= "voicemail_mail_to = '".$this->voicemail_mail_to."', ";
-						$sql .= "voicemail_attach_file = '".$this->voicemail_attach_file."', ";
+						$sql .= "voicemail_file = '".$this->voicemail_file."', ";
 						$sql .= "voicemail_local_after_email = '".$this->voicemail_local_after_email."', ";
 						$sql .= "voicemail_enabled = '".$this->voicemail_enabled."', ";
 						$sql .= "voicemail_description = '".$this->description."' ";
@@ -259,16 +259,12 @@
 							}
 							if (strlen($row['voicemail_mail_to']) > 0) {
 								$xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
-
-								switch ($row['voicemail_attach_file']) {
-								case "true":
+								switch ($row['voicemail_file']) {
+								case "attach":
 										$xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
-										break;
-								case "false":
-										$xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
 										break;
 								default:
-										$xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+										$xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
 								}
 								switch ($row['voicemail_local_after_email']) {
 								case "true":
@@ -308,6 +304,9 @@
 								$xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
 							}
 							$xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
+							if (strlen($row['call_timeout']) > 0) {
+								$xml .= "      <variable name=\"call_timeout\" value=\"" . $row['call_timeout'] . "\"/>\n";
+							}
 							if (strlen($switch_account_code) > 0) {
 								$xml .= "      <variable name=\"accountcode\" value=\"" . $switch_account_code . "\"/>\n";
 							}
@@ -367,6 +366,27 @@
 								case "proxy-media":
 										$xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
 										break;
+							}
+							if (strlen($row['forward_all_enabled']) > 0) {
+								$xml .= "      <variable name=\"forward_all_enabled\" value=\"" . $row['forward_all_enabled'] . "\"/>\n";
+							}
+							if (strlen($row['forward_all_destination']) > 0) {
+								$xml .= "      <variable name=\"forward_all_destination\" value=\"" . $row['forward_all_destination'] . "\"/>\n";
+							}
+							if (strlen($row['forward_busy_enabled']) > 0) {
+								$xml .= "      <variable name=\"forward_busy_enabled\" value=\"" . $row['forward_busy_enabled'] . "\"/>\n";
+							}
+							if (strlen($row['forward_busy_destination']) > 0) {
+								$xml .= "      <variable name=\"forward_busy_destination\" value=\"" . $row['forward_busy_destination'] . "\"/>\n";
+							}
+							if (strlen($row['forward_no_answer_enabled']) > 0) {
+								$xml .= "      <variable name=\"forward_no_answer_enabled\" value=\"" . $row['forward_no_answer_enabled'] . "\"/>\n";
+							}
+							if (strlen($row['forward_no_answer_destination']) > 0) {
+								$xml .= "      <variable name=\"forward_no_answer_destination\" value=\"" . $row['forward_no_answer_destination'] . "\"/>\n";
+							}
+							if (strlen($row['do_not_disturb']) > 0) {
+								$xml .= "      <variable name=\"do_not_disturb\" value=\"" . $row['do_not_disturb'] . "\"/>\n";
 							}
 							$xml .= "    </variables>\n";
 							$xml .= "  </user>\n";

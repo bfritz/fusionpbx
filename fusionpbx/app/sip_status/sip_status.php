@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -38,10 +38,8 @@ else {
 	exit;
 }
 //add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
-	}
+	$language = new text;
+	$text = $language->get();
 
 //define variables
 	$c = 0;
@@ -74,6 +72,7 @@ if ($_GET['a'] == "download") {
 
 //show the content
 	require_once "resources/header.php";
+	$document['title'] = $text['title-sip-status'];
 
 	$msg = $_GET["savemsg"];
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -101,8 +100,9 @@ if ($_GET['a'] == "download") {
 	$gateways = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	unset ($prep_statement, $sql);
 
-//get the  sip profiles
+//get the sip profiles
 	$sql = "select sip_profile_name from v_sip_profiles ";
+	$sql .= "where sip_profile_enabled = 'true' ";
 	$sql .= "order by sip_profile_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -119,17 +119,24 @@ if ($_GET['a'] == "download") {
 		catch(Exception $e) {
 			echo $e->getMessage();
 		}
-		echo "<br />\n";
-		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0' style='margin-bottom: 10px;'>\n";
+		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 		echo "<tr>\n";
 		echo "<td width='50%'>\n";
-		echo "  <b><a href='javascript:void(0);' onclick=\"$('#sofia_status').slideToggle();\">".$text['title-sofia-status']."</a></b> \n";
+		echo "	<b>".$text['header-sip-status']."</b>";
+		echo "	<br><br>";
 		echo "</td>\n";
 		echo "<td width='50%' align='right'>\n";
 		echo "  <input type='button' class='btn' value='".$text['button-flush_memcache']."' onclick=\"document.location.href='cmd.php?cmd=api+memcache+flush';\" />\n";
 		echo "  <input type='button' class='btn' value='".$text['button-reload_acl']."' onclick=\"document.location.href='cmd.php?cmd=api+reloadacl';\" />\n";
 		echo "  <input type='button' class='btn' value='".$text['button-reload_xml']."' onclick=\"document.location.href='cmd.php?cmd=api+reloadxml';\" />\n";
+		echo "  <input type='button' class='btn' value='".$text['button-refresh']."' onclick=\"document.location.href='sip_status.php';\" />\n";
 		echo "</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
+		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0' style='margin-bottom: 10px;'>\n";
+		echo "<tr>\n";
+		echo "<td><b><a href='javascript:void(0);' onclick=\"$('#sofia_status').slideToggle();\">".$text['title-sofia-status']."</a></b></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
@@ -198,7 +205,13 @@ if ($_GET['a'] == "download") {
 			if ($fp) {
 				$cmd = "api sofia xmlstatus profile ".$sip_profile_name."";
 				$xml_response = trim(event_socket_request($fp, $cmd));
-				if ($xml_response == "Invalid Profile!") { $xml_response = "<error_msg>Invalid Profile!</error_msg>"; }
+				if ($xml_response == "Invalid Profile!") {
+					$xml_response = "<error_msg>Invalid Profile!</error_msg>";
+					$profile_state = 'stopped';
+				}
+				else {
+					$profile_state = 'running';
+				}
 				$xml_response = str_replace("<profile-info>", "<profile_info>", $xml_response);
 				$xml_response = str_replace("</profile-info>", "</profile_info>", $xml_response);
 				try {
@@ -218,8 +231,12 @@ if ($_GET['a'] == "download") {
 					echo "  <input type='button' class='btn' value='".$text['button-flush_registrations']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+flush_inbound_reg';\" />\n";
 				}
 				echo "  <input type='button' class='btn' value='".$text['button-registrations']."' onclick=\"document.location.href='".PROJECT_PATH."/app/registrations/status_registrations.php?show_reg=1&profile=".$sip_profile_name."';\" />\n";
-				echo "  <input type='button' class='btn' value='".$text['button-start']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+start';\" />\n";
-				echo "  <input type='button' class='btn' value='".$text['button-stop']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+stop';\" />\n";
+				if ($profile_state == 'stopped') {
+					echo "  <input type='button' class='btn' value='".$text['button-start']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+start';\" />\n";
+				}
+				if ($profile_state == 'running') {
+					echo "  <input type='button' class='btn' value='".$text['button-stop']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+stop';\" />\n";
+				}
 				echo "  <input type='button' class='btn' value='".$text['button-restart']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+restart';\" />\n";
 				echo "  <input type='button' class='btn' value='".$text['button-rescan']."' onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+rescan';\" />\n";
 				echo "</td>\n";

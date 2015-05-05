@@ -109,12 +109,12 @@
 			if (name == nil) then
 				freeswitch.consoleLog("NOTICE", "[cidlookup] caller name from contacts db is nil\n");
 			else
-				freeswitch.consoleLog("NOTICE", "[cidlookup] caller name from contacts db "..name.."\n");
+				freeswitch.consoleLog("NOTICE", "[cidlookup] caller name from contacts db: "..name.."\n");
 			end
 
 		--check if there is a record, if it doesnt, then use common cidlookup
 			if ((name == nil) or  (string.len(name) == 0)) then
-					name = api:executeString("cidlookup " .. caller);
+				name = api:executeString("cidlookup " .. caller);
 			end
 			
 			freeswitch.consoleLog("NOTICE", "[cidlookup] uuid_setvar " .. uuid .. " caller_id_name " .. name);

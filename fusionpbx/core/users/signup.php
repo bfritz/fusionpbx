@@ -25,31 +25,54 @@
 */
 include "root.php";
 require_once "resources/require.php";
-require_once "resources/check_auth.php";
 
-if (if_group("admin") || if_group("superadmin")) {
-	//access allowed
-}
-else {
-	echo "access denied";
-	return;
-}
-
-//add multi-lingual support
-	require_once "app_languages.php";
-	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+//check permissions
+	require_once "resources/check_auth.php";
+	if (if_group("admin") || if_group("superadmin")) {
+		//access allowed
+	}
+	else {
+		echo "access denied";
+		return;
 	}
 
-$username = check_str($_POST["username"]);
-$password = check_str($_POST["password"]);
-$confirmpassword = check_str($_POST["confirmpassword"]);
-$group_name = check_str($_POST["group_name"]);
-$user_email = check_str($_POST["user_email"]);
-$contact_organization = check_str($_POST["contact_organization"]);
-$contact_name_given = check_str($_POST["contact_name_given"]);
-$contact_name_family = check_str($_POST["contact_name_family"]);
+//add multi-lingual support
+	$language = new text;
+	$text = $language->get();
 
+//get total user count from the database, check limit, if defined
+	if ($_SESSION['limit']['users']['numeric'] != '') {
+		$sql = "select count(*) as num_rows from v_users where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			$total_users = $row['num_rows'];
+		}
+		unset($prep_statement, $row);
+		if ($total_users >= $_SESSION['limit']['users']['numeric']) {
+			$_SESSION['message_mood'] = 'negative';
+			$_SESSION['message'] = $text['message-maximum_users'].' '.$_SESSION['limit']['users']['numeric'];
+			header('Location: index.php');
+			return;
+		}
+	}
+
+//get the values from http and set as variables
+	$username = check_str($_POST["username"]);
+	$password = check_str($_POST["password"]);
+	$confirmpassword = check_str($_POST["confirmpassword"]);
+	$group_uuid_name = check_str($_POST["group_uuid_name"]);
+	$user_email = check_str($_POST["user_email"]);
+	$contact_organization = check_str($_POST["contact_organization"]);
+	$contact_name_given = check_str($_POST["contact_name_given"]);
+	$contact_name_family = check_str($_POST["contact_name_family"]);
+
+if ($group_uuid_name != '') {
+	$group_data = explode('|', $group_uuid_name);
+	$group_uuid = $group_data[0];
+	$group_name = $group_data[1];
+}
 
 if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
@@ -89,6 +112,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	//if (strlen($contact_name_given) == 0) { $msg .= $text['message-required'].$text['label-first_name']."<br>\n"; }
 	//if (strlen($contact_name_family) == 0) { $msg .= $text['message-required'].$text['label-last_name']."<br>\n"; }
 	if (strlen($user_email) == 0) { $msg .= $text['message-required'].$text['label-email']."<br>\n"; }
+	if (strlen($group_uuid_name) == 0) { $msg .= $text['message-required'].$text['label-group']."<br>\n"; }
 
 	if (strlen($msg) > 0) {
 		require_once "resources/header.php";
@@ -110,6 +134,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$user_uuid = uuid();
 	$group_user_uuid = uuid();
 	$contact_uuid = uuid();
+	$contact_email_uuid = uuid();
 
 	//add the user
 	$sql = "insert into v_users ";
@@ -126,10 +151,10 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= ") ";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$domain_uuid', ";
-	$sql .= "'$user_uuid', ";
-	$sql .= "'$contact_uuid', ";
-	$sql .= "'$username', ";
+	$sql .= "'".$domain_uuid."', ";
+	$sql .= "'".$user_uuid."', ";
+	$sql .= "'".$contact_uuid."', ";
+	$sql .= "'".$username."', ";
 	$sql .= "'".md5($salt.$password)."', ";
 	$sql .= "'".$salt."', ";
 	$sql .= "now(), ";
@@ -140,13 +165,14 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	unset($sql);
 
 	//add the user to the group
-	if (strlen($group_name) > 0) {
+	if (strlen($group_uuid) > 0) {
 		if ( ($group_name == "superadmin" && if_group("superadmin")) || $group_name != "superadmin") {
 			$sql = "insert into v_group_users ";
 			$sql .= "( ";
 			$sql .= "group_user_uuid, ";
 			$sql .= "domain_uuid, ";
 			$sql .= "group_name, ";
+			$sql .= "group_uuid, ";
 			$sql .= "user_uuid ";
 			$sql .= ") ";
 			$sql .= "values ";
@@ -154,6 +180,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 			$sql .= "'".$group_user_uuid."', ";
 			$sql .= "'".$domain_uuid."', ";
 			$sql .= "'".$group_name."', ";
+			$sql .= "'".$group_uuid."', ";
 			$sql .= "'".$user_uuid."' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
@@ -170,19 +197,37 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "contact_organization, ";
 	$sql .= "contact_name_given, ";
 	$sql .= "contact_name_family, ";
-	$sql .= "contact_nickname, ";
-	$sql .= "contact_email ";
+	$sql .= "contact_nickname ";
 	$sql .= ") ";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$domain_uuid', ";
-	$sql .= "'$contact_uuid', ";
+	$sql .= "'".$domain_uuid."', ";
+	$sql .= "'".$contact_uuid."', ";
 	$sql .= "'user', ";
-	$sql .= "'$contact_organization', ";
-	$sql .= "'$contact_name_given', ";
-	$sql .= "'$contact_name_family', ";
-	$sql .= "'$username', ";
-	$sql .= "'$user_email' ";
+	$sql .= "'".$contact_organization."', ";
+	$sql .= "'".$contact_name_given."', ";
+	$sql .= "'".$contact_name_family."', ";
+	$sql .= "'".$username."' ";
+	$sql .= ")";
+	$db->exec(check_sql($sql));
+	unset($sql);
+
+	//add to emails
+	$sql = "insert into v_contact_emails ";
+	$sql .= "(";
+	$sql .= "contact_email_uuid, ";
+	$sql .= "domain_uuid, ";
+	$sql .= "contact_uuid, ";
+	$sql .= "email_address, ";
+	$sql .= "email_primary ";
+	$sql .= ") ";
+	$sql .= "values ";
+	$sql .= "(";
+	$sql .= "'".$contact_email_uuid."', ";
+	$sql .= "'".$domain_uuid."', ";
+	$sql .= "'".$contact_uuid."', ";
+	$sql .= "'".$user_email."', ";
+	$sql .= "1 ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);
@@ -230,90 +275,81 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	echo "	}";
 	echo "</script>";
 
-	echo "<div align='center'>";
-
 	$tablewidth ='width="100%"';
 	echo "<form method='post' action=''>";
-	echo "<div class='borderlight' style='padding:10px;'>\n";
 
-	echo "<table border='0' $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<table border='0' $tablewidth cellpadding='0' cellspacing='0'>";
 	echo "	<tr>\n";
-	echo "		<td width='80%'>\n";
+	echo "		<td width='80%' valign='top'>\n";
 	echo "			<b>".$text['header-user_add']."</b>\n";
 	echo "			<br><br>\n";
 	echo "			".$text['description-user_add']."\n";
+	echo "			<br><br>\n";
 	echo "		</td>\n";
-	echo "		<td width='20%' align='right'>\n";
-	echo "			<input type='button' class='btn' name='back' alt='".$text['button-back']."' onclick=\"window.history.back()\" value='".$text['button-back']."'>\n";
+	echo "		<td width='20%' valign='top' align='right'>\n";
+	echo "			<input type='button' class='btn' name='back' alt='".$text['button-back']."' onclick=\"document.location.href='index.php';\" value='".$text['button-back']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
-	echo "<table border='0' $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<table border='0' $tablewidth cellpadding='0' cellspacing='0'>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq' width='30%'>".$text['label-username'].":</td>";
+	echo "		<td class='vncellreq' width='30%'>".$text['label-username']."</td>";
 	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' autocomplete='off' name='username' value='$username'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>".$text['label-password'].":</td>";
+	echo "		<td class='vncellreq'>".$text['label-password']."</td>";
 	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='password' id='password' value='$password' onfocus='compare_passwords();' onkeyup='compare_passwords();' onblur='compare_passwords();'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>".$text['label-confirm_password'].":</td>";
+	echo "		<td class='vncellreq'>".$text['label-confirm_password']."</td>";
 	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='confirmpassword' id='confirmpassword' value='$confirmpassword' onfocus='compare_passwords();' onkeyup='compare_passwords();' onblur='compare_passwords();'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>".$text['label-email'].":</td>";
+	echo "		<td class='vncellreq'>".$text['label-email']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='user_email' value='$user_email'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncell' valign='top'>".$text['label-group'].":</td>";
+	echo "		<td class='vncellreq' valign='top'>".$text['label-group']."</td>";
 	echo "		<td class='vtable'>";
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "or domain_uuid is null ";
 	$sql .= "order by group_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	echo "			<select name=\"group_name\" class='formfld' style='width: auto; margin-right: 3px;'>\n";
+	echo "			<select name=\"group_uuid_name\" class='formfld' style='width: auto; margin-right: 3px;'>\n";
 	echo "				<option value=\"\"></option>\n";
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
-		if ($field['group_name'] == "superadmin" && !if_group("superadmin")) { continue; }	//only show the superadmin group to other users in the superadmin group
-		if (!in_array($field["group_name"], $assigned_groups)) {
-			echo "		<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
-		}
+		if ($field['group_name'] == "superadmin" && !if_group("superadmin")) { continue; } //only show the superadmin group to other superadmins
+		if ($field['group_name'] == "admin" && (!if_group("superadmin") && !if_group("admin") )) { continue; }	//only show the admin group to other admins
+		echo "			<option value='".$field['group_uuid']."|".$field['group_name']."'>".$field['group_name']."</option>\n";
 	}
 	echo "			</select>";
 	unset($sql, $result);
 	echo "		</td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncell'>".$text['label-first_name'].":</td>";
+	echo "		<td class='vncell'>".$text['label-first_name']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='contact_name_given' value='$contact_name_given'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncell'>".$text['label-last_name'].":</td>";
+	echo "		<td class='vncell'>".$text['label-last_name']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='contact_name_family' value='$contact_name_family'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncell'>".$text['label-company_name'].":</td>";
+	echo "		<td class='vncell'>".$text['label-company_name']."</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='contact_organization' value='$contact_organization'></td>";
 	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
-
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "       <input type='submit' name='submit' class='btn' value='".$text['button-create_account']."'>";
+	echo "      	<br><input type='submit' name='submit' class='btn' value='".$text['button-create_account']."'>";
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</form>";
-
-	echo "</div>";
 
 //show the footer
 	require_once "resources/footer.php";

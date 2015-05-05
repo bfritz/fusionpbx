@@ -38,16 +38,13 @@ require_once "resources/check_auth.php";
 	}
 
 //add multi-lingual support
-	if (!is_array($text)) {
-		require_once "app_languages.php";
-		foreach($text as $key => $value) {
-			$text[$key] = $value[$_SESSION['domain']['language']['code']];
-		}
-	}
+	$language = new text;
+	$text = $language->get();
 
-//request profile
+//get the HTTP values and set as variables
 	$sip_profile_name = trim($_REQUEST["profile"]);
 	$show = trim($_REQUEST["show"]);
+	if ($show != "all") { $show = ''; }
 
 //define variables
 	$c = 0;
@@ -59,6 +56,9 @@ require_once "resources/check_auth.php";
 	if (!$fp) {
 		$msg = "<div align='center'>".$text['error-event-socket']."<br /></div>";
 	}
+
+//define js function call var
+	$onhover_pause_refresh = " onmouseover='refresh_stop();' onmouseout='refresh_start();'";
 
 //show the error message or show the content
 	if (strlen($msg) > 0) {
@@ -109,10 +109,7 @@ require_once "resources/check_auth.php";
 
 					//remove unrelated domains
 						if (count($_SESSION["domains"]) > 1) {
-							if (permission_exists('registration_all') && $show == "all") {
-								//show all registrations
-							}
-							else {
+							if (!(permission_exists('registration_all') && $show == "all")) {
 								if ($registrations[$x]['sip-auth-realm'] != $_SESSION['domain_name']) {
 									unset($registrations[$x]);
 								}
@@ -125,18 +122,21 @@ require_once "resources/check_auth.php";
 			}
 
 		//show the registrations
-			echo "<table width='100%' border='0' cellspacing='0' cellpadding='5'>\n";
+			echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n";
 			echo "<tr>\n";
-			echo "<td colspan='5'>\n";
+			echo "<td width='100%'>\n";
 			echo "	<b>".$text['header-registrations'].": ".count($registrations)."</b>\n";
 			echo "</td>\n";
-			echo "<td align='right'>\n";
+			echo "<td valign='middle' nowrap='nowrap' style='padding-right: 15px' id='refresh_state'>";
+			echo "	<img src='resources/images/refresh_active.gif' style='width: 16px; height: 16px; border: none; margin-top: 3px; cursor: pointer;' onclick='refresh_stop();' alt=\"".$text['label-refresh_pause']."\" title=\"".$text['label-refresh_pause']."\">";
+			echo "</td>";
+			echo "<td valign='top' nowrap='nowrap'>";
 			if (permission_exists('registration_all')) {
 				if ($show == "all") {
-					echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='status_registrations.php?show_reg=1&profile=$sip_profile_name'\" value='".$text['button-back']."'>\n";
+					echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='status_registrations.php?show_reg=1&profile=$sip_profile_name'\" value='".$text['button-back']."' ".$onhover_pause_refresh.">\n";
 				}
 				else {
-					echo "	<input type='button' class='btn' name='' alt='".$text['button-show_all']."' onclick=\"window.location='status_registrations.php?show_reg=1&profile=$sip_profile_name&show=all'\" value='".$text['button-show_all']."'>\n";
+					echo "	<input type='button' class='btn' name='' alt='".$text['button-show_all']."' onclick=\"window.location='status_registrations.php?show_reg=1&profile=$sip_profile_name&show=all'\" value='".$text['button-show_all']."' ".$onhover_pause_refresh.">\n";
 				}
 			}
 			echo "</td>\n";
@@ -144,12 +144,13 @@ require_once "resources/check_auth.php";
 			echo "</table>\n";
 			echo "<br />\n";
 
-			echo "<table width='100%' border='0' cellspacing='0' cellpadding='5'>\n";
+			echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n";
 			echo "<tr>\n";
 			echo "	<th>".$text['label-user']."</th>\n";
 			echo "	<th>".$text['label-agent']."</th>\n";
 			echo "	<th>".$text['label-ip']."</th>\n";
 			echo "	<th>".$text['label-port']."</th>\n";
+			echo "	<th>".$text['label-hostname']."</th>\n";
 			echo "	<th>".$text['label-status']."</th>\n";
 			echo "	<th>".$text['label-tools']."&nbsp;</th>\n";
 			echo "</tr>\n";
@@ -157,7 +158,7 @@ require_once "resources/check_auth.php";
 		//order the array
 			require_once "resources/classes/array_order.php";
 			$order = new array_order();
-			$registrations = $order->sort($registrations, 'domain', 'user');
+			$registrations = $order->sort($registrations, 'sip-auth-realm', 'user');
 
 		//display the array
 			if (count($registrations) > 0) {
@@ -171,11 +172,12 @@ require_once "resources/check_auth.php";
 						echo "	<td class='".$row_style[$c]."'>".htmlentities($row['agent'])."&nbsp;</td>\n";
 						echo "	<td class='".$row_style[$c]."'><a href='http://".$row['network-ip']."' target='_blank'>".$row['network-ip']."</a>&nbsp;</td>\n";
 						echo "	<td class='".$row_style[$c]."'>".$row['network-port']."&nbsp;</td>\n";
+						echo "	<td class='".$row_style[$c]."'>".$row['host']."&nbsp;</td>\n";
 						echo "	<td class='".$row_style[$c]."'>".$row['status']."&nbsp;</td>\n";
 						echo "	<td class='".$row_style[$c]."' style='text-align: right;' nowrap='nowrap'>\n";
-						echo "		<input type='button' class='btn' value='".$text['button-unregister']."' onclick=\"document.location.href='cmd.php?cmd=unregister&profile=".$sip_profile_name."&show=".$show."&user=".$row['user']."&domain=".$row['sip-auth-realm']."&agent=".urlencode($row['agent'])."';\" />\n";
-						echo "		<input type='button' class='btn' value='".$text['button-provision']."' onclick=\"document.location.href='cmd.php?cmd=check_sync&profile=".$sip_profile_name."&show=".$show."&user=".$row['user']."&domain=".$row['sip-auth-realm']."&agent=".urlencode($row['agent'])."';\" />\n";
-						echo "		<input type='button' class='btn' value='".$text['button-reboot']."' onclick=\"document.location.href='cmd.php?cmd=reboot&profile=".$sip_profile_name."&show=".$show."&user=".$row['user']."&domain=".$row['sip-auth-realm']."&agent=".urlencode($row['agent'])."';\" onclick=\"\" />\n";
+						echo "		<input type='button' class='btn' value='".$text['button-unregister']."' onclick=\"document.location.href='cmd.php?cmd=unregister&profile=".$sip_profile_name."&show=".$show."&user=".$row['user']."&domain=".$row['sip-auth-realm']."&agent=".urlencode($row['agent'])."';\" ".$onhover_pause_refresh.">\n";
+						echo "		<input type='button' class='btn' value='".$text['button-provision']."' onclick=\"document.location.href='cmd.php?cmd=check_sync&profile=".$sip_profile_name."&show=".$show."&user=".$row['user']."&domain=".$row['sip-auth-realm']."&agent=".urlencode($row['agent'])."';\" ".$onhover_pause_refresh.">\n";
+						echo "		<input type='button' class='btn' value='".$text['button-reboot']."' onclick=\"document.location.href='cmd.php?cmd=reboot&profile=".$sip_profile_name."&show=".$show."&user=".$row['user']."&domain=".$row['sip-auth-realm']."&agent=".urlencode($row['agent'])."';\" ".$onhover_pause_refresh.">\n";
 						echo "	</td>\n";
 						echo "</tr>\n";
 						if ($c==0) { $c=1; } else { $c=0; }

@@ -34,15 +34,13 @@
 		$document_root = $matches[1];
 		set_include_path($document_root);
 		require_once "resources/require.php";
+		require_once "resources/classes/text.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 		$format = 'text'; //html, text
 
 		//add multi-lingual support
-		require_once "app_languages.php";
-		foreach($text as $key => $value) {
-			$text[$key] = $value[$_SESSION['domain']['language']['code']];
-		}
-
+		$language = new text;
+		$text = $language->get();
 	}
 	else if (!$included) {
 		include "root.php";

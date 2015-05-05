@@ -26,6 +26,9 @@
 include "root.php";
 require_once "resources/functions.php";
 
+//include required classes
+	require_once "resources/classes/text.php";
+
 //set debug to true or false
 	$v_debug = true;
 
@@ -92,10 +95,11 @@ require_once "resources/functions.php";
 	$install_tmp_dir = $_POST["install_tmp_dir"];
 	$install_backup_dir = $_POST["install_backup_dir"];
 	$install_switch_base_dir = $_POST["install_switch_base_dir"];
+	$install_default_country = $_POST["install_default_country"];
 	$install_template_name = $_POST["install_template_name"];
 
 //clean up the values
-	if (strlen($install_switch_base_dir) > 0) { 
+	if (strlen($install_switch_base_dir) > 0) {
 		$install_switch_base_dir = realpath($install_switch_base_dir);
 		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
 	}
@@ -193,7 +197,7 @@ require_once "resources/functions.php";
 				//old
 				//if (file_exists('/usr/share/freeswitch/scripts')) {
 				//	$switch_scripts_dir = '/usr/share/freeswitch/scripts';
-				//}	
+				//}
 				//new
 				if (file_exists('/usr/share/freeswitch/grammar')) {
 					$switch_grammar_dir = '/usr/share/freeswitch/grammar';
@@ -249,7 +253,7 @@ require_once "resources/functions.php";
 							$switch_sounds_dir = '/usr/local/share/freeswitch/sounds';
 				}
 				elseif (file_exists('/data/freeswitch')) {
-					//FreeBSD embedded 
+					//FreeBSD embedded
 						//set the default db_path
 							if (strlen($db_path) == 0) {
 								$db_path = '/data/db/fusionpbx';
@@ -364,7 +368,7 @@ if ($_POST["install_step"] == "2" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 		else {
 			if (strlen($admin_password) < 5) {
-				$msg .= "Please provide an Admin Password that is 5 or more characters.<br>\n"; 
+				$msg .= "Please provide an Admin Password that is 5 or more characters.<br>\n";
 			}
 		}
 	//define the step to return to
@@ -569,7 +573,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				}
 				unset ($file_contents, $sql);
 				$db_tmp->commit();
-				
+
 			//set the file permissions
 				chmod($db_path.'/'.$db_name, 0777);
 		}
@@ -723,7 +727,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 							}
 						}
 
-					//set account to unlimitted use
+					//set account to unlimited use
 						try {
 							if ($db_host == "localhost" || $db_host == "127.0.0.1") {
 								$tmp_sql = "GRANT USAGE ON * . * TO '".$db_username."'@'localhost' ";
@@ -883,6 +887,12 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		$tmp[$x]['value'] = 'en-us';
 		$tmp[$x]['category'] = 'domain';
 		$tmp[$x]['subcategory'] = 'language';
+		$tmp[$x]['enabled'] = 'true';
+		$x++;
+		$tmp[$x]['name'] = 'iso_code';
+		$tmp[$x]['value'] = $install_default_country;
+		$tmp[$x]['category'] = 'domain';
+		$tmp[$x]['subcategory'] = 'country';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'name';
@@ -1061,14 +1071,12 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		foreach($tmp as $row) {
 			$sql = "insert into v_groups ";
 			$sql .= "(";
-			$sql .= "domain_uuid, ";
 			$sql .= "group_uuid, ";
 			$sql .= "group_name, ";
 			$sql .= "group_description ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'".$_SESSION["domain_uuid"]."', ";
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['group_name']."', ";
 			$sql .= "'".$row['group_description']."' ";
@@ -1174,14 +1182,12 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 							$sql = "insert into v_group_permissions ";
 							$sql .= "(";
 							$sql .= "group_permission_uuid, ";
-							$sql .= "domain_uuid, ";
 							$sql .= "permission_name, ";
 							$sql .= "group_name ";
 							$sql .= ") ";
 							$sql .= "values ";
 							$sql .= "(";
 							$sql .= "'".uuid()."', ";
-							$sql .= "'".$_SESSION["domain_uuid"]."', ";
 							$sql .= "'".$row['name']."', ";
 							$sql .= "'".$group."' ";
 							$sql .= ");";
@@ -1252,10 +1258,10 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				if (!is_readable($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
 				if (is_readable($switch_log_dir)) {
 					if (!is_readable($switch_scripts_dir.'') && $switch_scripts_dir != "/scripts") { mkdir($switch_scripts_dir.'',0777,true); }
-					if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/8000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
-					if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/16000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
-					if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/32000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
-					if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/48000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
+			//		if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/8000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
+			//		if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/16000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
+			//		if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/32000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
+			//		if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/48000') && $switch_scripts_dir != "/sounds") { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
 					if (!is_readable($switch_storage_dir.'/fax/') && $switch_scripts_dir != "/storage") { mkdir($switch_storage_dir.'/fax',0777,true); }
 					if (!is_readable($switch_recordings_dir.'') && $switch_scripts_dir != "/recordings") { mkdir($switch_recordings_dir.'',0777,true); }
 				}
@@ -1267,7 +1273,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$install->domain = $domain_name;
 				$install->switch_conf_dir = $switch_conf_dir;
 				$install->switch_scripts_dir = $switch_scripts_dir;
-				$install->switch_sounds_dir = $switch_sounds_dir;
+			//	$install->switch_sounds_dir = $switch_sounds_dir;
 				$install->copy_conf();
 				$install->copy();
 
@@ -1406,7 +1412,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 	if ($_POST["install_step"] == "") {
 		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
-		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 		//echo "<tr>\n";
 		//echo "<td colspan='2' align='left' width='30%' nowrap><b>Installation</b></td>\n";
@@ -1432,7 +1438,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "	Database Type:\n";
+		echo "	Database Type\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<select name='db_type' id='db_type' class='formfld' id='form_tag' onchange='db_type_onchange();'>\n";
@@ -1447,7 +1453,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "	Username:\n";
+		echo "	Username\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='admin_username' maxlength='255' value=\"$admin_username\"><br />\n";
@@ -1457,13 +1463,272 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "	Password:\n";
+		echo "	Password\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='admin_password' maxlength='255' value=\"$admin_password\"><br />\n";
 		echo "	Enter the password to use when logging in with the browser.<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	Country\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<select id='install_default_country' name='install_default_country' class='formfld' style=''>\n";
+echo <<<EOL
+<option value="AF">Afghanistan</option>
+<option value="AX">Åland Islands</option>
+<option value="AL">Albania</option>
+<option value="DZ">Algeria</option>
+<option value="AS">American Samoa</option>
+<option value="AD">Andorra</option>
+<option value="AO">Angola</option>
+<option value="AI">Anguilla</option>
+<option value="AQ">Antarctica</option>
+<option value="AG">Antigua and Barbuda</option>
+<option value="AR">Argentina</option>
+<option value="AM">Armenia</option>
+<option value="AW">Aruba</option>
+<option value="AU">Australia</option>
+<option value="AT">Austria</option>
+<option value="AZ">Azerbaijan</option>
+<option value="BS">Bahamas</option>
+<option value="BH">Bahrain</option>
+<option value="BD">Bangladesh</option>
+<option value="BB">Barbados</option>
+<option value="BY">Belarus</option>
+<option value="BE">Belgium</option>
+<option value="BZ">Belize</option>
+<option value="BJ">Benin</option>
+<option value="BM">Bermuda</option>
+<option value="BT">Bhutan</option>
+<option value="BO">Bolivia</option>
+<option value="BA">Bosnia and Herzegovina</option>
+<option value="BW">Botswana</option>
+<option value="BV">Bouvet Island</option>
+<option value="BR">Brazil</option>
+<option value="IO">British Indian Ocean Territory</option>
+<option value="BN">Brunei Darussalam</option>
+<option value="BG">Bulgaria</option>
+<option value="BF">Burkina Faso</option>
+<option value="BI">Burundi</option>
+<option value="KH">Cambodia</option>
+<option value="CM">Cameroon</option>
+<option value="CA">Canada</option>
+<option value="CV">Cape Verde</option>
+<option value="KY">Cayman Islands</option>
+<option value="CF">Central African Republic</option>
+<option value="TD">Chad</option>
+<option value="CL">Chile</option>
+<option value="CN">China</option>
+<option value="CX">Christmas Island</option>
+<option value="CC">Cocos (Keeling) Islands</option>
+<option value="CO">Colombia</option>
+<option value="KM">Comoros</option>
+<option value="CG">Congo</option>
+<option value="CD">Congo, The Democratic Republic of The</option>
+<option value="CK">Cook Islands</option>
+<option value="CR">Costa Rica</option>
+<option value="CI">Cote D'ivoire</option>
+<option value="HR">Croatia</option>
+<option value="CU">Cuba</option>
+<option value="CY">Cyprus</option>
+<option value="CZ">Czech Republic</option>
+<option value="DK">Denmark</option>
+<option value="DJ">Djibouti</option>
+<option value="DM">Dominica</option>
+<option value="DO">Dominican Republic</option>
+<option value="EC">Ecuador</option>
+<option value="EG">Egypt</option>
+<option value="SV">El Salvador</option>
+<option value="GQ">Equatorial Guinea</option>
+<option value="ER">Eritrea</option>
+<option value="EE">Estonia</option>
+<option value="ET">Ethiopia</option>
+<option value="FK">Falkland Islands (Malvinas)</option>
+<option value="FO">Faroe Islands</option>
+<option value="FJ">Fiji</option>
+<option value="FI">Finland</option>
+<option value="FR">France</option>
+<option value="GF">French Guiana</option>
+<option value="PF">French Polynesia</option>
+<option value="TF">French Southern Territories</option>
+<option value="GA">Gabon</option>
+<option value="GM">Gambia</option>
+<option value="GE">Georgia</option>
+<option value="DE">Germany</option>
+<option value="GH">Ghana</option>
+<option value="GI">Gibraltar</option>
+<option value="GR">Greece</option>
+<option value="GL">Greenland</option>
+<option value="GD">Grenada</option>
+<option value="GP">Guadeloupe</option>
+<option value="GU">Guam</option>
+<option value="GT">Guatemala</option>
+<option value="GG">Guernsey</option>
+<option value="GN">Guinea</option>
+<option value="GW">Guinea-bissau</option>
+<option value="GY">Guyana</option>
+<option value="HT">Haiti</option>
+<option value="HM">Heard Island and Mcdonald Islands</option>
+<option value="VA">Holy See (Vatican City State)</option>
+<option value="HN">Honduras</option>
+<option value="HK">Hong Kong</option>
+<option value="HU">Hungary</option>
+<option value="IS">Iceland</option>
+<option value="IN">India</option>
+<option value="ID">Indonesia</option>
+<option value="IR">Iran, Islamic Republic of</option>
+<option value="IQ">Iraq</option>
+<option value="IE">Ireland</option>
+<option value="IM">Isle of Man</option>
+<option value="IL">Israel</option>
+<option value="IT">Italy</option>
+<option value="JM">Jamaica</option>
+<option value="JP">Japan</option>
+<option value="JE">Jersey</option>
+<option value="JO">Jordan</option>
+<option value="KZ">Kazakhstan</option>
+<option value="KE">Kenya</option>
+<option value="KI">Kiribati</option>
+<option value="KP">Korea, Democratic People's Republic of</option>
+<option value="KR">Korea, Republic of</option>
+<option value="KW">Kuwait</option>
+<option value="KG">Kyrgyzstan</option>
+<option value="LA">Lao People's Democratic Republic</option>
+<option value="LV">Latvia</option>
+<option value="LB">Lebanon</option>
+<option value="LS">Lesotho</option>
+<option value="LR">Liberia</option>
+<option value="LY">Libyan Arab Jamahiriya</option>
+<option value="LI">Liechtenstein</option>
+<option value="LT">Lithuania</option>
+<option value="LU">Luxembourg</option>
+<option value="MO">Macao</option>
+<option value="MK">Macedonia, The Former Yugoslav Republic of</option>
+<option value="MG">Madagascar</option>
+<option value="MW">Malawi</option>
+<option value="MY">Malaysia</option>
+<option value="MV">Maldives</option>
+<option value="ML">Mali</option>
+<option value="MT">Malta</option>
+<option value="MH">Marshall Islands</option>
+<option value="MQ">Martinique</option>
+<option value="MR">Mauritania</option>
+<option value="MU">Mauritius</option>
+<option value="YT">Mayotte</option>
+<option value="MX">Mexico</option>
+<option value="FM">Micronesia, Federated States of</option>
+<option value="MD">Moldova, Republic of</option>
+<option value="MC">Monaco</option>
+<option value="MN">Mongolia</option>
+<option value="ME">Montenegro</option>
+<option value="MS">Montserrat</option>
+<option value="MA">Morocco</option>
+<option value="MZ">Mozambique</option>
+<option value="MM">Myanmar</option>
+<option value="NA">Namibia</option>
+<option value="NR">Nauru</option>
+<option value="NP">Nepal</option>
+<option value="NL">Netherlands</option>
+<option value="AN">Netherlands Antilles</option>
+<option value="NC">New Caledonia</option>
+<option value="NZ">New Zealand</option>
+<option value="NI">Nicaragua</option>
+<option value="NE">Niger</option>
+<option value="NG">Nigeria</option>
+<option value="NU">Niue</option>
+<option value="NF">Norfolk Island</option>
+<option value="MP">Northern Mariana Islands</option>
+<option value="NO">Norway</option>
+<option value="OM">Oman</option>
+<option value="PK">Pakistan</option>
+<option value="PW">Palau</option>
+<option value="PS">Palestinian Territory, Occupied</option>
+<option value="PA">Panama</option>
+<option value="PG">Papua New Guinea</option>
+<option value="PY">Paraguay</option>
+<option value="PE">Peru</option>
+<option value="PH">Philippines</option>
+<option value="PN">Pitcairn</option>
+<option value="PL">Poland</option>
+<option value="PT">Portugal</option>
+<option value="PR">Puerto Rico</option>
+<option value="QA">Qatar</option>
+<option value="RE">Reunion</option>
+<option value="RO">Romania</option>
+<option value="RU">Russian Federation</option>
+<option value="RW">Rwanda</option>
+<option value="SH">Saint Helena</option>
+<option value="KN">Saint Kitts and Nevis</option>
+<option value="LC">Saint Lucia</option>
+<option value="PM">Saint Pierre and Miquelon</option>
+<option value="VC">Saint Vincent and The Grenadines</option>
+<option value="WS">Samoa</option>
+<option value="SM">San Marino</option>
+<option value="ST">Sao Tome and Principe</option>
+<option value="SA">Saudi Arabia</option>
+<option value="SN">Senegal</option>
+<option value="RS">Serbia</option>
+<option value="SC">Seychelles</option>
+<option value="SL">Sierra Leone</option>
+<option value="SG">Singapore</option>
+<option value="SK">Slovakia</option>
+<option value="SI">Slovenia</option>
+<option value="SB">Solomon Islands</option>
+<option value="SO">Somalia</option>
+<option value="ZA">South Africa</option>
+<option value="GS">South Georgia and The South Sandwich Islands</option>
+<option value="ES">Spain</option>
+<option value="LK">Sri Lanka</option>
+<option value="SD">Sudan</option>
+<option value="SR">Suriname</option>
+<option value="SJ">Svalbard and Jan Mayen</option>
+<option value="SZ">Swaziland</option>
+<option value="SE">Sweden</option>
+<option value="CH">Switzerland</option>
+<option value="SY">Syrian Arab Republic</option>
+<option value="TW">Taiwan, Province of China</option>
+<option value="TJ">Tajikistan</option>
+<option value="TZ">Tanzania, United Republic of</option>
+<option value="TH">Thailand</option>
+<option value="TL">Timor-leste</option>
+<option value="TG">Togo</option>
+<option value="TK">Tokelau</option>
+<option value="TO">Tonga</option>
+<option value="TT">Trinidad and Tobago</option>
+<option value="TN">Tunisia</option>
+<option value="TR">Turkey</option>
+<option value="TM">Turkmenistan</option>
+<option value="TC">Turks and Caicos Islands</option>
+<option value="TV">Tuvalu</option>
+<option value="UG">Uganda</option>
+<option value="UA">Ukraine</option>
+<option value="AE">United Arab Emirates</option>
+<option value="GB">United Kingdom</option>
+<option value="US" selected='selected'>United States</option>
+<option value="UM">United States Minor Outlying Islands</option>
+<option value="UY">Uruguay</option>
+<option value="UZ">Uzbekistan</option>
+<option value="VU">Vanuatu</option>
+<option value="VE">Venezuela</option>
+<option value="VN">Viet Nam</option>
+<option value="VG">Virgin Islands, British</option>
+<option value="VI">Virgin Islands, U.S.</option>
+<option value="WF">Wallis and Futuna</option>
+<option value="EH">Western Sahara</option>
+<option value="YE">Yemen</option>
+<option value="ZM">Zambia</option>
+<option value="ZW">Zimbabwe</option>
+EOL;
+		echo "		</select>\n";
+		echo "		<br />\n";
+		echo "	Select ISO country code used to initialize calling contry code variables.<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
 
 		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncellreq\" align='left' nowrap='nowrap'>\n";
@@ -1516,7 +1781,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "sqlite") {
 		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
-		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 		echo "<tr>\n";
 		echo "<td align='left' width='30%' nowrap><b>Installation: Step 2 - SQLite</b></td>\n";
@@ -1525,7 +1790,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' 'valign='top' align='left' nowrap>\n";
-		echo "	Database Filename:\n";
+		echo "	Database Filename\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
@@ -1536,7 +1801,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' 'valign='top' align='left' nowrap>\n";
-		echo "	Database Directory:\n";
+		echo "	Database Directory\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='db_path' maxlength='255' value=\"$db_path\"><br />\n";
@@ -1554,6 +1819,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='hidden' name='install_template_name' value='$install_template_name'>\n";
+		echo "			<input type='hidden' name='install_default_country' value='$install_default_country'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
@@ -1574,7 +1840,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		//echo "However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/resources/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
 		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
-		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 		echo "<tr>\n";
 		echo "<td align='left' width='30%' nowrap><b>Installation: Step 2 - MySQL</b></td>\n";
@@ -1583,7 +1849,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Host:\n";
+		echo "		Database Host\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_host' maxlength='255' value=\"$db_host\"><br />\n";
@@ -1594,7 +1860,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "		Database Port:\n";
+		echo "		Database Port\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_port' maxlength='255' value=\"$db_port\"><br />\n";
@@ -1605,7 +1871,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Name:\n";
+		echo "		Database Name\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
@@ -1616,7 +1882,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Username:\n";
+		echo "		Database Username\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_username' maxlength='255' value=\"$db_username\"><br />\n";
@@ -1627,7 +1893,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Password:\n";
+		echo "		Database Password\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
@@ -1638,7 +1904,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "		Create Database Username:\n";
+		echo "		Create Database Username\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_create_username' maxlength='255' value=\"$db_create_username\"><br />\n";
@@ -1649,7 +1915,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "		Create Database Password:\n";
+		echo "		Create Database Password\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_create_password' maxlength='255' value=\"$db_create_password\"><br />\n";
@@ -1668,6 +1934,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='hidden' name='install_template_name' value='$install_template_name'>\n";
+		echo "			<input type='hidden' name='install_default_country' value='$install_default_country'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
@@ -1685,7 +1952,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
-		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 		echo "<tr>\n";
 		echo "<td align='left' width='30%' nowrap><b>Installation: Step 2 - Postgres</b></td>\n";
@@ -1694,7 +1961,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Host:\n";
+		echo "		Database Host\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_host' maxlength='255' value=\"$db_host\"><br />\n";
@@ -1705,7 +1972,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "		Database Port:\n";
+		echo "		Database Port\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_port' maxlength='255' value=\"$db_port\"><br />\n";
@@ -1716,7 +1983,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Name:\n";
+		echo "		Database Name\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
@@ -1727,7 +1994,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Username:\n";
+		echo "		Database Username\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_username' maxlength='255' value=\"$db_username\"><br />\n";
@@ -1738,7 +2005,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Database Password:\n";
+		echo "		Database Password\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
@@ -1749,7 +2016,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "		Create Database Username:\n";
+		echo "		Create Database Username\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_create_username' maxlength='255' value=\"$db_create_username\"><br />\n";
@@ -1761,7 +2028,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "		Create Database Password:\n";
+		echo "		Create Database Password\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_create_password' maxlength='255' value=\"$db_create_password\"><br />\n";
@@ -1780,6 +2047,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='hidden' name='install_template_name' value='$install_template_name'>\n";
+		echo "			<input type='hidden' name='install_default_country' value='$install_default_country'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
