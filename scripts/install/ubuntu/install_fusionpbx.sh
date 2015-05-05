@@ -63,9 +63,9 @@ DISTRO=wheezy
 #PAY ATTENTION TO THE SPACES POST AND PRE PARENTHESIS
 #  mod_shout removed
 if [ $DO_DAHDI == "y" ]; then
-	modules_add=( ../../libs/freetdm/mod_freetdm mod_spandsp mod_dingaling mod_portaudio mod_callcenter mod_lcr mod_cidlookup mod_flite mod_memcache mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es mod_say_en )
+	modules_add=( mod_curl ../../libs/freetdm/mod_freetdm mod_spandsp mod_dingaling mod_portaudio mod_callcenter mod_lcr mod_cidlookup mod_flite mod_memcache mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es mod_say_en )
 else
-	modules_add=( mod_spandsp mod_dingaling mod_callcenter mod_lcr mod_cidlookup mod_memcache mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es mod_say_en )
+	modules_add=( mod_curl mod_spandsp mod_dingaling mod_callcenter mod_lcr mod_cidlookup mod_memcache mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es mod_say_en )
 fi
 
 #-------
@@ -88,12 +88,15 @@ FPBXBRANCH="http://fusionpbx.googlecode.com/svn/trunk/fusionpbx"
 FSGIT=https://freeswitch.org/stash/scm/fs/freeswitch.git
 #FSGIT=https://stash.freeswitch.org/scm/fs/freeswitch.git
 #FSGIT=git://github.com/FreeSWITCH/FreeSWITCH.git
+
 FSSTABLE=true
 FSStableVer="v1.4"
 
+FSDB=p
+
 #right now, make -j not working. see: jira FS-3005
-#CORES=$(/bin/grep processor -c /proc/cpuinfo)
-CORES=1
+CORES=$(/bin/grep processor -c /proc/cpuinfo)
+#CORES=1
 FQDN=$(hostname -f)
 #SRCPATH="/usr/src/freeswitch" #DEFAULT
 SRCPATH="/usr/src/freeswitch"
@@ -321,7 +324,7 @@ server {
 	ssl                     on;
 	ssl_certificate         /etc/ssl/certs/nginx.crt;
 	ssl_certificate_key     /etc/ssl/private/nginx.key;
-	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_protocols           TLSv1 TLSv1.1 TLSv1.2;
 	ssl_ciphers     HIGH:!ADH:!MD5;
 
 	#grandstream
@@ -845,6 +848,16 @@ case $DISTRO_DETECT in
 		/bin/echo 
 		CONTINUE=YES
 	;;
+        jessie)
+                DISTRO=jessie
+                /bin/echo "OK you're running Debian Jessie.  This script is known to work"
+                /bin/echo "   with apache/nginx and sqlite|postgres9.4 options"
+                /bin/echo "   Please consider providing feedback on whether or not this works."
+
+                /bin/echo 
+                CONTINUE=YES
+        ;;
+
 #	else
 	*)
 		/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid, 12.04 LTS and Debian Squeeze"
@@ -887,7 +900,7 @@ else
 	echo "  the new file is saved in /tmp/install_fusionpbx.latest"
 	echo "  to see the difference, run:"
 	echo "  diff -y /tmp/install_fusionpbx.latest $WHEREAMI"
-	read -p "Continue [y/N]? " YESNO
+	read -p "Continue with the current script [y/N]? " YESNO
 	case $YESNO in
 		[Yy]*)
 			echo "OK, Continuing"
@@ -933,9 +946,17 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
 		python-dev pkg-config libtiff5-dev libldns-dev \
 		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev \
-		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev libedit-dev \
+		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev libedit-dev libpq-dev \
 		screen htop pkg-config bzip2 curl memcached ntp php5-curl php5-imap php5-mcrypt lame \
 		time bison libssl-dev unixodbc libmyodbc unixodbc-dev libtiff-tools libmemcached-dev
+        elif [ $DISTRO == "jessie" ]; then
+                /usr/bin/apt-get -y install ssh vim git-core libjpeg-dev subversion build-essential \
+                autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
+                python-dev pkg-config libtiff5-dev libldns-dev \
+                libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev \
+                libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev libedit-dev libpq-dev \
+                screen htop pkg-config bzip2 curl memcached ntp php5-curl php5-imap php5-mcrypt lame \
+                time bison libssl-dev unixodbc libmyodbc unixodbc-dev libtiff-tools libmemcached-dev libtool-bin
 	else
 		/usr/bin/apt-get -y install ssh vim git-core libjpeg-dev subversion build-essential \
 		python-dev pkg-config libtiff5-dev libldns-dev \
@@ -995,6 +1016,9 @@ if [ $INSFREESWITCH -eq 1 ]; then
 			if [ $DISTRO = "wheezy" ]; then
 				echo "wheezy is PostgreSQL 9.4 by default"
 				POSTGRES9=9
+			elif [ $DISTRO = "jessie" ]; then
+                                echo "jessie is PostgreSQL 9.4 by default"
+                                POSTGRES9=9
 			else
 				/bin/echo
 				/bin/echo "OK, PostgreSQL! Would you prefer the stock verion 8.4"
@@ -1033,7 +1057,11 @@ if [ $INSFREESWITCH -eq 1 ]; then
 				/bin/echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 				wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql		
+				/usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql
+                        elif [ $DISTRO = "jessie" ]; then
+                                POSTGRES9=9
+                                /usr/bin/apt-get update
+                                /usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql		
 				
 				service postgresql status |grep down
 				if [ $? -eq 0 ]; then
@@ -1240,12 +1268,17 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		/bin/echo -ne " ."
 		/bin/sleep 1
 		/bin/echo -ne " ."
-		case "$SQLITEMYSQL" in
+		case "$FSDB" in
 		[Pp]*)
-			/usr/bin/time /usr/src/freeswitch/configure --enable-core-pgsql-support --enable-zrtp
+			#/usr/bin/time /usr/src/freeswitch/configure --enable-core-pgsql-support --enable-zrtp
+			#zrtp busted atm.
+			/usr/bin/time /usr/src/freeswitch/configure --enable-core-pgsql-support
+			
 		;;
 		*)
-			/usr/bin/time /usr/src/freeswitch/configure --enable-zrtp
+			#/usr/bin/time /usr/src/freeswitch/configure --enable-zrtp
+			#zrtp busted atm
+			/usr/bin/time /usr/src/freeswitch/configure 
 		;;
 		esac
 
@@ -1919,6 +1952,9 @@ if [ $INSFUSION -eq 1 ]; then
 	if [ $DISTRO = "wheezy" ]; then
 		/usr/bin/apt-get -y install install php5-sqlite php-db
 	fi
+        if [ $DISTRO = "jessie" ]; then
+                /usr/bin/apt-get -y install install php5-sqlite php-db
+        fi
 	#-----------------
 	# Apache
 	#-----------------
@@ -2133,7 +2169,9 @@ DELIM
 		elif [ $DISTRO = "wheezy" ]; then
                         #included in main repo we have nginx [nginx-full] and php5-fpm
                         echo "already in Debian 7.x [wheezy], nothing to add."
-
+                elif [ $DISTRO = "jessie" ]; then
+                        #included in main repo we have nginx [nginx-full] and php5-fpm
+                        echo "already in Debian 8.x [jessie], nothing to add."
 		elif [ $DISTRO = "precise" ]; then
 			#included in main repo we have nginx [nginx-full] and php5-fpm
 			echo "already in 12.04 LTS [precise], nothing to add."
@@ -2197,6 +2235,9 @@ DELIM
 		elif [ $DISTRO = "wheezy" ]; then
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/php-fpm.conf"
+                elif [ $DISTRO = "jessie" ]; then
+                        PHPINIFILE="/etc/php5/fpm/php.ini"
+                        PHPCONFFILE="/etc/php5/fpm/php-fpm.conf"
 		else
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/php5-fpm.conf"
@@ -2422,6 +2463,9 @@ DELIM
 			if [ $DISTRO = "wheezy" ]; then
 				echo "precise is PostgreSQL 9.4 by default"
 				POSTGRES9=9
+                        elif [ $DISTRO = "jessie" ]; then
+                                echo "jessie is PostgreSQL 9.4 by default"
+                                POSTGRES9=9
 			else
 				/bin/echo
 				/bin/echo "OK, PostgreSQL! Would you prefer the stock verion 8.4"
@@ -2485,6 +2529,10 @@ DELIM
                                 #update repository for postgres 9.4 ...
                                 /bin/echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list
                                 wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+                                /usr/bin/apt-get update
+                                /usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql
+                        elif [ $DISTRO = "jessie" ]; then
+                                POSTGRES9=9
                                 /usr/bin/apt-get update
                                 /usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql
 			else
