@@ -1,12 +1,12 @@
-Source: fusionpbx-app-schemas
+Source: fusionpbx-app-emails
 Section: user/www
 Priority: extra
 Maintainer: Richard Neese <r.neese@gmail.com>
 Standards-Version: 3.7.2
 #XSBC-Bugtracker: mailto:r.neese@gmail.com
 
-Package: fusionpbx-app-schemas
+Package: fusionpbx-app-emails
 Architecture: all
 Depends: ${misc:Depends}
-Description: Fusionpbx-app-schemas: Provides the ability to quickly define information to store and dynamically makes tools available to view, add, edit, delete, and search.
+Description: Fusionpbx-app-emails: voicemail/fax to email
 #XSBC-Bugtracker: mailto:r.neese@gmail.com

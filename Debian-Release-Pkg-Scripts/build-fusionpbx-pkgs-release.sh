@@ -1,24 +1,12 @@
 #!/bin/bash
-# Sun Aug 17, 2014 Time: 07:30 CST
+# Wed May 06, 2015 Time: 15:30 CST
 
-# Select if to build stable/devel pkgs
-BUILD_RELEASE_PKGS="n"
-
-if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
-PKGVER=3.6.3-3 # this is the version number you update
-SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
-SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
-SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
-REPO=/usr/home/repo/release/debian
-WRK_DIR=/usr/src/fusionpbx-release-pkg-build
-else
-PKGVER=3.7.1-24 # this is the version number you update
+PKGVER=3.8.1~1 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
-REPO=/usr/home/repo/head/debian
+REPO=/usr/home/repo/fusionpbx/head/debian
 WRK_DIR=/usr/src/fusionpbx-devel-pkg-build
-fi
 
 #Set Timestamp in the change logs
 TIME=$(date +"%a, %d %b %Y %X")
@@ -97,11 +85,11 @@ done
 #set version in the changelog files for apps
 for i in adminer backup call_block call_broadcast call_center call_center_active call_flows calls \
 	calls_active click_to_call conference_centers conferences conferences_active contacts content \
-	destinations devices dialplan dialplan_inbound dialplan_outbound edit exec extensions fax fifo \
+	destinations devices dialplan dialplan_inbound dialplan_outbound edit emails exec extensions fax fifo \
 	fifo_list follow_me gateways hot_desking ivr_menu login log_viewer meetings modules music_on_hold \
-	park provision recordings registrations ring_groups schemas services settings sipml5 sip_profiles \
+	provision recordings registrations ring_groups services settings sipml5 sip_profiles \
 	sip_status sql_query system time_conditions traffic_graph vars voicemail_greetings voicemails xml_cdr \
-	xmpp
+	xmpp operator_panel phrases
 do cat > $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/debian/changelog << DELIM
 fusionpbx-app-${i//_/-} ($PKGVER) stable; urgency=low
 
@@ -115,11 +103,11 @@ done
 #get src for apps
 for i in adminer backup call_block call_broadcast call_center call_center_active call_flows calls \
 	calls_active click_to_call conference_centers conferences conferences_active contacts content \
-	destinations devices dialplan dialplan_inbound dialplan_outbound edit exec extensions fax fifo \
+	destinations devices dialplan dialplan_inbound dialplan_outbound edit emails exec extensions fax fifo \
 	fifo_list follow_me gateways hot_desking ivr_menu login log_viewer meetings modules music_on_hold \
-	park provision recordings registrations ring_groups schemas services settings sipml5 sip_profiles \
+	provision recordings registrations ring_groups services settings sipml5 sip_profiles \
 	sip_status sql_query system time_conditions traffic_graph vars voicemail_greetings voicemails xml_cdr \
-	xmpp
+	xmpp operator_panel
 do svn export --force $SVN_SRC/fusionpbx/app/"${i}" $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
 done
 
@@ -158,7 +146,11 @@ for i in "$WRK_DIR"/fusionpbx-conf/conf/directory/default/*.xml ;do rm "$i" ; do
 for i in "$WRK_DIR"/fusionpbx-conf/conf/directory/default/*.noload ;do rm "$i" ; done
 
 #fix sounds dir
-/bin/sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="default" path="$${sounds_dir}/music/8000">','<directory name="default" path="$${sounds_dir}/music/fusionpbx/8000">',g
+sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="default" path="$${sounds_dir}/music/8000">','<directory name="default" path="$${sounds_dir}/music/fusionpbx/default/8000">',g
+sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="moh/8000" path="$${sounds_dir}/music/8000">','<directory name="moh/8000" path="$${sounds_dir}/music/fusionpbx/default/8000">',g
+sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="moh/16000" path="$${sounds_dir}/music/16000">','<directory name="moh/16000" path="$${sounds_dir}/music/fusionpbx/default/16000">',g
+sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="moh/32000" path="$${sounds_dir}/music/32000">','<directory name="moh/32000" path="$${sounds_dir}/music/fusionpbx/default/32000">',g
+sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="moh/48000" path="$${sounds_dir}/music/48000">','<directory name="moh/48000" path="$${sounds_dir}/music/fusionpbx/default/48000">',g
 
 #Adding changes to freeswitch profiles
 #Enableing device login auth failures ing the sip profiles.
@@ -174,11 +166,11 @@ sed "$WRK_DIR"/fusionpbx-conf/conf/sip_profiles/internal.xml -i -e s,'<!-- *<par
 #build app pkgs
 for i in adminer backup call-block call-broadcast call-center call-center-active call-flows calls \
 calls-active click-to-call conference-centers conferences conferences-active contacts content \
-destinations devices dialplan dialplan-inbound dialplan-outbound edit exec extensions fax fifo \
+destinations devices dialplan dialplan-inbound dialplan-outbound edit emailsexec extensions fax fifo \
 fifo-list follow-me gateways hot-desking ivr-menu login log-viewer meetings modules music-on-hold \
-park provision recordings registrations ring-groups schemas services settings sipml5 sip-profiles \
+park provision recordings registrations ring-groups services settings sipml5 sip-profiles \
 sip-status sql-query system time-conditions traffic-graph vars voicemail-greetings voicemails xml-cdr \
-xmpp
+xmpp operator-panel phrases
 do cd $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done

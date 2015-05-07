@@ -472,7 +472,6 @@ services="n" # : allows interaction with the processes running on your server
 sipml5="n" # : php base softphone
 sql_query="n" # : allows you to interactively submit SQL queries to the database used in FusionPBX
 traffic_graph="n" # : php graph for monitoing the network interface traffic
-xmpp="n" # : Configure XMPP to work with Google talk or other jabber servers
 aastra="n" # : phone provisioning tool &  templates for aastra phones
 atcom="n" # : phone provisioning tool &  templates for atcom phones
 cisco="n" # : phone provisioning tool & templates for cisco phones
@@ -1574,17 +1573,6 @@ if [[ $traffic_graph == "y" ]]; then
 	apt-get -y --force-yes install fusionpbx-app-traffic-graph
 fi
 
-if [[ $xmpp == "y" ]]; then
-	apt-get -y --force-yes install fusionpbx-app-xmpp;
-		if [[ -f /root/.fs_src ]] ; then
-			if [[ ! -f /usr/lib/freeswitch/mod/mod_dingaling ]] ; then
-				echo " Requires freeswitch mod_dingaling "
-			fi
-		else
-			apt-get -y --force-yes install freeswitch-mod-dingaling
-		fi
-fi
-
 if [[ $aastra == "y" ]]; then
 	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-aastra  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/aastra /etc/fusionpbx/resources/templates/provision/
 fi
@@ -1647,7 +1635,7 @@ if [[ $all == "y" ]]; then
 		fusionpbx-app-conferences-active fusionpbx-app-meetings fusionpbx-app-conferences fusionpbx-app-content \
 		fusionpbx-app-edit fusionpbx-app-exec fusionpbx-app-fifo fusionpbx-app-fifo-list ghostscript libreoffice-common \
 		fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-schemas fusionpbx-app-services fusionpbx-app-sipml5 \
-		fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-xmpp fusionpbx-app-devices fusionpbx-app-provision \
+		fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-devices fusionpbx-app-provision \
 		fusionpbx-provisioning-template-aastra fusionpbx-provisioning-template-atcom fusionpbx-provisioning-template-cisco \
 		fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic \
 		fusionpbx-provisioning-template-polycom fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink \
@@ -1657,7 +1645,7 @@ if [[ $all == "y" ]]; then
 	if [[ -f /root/.fs_src ]] ; then
 		echo " Requires freeswitch mod_callcenter mod_conference mod_fifo mod_rtmp mod_dingaling "
 	else
-		apt-get -y --force-yes install freeswitch-mod-callcenter freeswitch-mod-conference freeswitch-mod-fifo freeswitch-mod-rtmp freeswitch-mod-dingaling
+		apt-get -y --force-yes install freeswitch-mod-callcenter freeswitch-mod-conference freeswitch-mod-fifo freeswitch-mod-rtmp
 	fi
 fi
 ########################################
@@ -1963,8 +1951,8 @@ cat > "/etc/fail2ban/filter.d/freeswitch.conf" <<DELIM
 
 [Definition]
 
-failregex = \[WARNING\] sofia_reg.c:\d+ SIP auth failure \(REGISTER\) on sofia profile \'\w+\' for \[.*\] from ip <HOST>
-            \[WARNING\] sofia_reg.c:\d+ SIP auth failure \(INVITE\) on sofia profile \'\w+\' for \[.*\] from ip <HOST>
+failregex = ^\.\d+ \[WARNING\] sofia_reg\.c:\d+ SIP auth (failure|challenge) \((REGISTER|INVITE)\) on sofia profile \'[^']+\' for \[.*\] from ip <HOST>$
+            ^\.\d+ \[WARNING\] sofia_reg\.c:\d+ Can't find user \[\d+@\d+\.\d+\.\d+\.\d+\] from <HOST>$
 
 ignoreregex =
 DELIM

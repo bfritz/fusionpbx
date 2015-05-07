@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-APPNAME := fusionpbx-app-schemas
+APPNAME := fusionpbx-app-emails
 
 CFLAGS = -Wall -g
 
@@ -44,13 +44,13 @@ clean:
 install: build
 	dh_testdir
 	dh_testroot
-	dh_prep 
+	dh_prep
 	dh_installdirs
 	# Add here commands to install the package into debian/lookup.
 	# cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/$(APPNAME) install
 	#rm -rf $(CURDIR)/debian/lookup-dbg
-	mkdir -p debian/fusionpbx-app-schemas/var/www/fusionpbx/app
-	cp -pr schemas debian/fusionpbx-app-schemas/var/www/fusionpbx/app
+	mkdir -p debian/fusionpbx-app-emails/var/www/fusionpbx/app
+	cp -pr emails debian/fusionpbx-app-emails/var/www/fusionpbx/app
 
 build-indep: build install
 
