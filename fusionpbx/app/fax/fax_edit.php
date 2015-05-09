@@ -151,7 +151,7 @@ else {
 			$db->exec(check_sql($sql));
 
 		//redirect the browser
-			$_SESSION["message"] = $text['confirm-delete'];
+			$_SESSION["message"] = $text['message-delete'];
 			header("Location: fax_edit.php?id=".$fax_uuid);
 			return;
 	}
@@ -254,7 +254,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "fax_destination_number, ";
 					$sql .= "fax_name, ";
 					$sql .= "fax_email, ";
-					if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_box_remote.php")) {
+					if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_files_remote.php")) {
 						$sql .= "fax_email_connection_type, ";
 						$sql .= "fax_email_connection_host, ";
 						$sql .= "fax_email_connection_port, ";
@@ -284,7 +284,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$fax_destination_number', ";
 					$sql .= "'$fax_name', ";
 					$sql .= "'$fax_email', ";
-					if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_box_remote.php")) {
+					if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_files_remote.php")) {
 						$sql .= "'$fax_email_connection_type', ";
 						$sql .= "'$fax_email_connection_host', ";
 						$sql .= "'$fax_email_connection_port', ";
@@ -323,7 +323,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "fax_destination_number = '$fax_destination_number', ";
 					$sql .= "fax_name = '$fax_name', ";
 					$sql .= "fax_email = '$fax_email', ";
-					if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_box_remote.php")) {
+					if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_files_remote.php")) {
 						$sql .= "fax_email_connection_type = '$fax_email_connection_type', ";
 						$sql .= "fax_email_connection_host = '$fax_email_connection_host', ";
 						$sql .= "fax_email_connection_port = '$fax_email_connection_port', ";
@@ -706,7 +706,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='fax_email' maxlength='255' value=\"$fax_email\">\n";
-		if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_box_remote.php")) {
+		if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_files_remote.php")) {
 			echo "<input type='button' class='btn' value='".$text['button-advanced']."' onclick=\"toggle_advanced('advanced_email_connection');\">\n";
 		}
 		echo "<br />\n";
@@ -767,7 +767,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "		<tr>\n";
 						echo "			<td class='vtable'>".$field['username']."</td>\n";
 						echo "			<td>\n";
-						echo "				<a href='fax_edit.php?id=".$fax_uuid."&domain_uuid=".$_SESSION['domain_uuid']."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['message-confirm-delete']."')\">$v_link_label_delete</a>\n";
+						echo "				<a href='fax_edit.php?id=".$fax_uuid."&domain_uuid=".$_SESSION['domain_uuid']."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
 						echo "			</td>\n";
 						echo "		</tr>\n";
 						$assigned_user_uuids[] = $field['user_uuid'];
@@ -835,7 +835,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "<br />\n";
 
-	if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_box_remote.php")) {
+	if (permission_exists('fax_extension_advanced') && function_exists("imap_open") && file_exists("fax_files_remote.php")) {
 
 		echo "<div id='advanced_email_connection' ".(($fax_email_connection_host == '') ? "style='display: none;'" : null).">\n";
 
