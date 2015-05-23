@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -96,7 +96,6 @@ if (!$included) {
 		$fax_dir = $_SESSION['switch']['storage']['dir'].'/fax'.((count($_SESSION["domains"]) > 1) ? '/'.$_SESSION['domain_name'] : null);
 
 }
-
 
 //get the fax extension
 	if (strlen($fax_extension) > 0) {
@@ -509,11 +508,12 @@ if (!$included) {
 		//get some more info to send the fax
 		$mailfrom_address = (isset($_SESSION['fax']['smtp_from']['var'])) ? $_SESSION['fax']['smtp_from']['var'] : $_SESSION['email']['smtp_from']['var'];
 
-		$sql = "select fax_email from v_fax where fax_uuid = '".$fax_uuid."'; ";
+		$sql = "select * from v_fax where fax_uuid = '".$fax_uuid."'; ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetch(PDO::FETCH_NAMED);
 		$mailto_address_fax = $result["fax_email"];
+		$fax_prefix = $result["fax_prefix"];
 
 		if (!$included) {
 			$sql = "select contact_uuid from v_users where user_uuid = '".$_SESSION['user_uuid']."'; ";
@@ -543,7 +543,7 @@ if (!$included) {
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
 				//prepare the fax command
-				$route_array = outbound_route_to_bridge($_SESSION['domain_uuid'], $fax_number);
+				$route_array = outbound_route_to_bridge($_SESSION['domain_uuid'], $fax_prefix.$fax_number);
 				$fax_file = $dir_fax_temp."/".$fax_instance_uuid.".tif";
 				if (count($route_array) == 0) {
 					//send the internal call to the registered extension

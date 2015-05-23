@@ -464,6 +464,14 @@ $text['label-fax_destination']['pt-br'] = "Destino";
 $text['label-fax_destination']['pl'] = "Destynacja";
 $text['label-fax_destination']['sv-se'] = "Destination";
 
+$text['label-fax_prefix']['en-us'] = "Prefix";
+$text['label-fax_prefix']['es-cl'] = "Prefijo";
+$text['label-fax_prefix']['pt-pt'] = "Prefixo";
+$text['label-fax_prefix']['fr-fr'] = "Préfixe";
+$text['label-fax_prefix']['pt-br'] = "Prefixo";
+$text['label-fax_prefix']['pl'] = "Prefiks";
+$text['label-fax_prefix']['sv-se'] = "Prefix";
+
 $text['label-fax_date']['en-us'] = "Date";
 $text['label-fax_date']['es-cl'] = "Fecha";
 $text['label-fax_date']['pt-pt'] = "Data";
@@ -1279,6 +1287,14 @@ $text['description-destination-number']['fr-fr'] = "Entrez le numéro de téléc
 $text['description-destination-number']['pt-br'] = "Insira o número de faz para onde pretende enviar";
 $text['description-destination-number']['pl'] = "Wprowadź numer faksu docelowego.";
 $text['description-destination-number']['sv-se'] = "Ange fax destinations-nummer.";
+
+$text['description-fax_prefix']['en-us'] = "Enter a prefix to be used when sending a fax.";
+$text['description-fax_prefix']['es-cl'] = "Introduzca un prefijo que se utilizará al enviar un fax.";
+$text['description-fax_prefix']['pt-pt'] = "Digite um prefixo para ser usado quando o envio de um fax.";
+$text['description-fax_prefix']['fr-fr'] = "Entrez un préfixe pour être utilisé lors de l'envoi d'un fax.";
+$text['description-fax_prefix']['pt-br'] = "Digite um prefixo para ser usado quando o envio de um fax.";
+$text['description-fax_prefix']['pl'] = "Wprowadź prefiks ma być używany podczas wysyłania faksu.";
+$text['description-fax_prefix']['sv-se'] = "Ange ett prefix som ska användas när du skickar ett fax.";
 
 $text['description-caller-id-number']['en-us'] = "Enter the Caller ID number here.";
 $text['description-caller-id-number']['es-cl'] = "Ingrese el número de Caller ID aquí.";
