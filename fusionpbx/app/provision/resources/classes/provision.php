@@ -385,9 +385,9 @@ include "root.php";
 				//get the provisioning information from device lines table
 					if (strlen($device_uuid) > 0) {
 						//get the device lines array
-							$sql = "SELECT * FROM v_device_lines ";
-							$sql .= "WHERE device_uuid = '".$device_uuid."' ";
-							//$sql .= "AND domain_uuid = '".$domain_uuid."' ";
+							$sql = "select * from v_device_lines ";
+							$sql .= "where device_uuid = '".$device_uuid."' ";
+							$sql .= "and (enabled = 'true' or enabled is null or enabled = '') ";
 							$prep_statement = $this->db->prepare(check_sql($sql));
 							$prep_statement->execute();
 							$device_lines = $prep_statement->fetchAll(PDO::FETCH_NAMED);
