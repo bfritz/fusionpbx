@@ -54,10 +54,10 @@
 	dbh = database_handle('system');
 
 --answer
-	--session:answer();
+	session:answer();
 
 --sleep
-	--session:sleep(500);
+	session:sleep(500);
 
 --get the domain_uuid
 	domain_uuid = session:getVariable("domain_uuid");
@@ -108,16 +108,6 @@
 		--get device uuid
 			device_uuid = row.device_uuid;
 			freeswitch.consoleLog("NOTICE", "[provision] device_uuid: ".. device_uuid .. "\n");
-
-		--remove the previous alternate device uuid
-			sql = [[UPDATE v_devices SET device_uuid_alternate = null ]];
-			sql = sql .. [[WHERE device_uuid_alternate = ']]..device_uuid..[[' ]];
-			sql = sql .. [[AND domain_uuid = ']]..domain_uuid..[[' ]];
-			if (debug["sql"]) then
-				--freeswitch.consoleLog("NOTICE", "[provision] sql: ".. sql .. "\n");
-			end
-			--dbh:query(sql);
-
 	end);
 
 --get the alternate device uuid using the device username and password
@@ -144,16 +134,51 @@
 		result = session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/voicemail/vm-fail_auth.wav");
 	end 
 
+--remove the previous device and send a sync command to it
+	if (authorized == 'true' and action == "login") then
+		sql = [[SELECT * FROM v_device_lines ]];
+		sql = sql .. [[WHERE device_uuid = ']]..device_uuid_alternate..[[' ]];
+		sql = sql .. [[AND domain_uuid = ']]..domain_uuid..[[' ]];
+		if (debug["sql"]) then
+			freeswitch.consoleLog("NOTICE", "[provision] sql: ".. sql .. "\n");
+		end
+		dbh:query(sql, function(row)
+			--remove the previous alternate device uuid
+				sql = [[UPDATE v_devices SET device_uuid_alternate = null ]];
+				sql = sql .. [[WHERE device_uuid_alternate = ']]..device_uuid_alternate..[[' ]];
+				sql = sql .. [[AND domain_uuid = ']]..domain_uuid..[[' ]];
+				if (debug["sql"]) then
+					--freeswitch.consoleLog("NOTICE", "[provision] sql: ".. sql .. "\n");
+				end
+				dbh:query(sql);
+			--send a sync command to the previous device
+				--create the event notify object
+					local event = freeswitch.Event('NOTIFY');
+				--add the headers
+					event:addHeader('profile', profile);
+					event:addHeader('user', row.user_id);
+					event:addHeader('host', row.server_address);
+					event:addHeader('content-type', 'application/simple-message-summary');
+				--check sync
+					event:addHeader('event-string', 'check-sync;reboot=false');
+				--send the event
+					event:fire();
+		end);
+	end
+
 --add the override to the device uuid (login)
 	if (authorized == 'true' and action == "login") then
 		if (device_uuid_alternate ~= nil) then
-			sql = [[UPDATE v_devices SET device_uuid_alternate = ']]..device_uuid_alternate..[[']];
-			sql = sql .. [[WHERE device_uuid = ']]..device_uuid..[[' ]];
-			sql = sql .. [[AND domain_uuid = ']]..domain_uuid..[[' ]];
-			if (debug["sql"]) then
-				freeswitch.consoleLog("NOTICE", "[provision] sql: ".. sql .. "\n");
-			end
-			dbh:query(sql);
+			--send a hangup
+				session:hangup();
+			--add the new alternate
+				sql = [[UPDATE v_devices SET device_uuid_alternate = ']]..device_uuid_alternate..[[']];
+				sql = sql .. [[WHERE device_uuid = ']]..device_uuid..[[' ]];
+				sql = sql .. [[AND domain_uuid = ']]..domain_uuid..[[' ]];
+				if (debug["sql"]) then
+					freeswitch.consoleLog("NOTICE", "[provision] sql: ".. sql .. "\n");
+				end
+				dbh:query(sql);
 		end
 	end
 
@@ -172,6 +197,8 @@
 
 --found the device send a sync command
 	if (authorized == 'true') then
+		--send a hangup
+			session:hangup();
 		--create the event notify object
 			local event = freeswitch.Event('NOTIFY');
 		--add the headers
@@ -180,7 +207,7 @@
 			event:addHeader('host', domain);
 			event:addHeader('content-type', 'application/simple-message-summary');
 		--check sync
-			event:addHeader('event-string', 'check-sync;reboot=true');
+			event:addHeader('event-string', 'check-sync;reboot=false');
 		--send the event
 			event:fire();
 	end
