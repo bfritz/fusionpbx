@@ -2,7 +2,7 @@
 
 $apps[$x]['menu'][0]['title']['en-us'] = "Music on Hold";
 $apps[$x]['menu'][0]['title']['es-cl'] = "Música en espera";
-$apps[$x]['menu'][0]['title']['fr-fr'] = "Musique de Garde";
+$apps[$x]['menu'][0]['title']['fr-fr'] = "Musique d'attente";
 $apps[$x]['menu'][0]['title']['pt-pt'] = "Musica em Espera";
 $apps[$x]['menu'][0]['title']['pt-br'] = "Música de espera";
 $apps[$x]['menu'][0]['title']['pl'] = "Muzyka na czekanie";

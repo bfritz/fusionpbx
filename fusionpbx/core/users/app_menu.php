@@ -2,7 +2,7 @@
 
 $apps[$x]['menu'][2]['title']['en-us'] = "User Manager";
 $apps[$x]['menu'][2]['title']['es-cl'] = "Gestor de Usuarios";
-$apps[$x]['menu'][2]['title']['fr-fr'] = "Gestion Usagers";
+$apps[$x]['menu'][2]['title']['fr-fr'] = "Gestion des utilisteurs";
 $apps[$x]['menu'][2]['title']['pt-pt'] = "Gestão de Utilizadores";
 $apps[$x]['menu'][2]['title']['pt-br'] = "Gerencir utiliários";
 $apps[$x]['menu'][2]['title']['pl'] = "Menedżer użytkowników";
@@ -17,7 +17,7 @@ $apps[$x]['menu'][2]['groups'][] = "superadmin";
 
 $apps[$x]['menu'][3]['title']['en-us'] = "Group Manager";
 $apps[$x]['menu'][3]['title']['es-cl'] = "Administración de Grupos";
-$apps[$x]['menu'][3]['title']['fr-fr'] = "Gestion Groupes";
+$apps[$x]['menu'][3]['title']['fr-fr'] = "Gestion des groupes";
 $apps[$x]['menu'][3]['title']['pt-pt'] = "'Gestão de Grupos";
 $apps[$x]['menu'][3]['title']['pt-br'] = "Gerenciar grupos";
 $apps[$x]['menu'][3]['title']['pl'] = "Menedżer grup";
