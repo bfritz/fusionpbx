@@ -42,7 +42,7 @@ $text['message-update']['pt-pt'] = "Actualiza��o Efectuada";
 $text['message-update']['fr-fr'] = "Mis � jour";
 $text['message-update']['pt-br'] = "Atualização Efetuada";
 $text['message-update']['pl'] = "Zaktualizowano poprawnie";
-$text['message-update']['uk'] = "Оновлення завершено";
+$text['message-update']['uk'] = "Оновлено";
 $text['message-update']['sv-se'] = "Uppdatering Klar";
 
 $text['message-no_channels']['en-us'] = "No Channels Enabled";
@@ -132,7 +132,7 @@ $text['label-project_notifications']['pt-pt'] = "Projeto Notifica��es";
 $text['label-project_notifications']['fr-fr'] = "Notifications Projet";
 $text['label-project_notifications']['pt-br'] = "Notificações do Sistema";
 $text['label-project_notifications']['pl'] = "Powiadomienia projektu";
-$text['label-project_notifications']['uk'] = "";
+$text['label-project_notifications']['uk'] = "Сповіщення проекту";
 $text['label-project_notifications']['sv-se'] = "Projekt Meddelanden";
 
 $text['label-project_notification_recipient']['en-us'] = "Recipient";

@@ -5,7 +5,7 @@ $text['title-user_manager']['es-cl'] = "Administración de Usuarios";
 $text['title-user_manager']['pt-pt'] = "Gestão de Utilizadores";
 $text['title-user_manager']['fr-fr'] = "Gestion des utilisateurs";
 $text['title-user_manager']['pl'] = "Menedżer użytkowników";
-$text['title-user_manager']['uk'] = "Керування користувачами";
+$text['title-user_manager']['uk'] = "Користувачі";
 $text['title-user_manager']['sv-se'] = "Användar Inställningar";
 $text['title-user_manager']['ro'] = "";
 
@@ -32,7 +32,7 @@ $text['title-group_permissions']['es-cl'] = "Permisos de Grupo";
 $text['title-group_permissions']['pt-pt'] = "Permissões do Grupo";
 $text['title-group_permissions']['fr-fr'] = "Permissions du Groupe";
 $text['title-group_permissions']['pl'] = "Uprawnienia grupy:";
-$text['title-group_permissions']['uk'] = "";
+$text['title-group_permissions']['uk'] = "Привілеї групи";
 $text['title-group_permissions']['sv-se'] = "Grupp Rättigheter";
 $text['title-group_permissions']['ro'] = "Permisiuni grup";
 
@@ -41,7 +41,7 @@ $text['title-group_members']['es-cl'] = "Miembros del Grupo";
 $text['title-group_members']['pt-pt'] = "Membros do Grupo";
 $text['title-group_members']['fr-fr'] = "Membres du Groupe";
 $text['title-group_members']['pl'] = "Członkowie grupy:";
-$text['title-group_members']['uk'] = "";
+$text['title-group_members']['uk'] = "Учасники групи";
 $text['title-group_members']['sv-se'] = "Grupp Medlemmar";
 $text['title-group_members']['ro'] = "Membri grup";
 
@@ -50,7 +50,7 @@ $text['title-group_manager']['es-cl'] = "Administración de Grupo";
 $text['title-group_manager']['pt-pt'] = "Gestão de Grupos";
 $text['title-group_manager']['fr-fr'] = "Gestion de Groupe";
 $text['title-group_manager']['pl'] = "Menedżer grup";
-$text['title-group_manager']['uk'] = "";
+$text['title-group_manager']['uk'] = "Групи";
 $text['title-group_manager']['sv-se'] = "Grupp Inställningar";
 $text['title-group_manager']['ro'] = "";
 
@@ -158,7 +158,7 @@ $text['message-update']['es-cl'] = "Actualización Completada";
 $text['message-update']['pt-pt'] = "Actualização Efectuada";
 $text['message-update']['fr-fr'] = "Mise à jour effectuée";
 $text['message-update']['pl'] = "Zaktualizowano poprawnie";
-$text['message-update']['uk'] = "Оновлення завершено";
+$text['message-update']['uk'] = "Оновлено";
 $text['message-update']['sv-se'] = "Uppdatering Klar";
 $text['message-update']['ro'] = "Actualizare completă";
 
@@ -167,7 +167,7 @@ $text['message-restore']['es-cl'] = "Restauración Completada";
 $text['message-restore']['pt-pt'] = "Restauração Efectuada";
 $text['message-restore']['fr-fr'] = "Restauré";
 $text['message-restore']['pl'] = "Przywrócenie zakończone";
-$text['message-restore']['uk'] = "Відновлення завершено";
+$text['message-restore']['uk'] = "Відновлено";
 $text['message-restore']['sv-se'] = "Återställning Klar";
 $text['message-restore']['ro'] = "";
 
@@ -333,13 +333,14 @@ $text['label-search']['pt-br'] = "Pesquisa...";
 $text['label-search']['pl'] = "Szukaj ...";
 $text['label-search']['sv-se'] = "Sök ...";
 $text['label-search']['ro'] = "";
+$text['label-search']['uk'] = "Результати пошуку";
 
 $text['label-permission_permissions']['en-us'] = "Permissions";
 $text['label-permission_permissions']['es-cl'] = "Permisos";
 $text['label-permission_permissions']['pt-pt'] = "Permissões";
 $text['label-permission_permissions']['fr-fr'] = "Permissions";
 $text['label-permission_permissions']['pl'] = "Uprawnienia";
-$text['label-permission_permissions']['uk'] = "Дозволи";
+$text['label-permission_permissions']['uk'] = "Привілеї";
 $text['label-permission_permissions']['sv-se'] = "Rättigheter";
 $text['label-permission_permissions']['ro'] = "";
 
@@ -420,7 +421,7 @@ $text['label-group_members']['es-cl'] = "Miembros";
 $text['label-group_members']['pt-pt'] = "Membros";
 $text['label-group_members']['fr-fr'] = "Membres";
 $text['label-group_members']['pl'] = "Członkowie";
-$text['label-group_members']['uk'] = "";
+$text['label-group_members']['uk'] = "Учасники";
 $text['label-group_members']['sv-se'] = "Medlemmar";
 $text['label-group_members']['ro'] = "";
 
@@ -429,7 +430,7 @@ $text['label-group_description']['es-cl'] = "Descripción";
 $text['label-group_description']['pt-pt'] = "Descrição";
 $text['label-group_description']['fr-fr'] = "Description";
 $text['label-group_description']['pl'] = "Opis";
-$text['label-group_description']['uk'] = "";
+$text['label-group_description']['uk'] = "Опис";
 $text['label-group_description']['sv-se'] = "Beskrivning";
 $text['label-group_description']['ro'] = "";
 
@@ -537,7 +538,7 @@ $text['header-user_manager']['es-cl'] = "Administración de Usuario";
 $text['header-user_manager']['pt-pt'] = "Gestão de Utilizadores";
 $text['header-user_manager']['fr-fr'] = "Gestion des utilisateurs";
 $text['header-user_manager']['pl'] = "Menadżer użytkowników";
-$text['header-user_manager']['uk'] = "";
+$text['header-user_manager']['uk'] = "Користувачі";
 $text['header-user_manager']['sv-se'] = "Användar Inställningar";
 $text['header-user_manager']['ro'] = "";
 
@@ -564,7 +565,7 @@ $text['header-group_permissions']['es-cl'] = "Permisos de Grupo: ";
 $text['header-group_permissions']['pt-pt'] = "Permissões do Grupo: ";
 $text['header-group_permissions']['fr-fr'] = "Permissions du Groupe: ";
 $text['header-group_permissions']['pl'] = "Uprawnienia grupy";
-$text['header-group_permissions']['uk'] = "";
+$text['header-group_permissions']['uk'] = "Привілеї групи:";
 $text['header-group_permissions']['sv-se'] = "Grupp Rättigheter";
 $text['header-group_permissions']['ro'] = "";
 
@@ -573,7 +574,7 @@ $text['header-group_members']['es-cl'] = "Miembros de Grupo: ";
 $text['header-group_members']['pt-pt'] = "Membros do Grupo: ";
 $text['header-group_members']['fr-fr'] = "Membres du Groupe: ";
 $text['header-group_members']['pl'] = "Członkowie grupy:";
-$text['header-group_members']['uk'] = "";
+$text['header-group_members']['uk'] = "Учасники групи: ";
 $text['header-group_members']['sv-se'] = "Grupp Medlemmar:";
 $text['header-group_members']['ro'] = "";
 
@@ -582,7 +583,7 @@ $text['header-group_manager']['es-cl'] = "Administración de Grupo";
 $text['header-group_manager']['pt-pt'] = "Gestão de Grupos";
 $text['header-group_manager']['fr-fr'] = "Gestion de Groupe";
 $text['header-group_manager']['pl'] = "Menadżer  grup";
-$text['header-group_manager']['uk'] = "";
+$text['header-group_manager']['uk'] = "Групи";
 $text['header-group_manager']['sv-se'] = "Grupp Inställningar";
 $text['header-group_manager']['ro'] = "";
 
@@ -663,7 +664,7 @@ $text['description-group_permissions']['es-cl'] = "Asigne permisos para este gru
 $text['description-group_permissions']['pt-pt'] = "Atribua permissões para este grupo.";
 $text['description-group_permissions']['fr-fr'] = "Assignez des permissions à ce groupe.";
 $text['description-group_permissions']['pl'] = "Przypisywanie uprawnień tej grupie.";
-$text['description-group_permissions']['uk'] = "Призначення дозволів для цієї групи.";
+$text['description-group_permissions']['uk'] = "Призначення привілеїв для цієї групи.";
 $text['description-group_permissions']['sv-se'] = "Tilldela rättigheter till denna grupp.";
 $text['description-group_permissions']['ro'] = "";
 
@@ -690,7 +691,7 @@ $text['description-enabled']['es-cl'] = "Indique el estaso de esta cuenta.";
 $text['description-enabled']['pt-pt'] = "Escolha o estado desta conta.";
 $text['description-enabled']['fr-fr'] = "Choisir le statut de ce compte.";
 $text['description-enabled']['pl'] = "Ustaw status numeru wewnętrznego.";
-$text['description-enabled']['uk'] = "Встановіть стан цього облікового запису.";
+$text['description-enabled']['uk'] = "Вкажіть стан цього облікового запису.";
 $text['description-enabled']['sv-se'] = "Välj status på denna standardinställning.";
 $text['description-enabled']['ro'] = "";
 
@@ -762,7 +763,7 @@ $text['button-restore']['es-cl'] = "Restaurar Predeterminados";
 $text['button-restore']['pt-pt'] = "Restaurar Predefinições";
 $text['button-restore']['fr-fr'] = "Restaurer";
 $text['button-restore']['pl'] = "Przywróć ustawienia domyślne";
-$text['button-restore']['uk'] = "Відновити значення за замовчуванням";
+$text['button-restore']['uk'] = "Відновити типові значення";
 $text['button-restore']['sv-se'] = "Aktivera Standard Inställningar";
 $text['button-restore']['ro'] = "";
 

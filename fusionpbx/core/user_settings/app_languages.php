@@ -58,7 +58,7 @@ $text['table-tools']['he'] = "כלים";
 $text['table-tools']['uk'] = "Налаштування";
 $text['table-tools']['sv-se'] = "Verktyg";
 $text['table-tools']['de-at'] = "Funktionen";
-$text['table-tools']['ro'] = "";
+$text['table-tools']['ro'] = "Utilitare";
 
 $text['table-title']['en-us'] = "User Info";
 $text['table-title']['es-cl'] = "Información de Usuario";
@@ -130,7 +130,7 @@ $text['message-invalid_username_mismatch_passwords']['he'] = "שם משתמש א
 $text['message-invalid_username_mismatch_passwords']['uk'] = "Неправильні ім’я користувача та/або пароль";
 $text['message-invalid_username_mismatch_passwords']['sv-se'] = "Ogiltig Användarnamn och / eller Felaktigt Lösenord";
 $text['message-invalid_username_mismatch_passwords']['de-at'] = "Falscher Benutzername und/oder Nichtübereinstimmung der Passwörter";
-$text['message-invalid_username_mismatch_passwords']['ro'] = "";
+$text['message-invalid_username_mismatch_passwords']['ro'] = "Nume utilizator invalid si/sau nepotrivire parole";
 
 $text['message-invalid_email']['en-us'] = "Invalid Email Address";
 $text['message-invalid_email']['es-cl'] = "Dirección no válida de correo electrónico";
@@ -550,7 +550,7 @@ $text['check-available-ondemand-status']['he'] = "(זמין(ע״פ דרישה";
 $text['check-available-ondemand-status']['uk'] = "Доступний (на вимогу)";
 $text['check-available-ondemand-status']['sv-se'] = "Tillgänglig (På Begäran)";
 $text['check-available-ondemand-status']['de-at'] = "Erreichbar (bei Bedarf)";
-$text['check-available-ondemand-status']['ro'] = "";
+$text['check-available-ondemand-status']['ro'] = "Disponibil (la cerere)";
 
 $text['button-save']['en-us'] = "Save";
 $text['button-save']['es-cl'] = "Guardar";

@@ -76,7 +76,7 @@ $text['message-update']['pt-pt'] = "Actualização Efectuada";
 $text['message-update']['fr-fr'] = "Mise à jour effectuée";
 $text['message-update']['pt-br'] = "Atualização Efetuada";
 $text['message-update']['pl'] = "Zaktualizowano poprawnie";
-$text['message-update']['uk'] = "Оновлення завершено";
+$text['message-update']['uk'] = "Оновлено";
 $text['message-update']['sv-se'] = "Uppdatering Klar";
 $text['message-update']['ro'] = "Actualizare completă";
 
@@ -116,7 +116,7 @@ $text['message-duplicate_username']['pt-pt'] = "Duplicate usuário Detectado";
 $text['message-duplicate_username']['fr-fr'] = "Doublons de nom d'utilisateur détectés";
 $text['message-duplicate_username']['pt-br'] = "Duplicate usuário Detectado";
 $text['message-duplicate_username']['pl'] = "Wykryto duplikat Nazwa użytkownika";
-$text['message-duplicate_username']['uk'] = "Дублікат Ім'я користувача Виявлено";
+$text['message-duplicate_username']['uk'] = "Виявлено дублікат імені користувача";
 $text['message-duplicate_username']['sv-se'] = "Duplicera Användarnamn upptäckt";
 $text['message-duplicate_username']['ro'] = "Nume utilizator duplicat";
 
