@@ -80,7 +80,7 @@
 
 	table.insert(xml, [[				<profile name="default">]]);
 	table.insert(xml, [[					<param name="cdr-log-dir" value="auto"/>]]);
-	table.insert(xml, [[					<param name="conference-flags" value="" />]]);
+	table.insert(xml, [[					<param name="conference-flags" value="livearray-sync" />]]);
 	table.insert(xml, [[					<param name="domain" value="$${domain}"/>]]);
 	table.insert(xml, [[					<param name="rate" value="8000"/>]]);
 	table.insert(xml, [[					<param name="interval" value="20"/>]]);
@@ -91,7 +91,7 @@
 	table.insert(xml, [[					<param name="muted-sound" value="conference/conf-muted.wav"/>]]);
 	table.insert(xml, [[					<param name="unmuted-sound" value="conference/conf-unmuted.wav"/>]]);
 	table.insert(xml, [[					<param name="alone-sound" value="conference/conf-alone.wav"/>]]);
-	table.insert(xml, [[					<param name="moh-sound" value="$${hold_music}"/>]]);
+	table.insert(xml, [[					<param name="moh-sound" value="local_stream://default"/>]]);
 	table.insert(xml, [[					<param name="enter-sound" value="tone_stream://%(200,0,500,600,700)"/>]]);
 	table.insert(xml, [[					<param name="exit-sound" value="tone_stream://%(500,0,300,200,100,50,25)"/>]]);
 	table.insert(xml, [[					<param name="kicked-sound" value="conference/conf-kicked.wav"/>]]);
@@ -108,7 +108,7 @@
 
 	table.insert(xml, [[				<profile name="wideband">]]);
 	table.insert(xml, [[					<param name="cdr-log-dir" value="auto"/>]]);
-	table.insert(xml, [[					<param name="conference-flags" value="" />]]);
+	table.insert(xml, [[					<param name="conference-flags" value="livearray-sync" />]]);
 	table.insert(xml, [[					<param name="domain" value="$${domain}"/>]]);
 	table.insert(xml, [[					<param name="rate" value="16000"/>]]);
 	table.insert(xml, [[					<param name="interval" value="20"/>]]);
@@ -119,7 +119,7 @@
 	table.insert(xml, [[					<param name="muted-sound" value="conference/conf-muted.wav"/>]]);
 	table.insert(xml, [[					<param name="unmuted-sound" value="conference/conf-unmuted.wav"/>]]);
 	table.insert(xml, [[					<param name="alone-sound" value="conference/conf-alone.wav"/>]]);
-	table.insert(xml, [[					<param name="moh-sound" value="$${hold_music}"/>]]);
+	table.insert(xml, [[					<param name="moh-sound" value="local_stream://default"/>]]);
 	table.insert(xml, [[					<param name="enter-sound" value="tone_stream://%(200,0,500,600,700)"/>]]);
 	table.insert(xml, [[					<param name="exit-sound" value="tone_stream://%(500,0,300,200,100,50,25)"/>]]);
 	table.insert(xml, [[					<param name="kicked-sound" value="conference/conf-kicked.wav"/>]]);
@@ -136,7 +136,7 @@
 
 	table.insert(xml, [[				<profile name="ultrawideband">]]);
 	table.insert(xml, [[					<param name="cdr-log-dir" value="auto"/>]]);
-	table.insert(xml, [[					<param name="conference-flags" value="" />]]);
+	table.insert(xml, [[					<param name="conference-flags" value="livearray-sync" />]]);
 	table.insert(xml, [[					<param name="domain" value="$${domain}"/>]]);
 	table.insert(xml, [[					<param name="rate" value="32000"/>]]);
 	table.insert(xml, [[					<param name="interval" value="20"/>]]);
@@ -147,7 +147,7 @@
 	table.insert(xml, [[					<param name="muted-sound" value="conference/conf-muted.wav"/>]]);
 	table.insert(xml, [[					<param name="unmuted-sound" value="conference/conf-unmuted.wav"/>]]);
 	table.insert(xml, [[					<param name="alone-sound" value="conference/conf-alone.wav"/>]]);
-	table.insert(xml, [[					<param name="moh-sound" value="$${hold_music}"/>]]);
+	table.insert(xml, [[					<param name="moh-sound" value="local_stream://default"/>]]);
 	table.insert(xml, [[					<param name="enter-sound" value="tone_stream://%(200,0,500,600,700)"/>]]);
 	table.insert(xml, [[					<param name="exit-sound" value="tone_stream://%(500,0,300,200,100,50,25)"/>]]);
 	table.insert(xml, [[					<param name="kicked-sound" value="conference/conf-kicked.wav"/>]]);
@@ -164,7 +164,7 @@
 
 	table.insert(xml, [[				<profile name="cdquality">]]);
 	table.insert(xml, [[					<param name="cdr-log-dir" value="auto"/>]]);
-	table.insert(xml, [[					<param name="conference-flags" value="" />]]);
+	table.insert(xml, [[					<param name="conference-flags" value="livearray-sync" />]]);
 	table.insert(xml, [[					<param name="domain" value="$${domain}"/>]]);
 	table.insert(xml, [[					<param name="rate" value="48000"/>]]);
 	table.insert(xml, [[					<param name="interval" value="20"/>]]);
@@ -175,7 +175,7 @@
 	table.insert(xml, [[					<param name="muted-sound" value="conference/conf-muted.wav"/>]]);
 	table.insert(xml, [[					<param name="unmuted-sound" value="conference/conf-unmuted.wav"/>]]);
 	table.insert(xml, [[					<param name="alone-sound" value="conference/conf-alone.wav"/>]]);
-	table.insert(xml, [[					<param name="moh-sound" value="$${hold_music}"/>]]);
+	table.insert(xml, [[					<param name="moh-sound" value="local_stream://default"/>]]);
 	table.insert(xml, [[					<param name="enter-sound" value="tone_stream://%(200,0,500,600,700)"/>]]);
 	table.insert(xml, [[					<param name="exit-sound" value="tone_stream://%(500,0,300,200,100,50,25)"/>]]);
 	table.insert(xml, [[					<param name="kicked-sound" value="conference/conf-kicked.wav"/>]]);
@@ -212,7 +212,7 @@
 	table.insert(xml, [[					<param name="moderator-controls" value="moderator"/>]]);
 	table.insert(xml, [[					<param name="muted-sound" value="conference/conf-muted.wav"/>]]);
 	table.insert(xml, [[					<param name="unmuted-sound" value="conference/conf-unmuted.wav"/>]]);
-	table.insert(xml, [[					<param name="moh-sound" value="$${hold_music}"/>]]);
+	table.insert(xml, [[					<param name="moh-sound" value="local_stream://default"/>]]);
 	table.insert(xml, [[					<param name="kicked-sound" value="conference/conf-kicked.wav"/>]]);
 	table.insert(xml, [[					<param name="locked-sound" value="conference/conf-locked.wav"/>]]);
 	table.insert(xml, [[					<param name="is-locked-sound" value="conference/conf-is-locked.wav"/>]]);
@@ -227,7 +227,7 @@
 	table.insert(xml, [[				<profile name="wait-mod">]]);
 	--table.insert(xml, [[					<param name="domain" value="$${domain}"/>]]);
 	table.insert(xml, [[					<param name="cdr-log-dir" value="auto"/>]]);
-	table.insert(xml, [[					<param name="conference-flags" value="wait-mod" />]]);
+	table.insert(xml, [[					<param name="conference-flags" value="wait-mod,livearray-sync" />]]);
 	table.insert(xml, [[					<param name="rate" value="8000"/>]]);
 	table.insert(xml, [[					<param name="interval" value="20"/>]]);
 	table.insert(xml, [[					<param name="energy-level" value="15"/>]]);
@@ -237,7 +237,7 @@
 	table.insert(xml, [[					<param name="muted-sound" value="conference/conf-muted.wav"/>]]);
 	table.insert(xml, [[					<param name="unmuted-sound" value="conference/conf-unmuted.wav"/>]]);
 	table.insert(xml, [[					<param name="alone-sound" value="conference/conf-alone.wav"/>]]);
-	table.insert(xml, [[					<param name="moh-sound" value="$${hold_music}"/>]]);
+	table.insert(xml, [[					<param name="moh-sound" value="local_stream://default"/>]]);
 	table.insert(xml, [[					<param name="enter-sound" value="tone_stream://%(200,0,500,600,700)"/>]]);
 	table.insert(xml, [[					<param name="exit-sound" value="tone_stream://%(500,0,300,200,100,50,25)"/>]]);
 	table.insert(xml, [[					<param name="kicked-sound" value="conference/conf-kicked.wav"/>]]);
