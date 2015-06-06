@@ -1,7 +1,7 @@
 Source: fusionpbx-app-vars
 Section: user/www
 Priority: extra
-Maintainer: Richard Neese <r.neese@gmail.com>
+Maintainer: Ian Oaks <ian@terraenetworks.com>
 Standards-Version: 3.7.2
 #XSBC-Bugtracker: mailto:r.neese@gmail.com
 

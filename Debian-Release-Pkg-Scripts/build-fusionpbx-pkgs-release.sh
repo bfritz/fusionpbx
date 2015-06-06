@@ -23,7 +23,7 @@ fusionpbx-core ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-core
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -33,7 +33,7 @@ fusionpbx-conf ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-conf
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -43,7 +43,7 @@ fusionpbx-scripts ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-scripts
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -54,7 +54,7 @@ fusionpbx-sqldb ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-sqldb
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -65,7 +65,7 @@ fusionpbx-provisioning-template-${i} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-provisioning-template-"${i//_/-}"
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 done
@@ -77,7 +77,7 @@ fusionpbx-theme-${i} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-theme-"${i//_/-}"
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 done
@@ -95,7 +95,7 @@ fusionpbx-app-${i//_/-} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-app-"${i//_/-}"
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 done

@@ -1331,6 +1331,13 @@ http {
 	include /etc/nginx/mime.types;
 	default_type application/octet-stream;
 
+    ##
+    # SSL Settings
+    ##
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+    ssl_prefer_server_ciphers on;
+
 	open_file_cache max=1000 inactive=20s;
 	open_file_cache_valid 30s;
 	open_file_cache_min_uses 2;
