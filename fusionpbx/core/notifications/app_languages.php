@@ -9,9 +9,6 @@ $text['title-notifications']['pl'] = "Powiadomienia";
 $text['title-notifications']['uk'] = "小锌芯胁褨褖械薪薪褟";
 $text['title-notifications']['sv-se'] = "Meddelanden";
 
-
-
-
 $text['option-enabled']['en-us'] = "Enabled";
 $text['option-enabled']['es-cl'] = "Activado";
 $text['option-enabled']['pt-pt'] = "Ativado";

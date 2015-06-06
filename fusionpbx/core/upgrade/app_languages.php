@@ -36,15 +36,6 @@ $text['option-false']['pl'] = "Nie";
 $text['option-false']['sv-se'] = "Falsk";
 $text['option-false']['uk'] = "Ні";
 
-$text['message-upgrade_svn_scripts']['en-us'] = "Source Files and Scripts Updated";
-$text['message-upgrade_svn_scripts']['es-cl'] = "Fuente archivos actualizados";
-$text['message-upgrade_svn_scripts']['pt-pt'] = "Fonte arquivos atualizados";
-$text['message-upgrade_svn_scripts']['fr-fr'] = "Source Fichiers mis à jour";
-$text['message-upgrade_svn_scripts']['pt-br'] = "Fonte de arquivos atualizados";
-$text['message-upgrade_svn_scripts']['pl'] = "Aktualizacja plików źródłowych powiodła się";
-$text['message-upgrade_svn_scripts']['sv-se'] = "Källfiler Uppdaterade";
-$text['message-upgrade_svn_scripts']['uk'] = "Вихідні файли і сценарії оновлено";
-
 $text['message-upgrade_svn_failed']['en-us'] = "Source Files Update Failed - Please Run SVN Update Via Console";
 $text['message-upgrade_svn_failed']['es-cl'] = "Fuente actualización de archivos Error - Por favor, ejecuta svn update Vía Consola";
 $text['message-upgrade_svn_failed']['pt-pt'] = "Fonte Arquivos Update Failed - execute o SVN Atualização Via Console";
@@ -62,6 +53,15 @@ $text['message-upgrade_svn']['pt-br'] = "Fonte de arquivos atualizados";
 $text['message-upgrade_svn']['pl'] = "Aktualizacja plików źródłowych powiodła się";
 $text['message-upgrade_svn']['sv-se'] = "Källfiler Uppdaterade";
 $text['message-upgrade_svn']['uk'] = "Вихідні файли оновлено";
+
+$text['message-upgrade_svn_scripts']['en-us'] = "Source Files and Scripts Updated";
+$text['message-upgrade_svn_scripts']['es-cl'] = "Fuente archivos actualizados";
+$text['message-upgrade_svn_scripts']['pt-pt'] = "Fonte arquivos atualizados";
+$text['message-upgrade_svn_scripts']['fr-fr'] = "Source Fichiers mis à jour";
+$text['message-upgrade_svn_scripts']['pt-br'] = "Fonte de arquivos atualizados";
+$text['message-upgrade_svn_scripts']['pl'] = "Aktualizacja plików źródłowych powiodła się";
+$text['message-upgrade_svn_scripts']['sv-se'] = "Källfiler Uppdaterade";
+$text['message-upgrade_svn_scripts']['uk'] = "Вихідні файли і сценарії оновлено";
 
 $text['message-upgrade_schema']['en-us'] = "Schema Verified";
 $text['message-upgrade_schema']['es-cl'] = "Esquema Verified";

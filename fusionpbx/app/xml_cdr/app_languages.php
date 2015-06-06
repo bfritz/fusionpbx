@@ -180,15 +180,6 @@ $text['option-this_month']['pl'] = "W tym miesiącu";
 $text['option-this_month']['sv-se'] = "Denna Månaden";
 $text['option-this_month']['uk'] = "Цього місяця";
 
-$text['option-last_seven_days']['en-us'] = "Last 7 Days";
-$text['option-last_seven_days']['es-cl'] = "Últimos 7 días";
-$text['option-last_seven_days']['pt-pt'] = "Nos últimos 7 Dias";
-$text['option-last_seven_days']['fr-fr'] = "Les 7 Derniers Jours";
-$text['option-last_seven_days']['pt-br'] = "Nos últimos 7 Dias";
-$text['option-last_seven_days']['pl'] = "Ostatnie 7 Dni";
-$text['option-last_seven_days']['sv-se'] = "Senaste 7 Dagarna";
-$text['option-last_seven_days']['uk'] = "За останні 7 днів";
-
 $text['option-last_hour']['en-us'] = "Last Hour";
 $text['option-last_hour']['es-cl'] = "Ultima Hora";
 $text['option-last_hour']['pt-pt'] = "Última Hora";
@@ -197,6 +188,15 @@ $text['option-last_hour']['pt-br'] = "Próxima hora";
 $text['option-last_hour']['pl'] = "W ostatniej godzinie";
 $text['option-last_hour']['sv-se'] = "Senaste Timman";
 $text['option-last_hour']['uk'] = "За останню годину";
+
+$text['option-last_seven_days']['en-us'] = "Last 7 Days";
+$text['option-last_seven_days']['es-cl'] = "Últimos 7 días";
+$text['option-last_seven_days']['pt-pt'] = "Nos últimos 7 Dias";
+$text['option-last_seven_days']['fr-fr'] = "Les 7 Derniers Jours";
+$text['option-last_seven_days']['pt-br'] = "Nos últimos 7 Dias";
+$text['option-last_seven_days']['pl'] = "Ostatnie 7 Dni";
+$text['option-last_seven_days']['sv-se'] = "Senaste 7 Dagarna";
+$text['option-last_seven_days']['uk'] = "За останні 7 днів";
 
 $text['option-false']['en-us'] = "False";
 $text['option-false']['es-cl'] = "Falso";

@@ -27,6 +27,15 @@ $text['opt-default']['pl'] = "Domyślna";
 $text['opt-default']['sv-se'] = "Standard";
 $text['opt-default']['uk'] = "Типово";
 
+$text['message-nofiles']['en-us'] = "No files found.";
+$text['message-nofiles']['es-cl'] = "No se encontraron archivos.";
+$text['message-nofiles']['pt-pt'] = "Não foram encontrados ficheiros.";
+$text['message-nofiles']['fr-fr'] = "Pas de fichier trouvé.";
+$text['message-nofiles']['pt-br'] = "Não foram encontrados os arquivos";
+$text['message-nofiles']['pl'] = "Nie znaleziono plików";
+$text['message-nofiles']['sv-se'] = "Ingen ljudfil.";
+$text['message-nofiles']['uk'] = "Файлів не знайдено";
+
 $text['message-upload_completed']['en-us'] = "Upload Completed";
 $text['message-upload_completed']['es-cl'] = "Cargar Completado";
 $text['message-upload_completed']['pt-pt'] = "Carregar Concluído";
@@ -44,15 +53,6 @@ $text['message-unsupported_file_type']['pt-br'] = "Não suportado Tipo de Arquiv
 $text['message-unsupported_file_type']['pl'] = "Nieobsługiwany typ pliku";
 $text['message-unsupported_file_type']['sv-se'] = "Inte stöds filtyp";
 $text['message-unsupported_file_type']['uk'] = "Тип файлу не підтримується";
-
-$text['message-nofiles']['en-us'] = "No files found.";
-$text['message-nofiles']['es-cl'] = "No se encontraron archivos.";
-$text['message-nofiles']['pt-pt'] = "Não foram encontrados ficheiros.";
-$text['message-nofiles']['fr-fr'] = "Pas de fichier trouvé.";
-$text['message-nofiles']['pt-br'] = "Não foram encontrados os arquivos";
-$text['message-nofiles']['pl'] = "Nie znaleziono plików";
-$text['message-nofiles']['sv-se'] = "Ingen ljudfil.";
-$text['message-nofiles']['uk'] = "Файлів не знайдено";
 
 $text['message-event-socket']['en-us'] = "Connection to Event Socket failed.";
 $text['message-event-socket']['es-cl'] = "Conexión a socket fallida.";
