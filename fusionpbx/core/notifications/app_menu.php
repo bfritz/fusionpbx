@@ -13,4 +13,6 @@ $apps[$x]['menu'][0]['category'] = "internal";
 $apps[$x]['menu'][0]['path'] = "/core/notifications/notification_edit.php";
 $apps[$x]['menu'][0]['groups'][] = "superadmin";
 
+
+
 ?>
