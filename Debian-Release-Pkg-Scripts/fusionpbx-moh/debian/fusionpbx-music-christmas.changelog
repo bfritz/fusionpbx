@@ -1,0 +1,7 @@
+fusionpbx-music-classical (1.0.0-1) stable; urgency=low
+
+  * We now distribute music as FLAC files that are converted to various
+    sampling rates after installation.
+  * Default music on hold is now in sounds/music/default.
+
+ -- Richard Neese <r.neese@gmail.com>  Thur, 04 Dec 2014 12:51:00 -0600
