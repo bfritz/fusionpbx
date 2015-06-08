@@ -2,11 +2,11 @@
 # Wed May 06, 2015 Time: 15:30 CST
 
 PKGVER=3.8.1~1 # this is the version number you update
-SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
-SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkg-Scripts
-SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
-REPO=/usr/home/repo/fusionpbx/head/debian
-WRK_DIR=/usr/src/fusionpbx-devel-pkg-build
+SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
+SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Devel-Pkg-Scripts
+SVN_SRC_3=http://fusionpbx.googlecode.com/svn/trunk
+REPO=/usr/home/repo/fusionpbx/release/debian
+WRK_DIR=/usr/src/fusionpbx-release-pkg-build
 
 #Set Timestamp in the change logs
 TIME=$(date +"%a, %d %b %Y %X")
@@ -87,9 +87,9 @@ for i in adminer backup call_block call_broadcast call_center call_center_active
 	calls_active click_to_call conference_centers conferences conferences_active contacts content \
 	destinations devices dialplan dialplan_inbound dialplan_outbound edit emails exec extensions fax fifo \
 	fifo_list follow_me gateways hot_desking ivr_menu login log_viewer meetings modules music_on_hold \
-	provision recordings registrations ring_groups services settings sipml5 sip_profiles \
+	provision recordings registrations ring_groups services settings  sip_profiles \
 	sip_status sql_query system time_conditions traffic_graph vars voicemail_greetings voicemails xml_cdr \
-	xmpp operator_panel phrases
+	 operator_panel phrases
 do cat > $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/debian/changelog << DELIM
 fusionpbx-app-${i//_/-} ($PKGVER) stable; urgency=low
 
@@ -105,14 +105,14 @@ for i in adminer backup call_block call_broadcast call_center call_center_active
 	calls_active click_to_call conference_centers conferences conferences_active contacts content \
 	destinations devices dialplan dialplan_inbound dialplan_outbound edit emails exec extensions fax fifo \
 	fifo_list follow_me gateways hot_desking ivr_menu login log_viewer meetings modules music_on_hold \
-	provision recordings registrations ring_groups services settings sipml5 sip_profiles \
+	provision recordings registrations ring_groups services settings  sip_profiles \
 	sip_status sql_query system time_conditions traffic_graph vars voicemail_greetings voicemails xml_cdr \
-	xmpp operator_panel
+	 operator_panel
 do svn export --force $SVN_SRC/fusionpbx/app/"${i}" $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
 done
 
 #get src for extra apps
-svn export --force $SVN_SRC_3 $WRK_DIR/fusionpbx-apps/fusionpbx-app-sipml5/sipml5
+svn export --force $SVN_SRC_3 $WRK_DIR/fusionpbx-apps/fusionpbx-app-/
 
 
 #get src for core
@@ -166,11 +166,11 @@ sed "$WRK_DIR"/fusionpbx-conf/conf/sip_profiles/internal.xml -i -e s,'<!-- *<par
 #build app pkgs
 for i in adminer backup call-block call-broadcast call-center call-center-active call-flows calls \
 calls-active click-to-call conference-centers conferences conferences-active contacts content \
-destinations devices dialplan dialplan-inbound dialplan-outbound edit emailsexec extensions fax fifo \
+destinations devices dialplan dialplan-inbound dialplan-outbound edit emails exec extensions fax fifo \
 fifo-list follow-me gateways hot-desking ivr-menu login log-viewer meetings modules music-on-hold \
-park provision recordings registrations ring-groups services settings sipml5 sip-profiles \
+park provision recordings registrations ring-groups services settings sip-profiles \
 sip-status sql-query system time-conditions traffic-graph vars voicemail-greetings voicemails xml-cdr \
-xmpp operator-panel phrases
+ operator-panel phrases
 do cd $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done
