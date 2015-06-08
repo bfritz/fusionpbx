@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tue Feb 01, 2015 Time: 11:43 CST
 
-PKGVER=3.6.3-120 # this is the version number you update
+PKGVER=3.8.0-10 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
 REPO=/usr/home/repo/fusionpbx/release/debian
@@ -22,7 +22,7 @@ fusionpbx-core ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-core
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -32,7 +32,7 @@ fusionpbx-conf ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-conf
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -42,7 +42,7 @@ fusionpbx-scripts ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-scripts
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -53,7 +53,7 @@ fusionpbx-sqldb ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-sqldb
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 
@@ -64,7 +64,7 @@ fusionpbx-provisioning-template-${i} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-provisioning-template-"${i//_/-}"
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 done
@@ -76,7 +76,7 @@ fusionpbx-theme-${i} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-theme-"${i//_/-}"
 
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
+ -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
 
 DELIM
 done
