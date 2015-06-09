@@ -346,6 +346,12 @@ install_ajenti="n"
 ######################################################
 # Hard Set Varitables (Do Not EDIT) Freeswitch default
 ######################################################
+################################################################
+#Used for pkg based installs for cp the base configs into place
+################################################################
+fs_conf_dir="/etc/freeswitch"
+fs_dflt_conf_dir="/usr/share/freeswitch/conf"
+
 ######################################################
 #Nginx default www dir
 ######################
@@ -1266,23 +1272,15 @@ CONFDIR="/etc/fusionpbx/switch/conf"
 #
 # Uncooment extra lines and make sure to add cut and paste them to the DAEMON_ARGS 
 # Options to control locations of files: 
-#fs_base=""  # -base $fs_base
-fs_conf="/etc/fusionpbx/switch/conf" # -conf $fs_conf
-#fs_cache="" # -cache $fs_cache
-#fs_certs="" # -certs $fs_certs
-fs_db="/var/lib/freeswitch/db" # -db $fs_db
-#fs_grammar="" # -grammar $fs_grammar
-#fs_htdocs="" # -htdocs $fs_htdocs
-fs_log="/var/log/freeswitch" # -log $fs_log
-#fs_mod="" # -mod $fs_mod
-fs_recordings="/var/lib/fusionpbx/recordings" # -recordings $fs_recordings
-fs_run="/var/run/freeswitch" # -run $fs_run
-fs_scripts="/var/lib/fusionpbx/scripts" # -scripts $fs_scripts
-#fs_sounds="" # -sounds $fs_sounds
-fs_storage="/var/lib/fusionpbx/storage" # -storage $fs_storage
-#fs_temp="" # -temp $fs_temp
-fs_usr=freeswitch # -u $fs_usr
-fs_grp=\$fs_usr # -g $fs_grp
+fs_conf="/etc/fusionpbx/switch/conf"
+fs_db="/var/lib/freeswitch/db"
+fs_log="/var/log/freeswitch"
+fs_recordings="/var/lib/fusionpbx/recordings"
+fs_run="/var/run/freeswitch"
+fs_scripts="/var/lib/fusionpbx/scripts"
+fs_storage="/var/lib/fusionpbx/storage"
+fs_usr=freeswitch
+fs_grp=\$fs_usr
 #
 #These are the optional arguments you can pass to freeswitch: (add options to fs_options line)
 # -nf                    -- no forking
