@@ -456,15 +456,12 @@ call_center="n" # : display queue status, agent status, tier status for call cen
 call_flows="n" # : Typically used with day night mode. To direct calls between two destinations.
 conference_centers="n" # : tools for multi room confrences and room contol
 conference="n" # : tools for single room confrences and room contol
-content="n" # : Advanced-Content Manager
 edit="n" # : multi tools for editing (templates/xmlfiles/configfiles/scripts) files
 exec="n" # : comman shells pages for executing (php/shells) commands
 fax="n" # : fusionpbx send/recieve faxes service
 fifo="n" # : first in first out call queues system
 hot_desk="n" # : allows users to login and recieve calls on any office phone
-schemas="n" # :
 services="n" # : allows interaction with the processes running on your server
-sipml5="n" # : php base softphone
 sql_query="n" # : allows you to interactively submit SQL queries to the database used in FusionPBX
 traffic_graph="n" # : php graph for monitoing the network interface traffic
 aastra="n" # : phone provisioning tool &  templates for aastra phones
@@ -691,7 +688,7 @@ curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt
 #adding extra language sounds repo for freeswitch
 ##################################################
  #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch_lang_sounds.lists
-echo " adding extra language sounds repo for freeswitch 
+echo " adding extra language sounds repo for freeswitch "
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
 if [ $? -eq 0 ]; then
 	echo "adding extra language sounds repo for freeswitch for debian wheezy"
