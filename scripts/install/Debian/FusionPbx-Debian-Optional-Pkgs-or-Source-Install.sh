@@ -620,18 +620,36 @@ echo
 #Setup Main debian repo for right pkgs
 #######################################
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+
 if [ $? -eq 0 ]; then
+ 	echo "installing wheezy release repo"
 	cat > "/etc/apt/sources.list" << DELIM
-	deb http://ftp.us.debian.org/debian/ wheezy main contrib non-free
-	deb-src http://ftp.us.debian.org/debian/ wheezy main contrib non-free
-	deb http://security.debian.org/ wheezy/updates main contrib non-free
+	deb http://httpredir.debian.org/debian/ wheezy main contrib non-free
+	deb-src http://httpredir.debian.org/debian/ wheezy main contrib non-free
+
+	deb http://httpredir.debian.org/debian/ wheezy-updates main contrib non-free
+	deb-src http://httpredir.debian.org/debian/ wheeexy-updates main contrib non-free
+
+	deb http://httpredir.debian.org/debian/ wheezy-backports main contrib non-free
+	deb-src http://httpredir.debian.org/debian/ wheezy-backports main contrib non-free
+
 DELIM
 else
+	lsb_release -c |grep -i jessie &> /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+	echo "installing jessie release repo"
 	cat > "/etc/apt/sources.list" << DELIM
-	deb http://ftp.us.debian.org/debian/ jessie main contrib non-free
-	deb-src http://ftp.us.debian.org/debian/ jessie main contrib non-free
-	deb http://security.debian.org/ jessie/updates main contrib non-free
+	deb http://httpredir.debian.org/debian/ jessie main contrib non-free
+	deb-src http://httpredir.debian.org/debian/ jessie main contrib non-free
+
+	deb http://httpredir.debian.org/debian/ jessie-updates main contrib non-free
+	deb-src http://httpredir.debian.org/debian/ jessie-updates main contrib non-free
+
+	deb http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
+	deb-src http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
+
 DELIM
+	fi
 fi
 
 ####################################
@@ -658,14 +676,12 @@ case $(uname -m) in x86_64|i[4-6]86)
 		if [ $? -eq 0 ]; then
 			echo "installing wheezy release repo"
 			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			#deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 			deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
 			
 DELIM
 		else
 			echo "installing jessie release repo"
 			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch/release/debian/ jessie main
 			deb http://files.freeswitch.org/repo/deb/debian/ jessie main
 DELIM
 		fi
@@ -1157,23 +1173,21 @@ cat > "/etc/nginx/sites-available/fusionpbx"  << DELIM
 server{
         listen 127.0.0.1:80;
         server_name 127.0.0.1;
+        
         access_log /var/log/nginx/access.log;
         error_log /var/log/nginx/error.log;
 
         client_max_body_size $upload_size;
         client_body_buffer_size 128k;
 
-        location / {
-                root $WWW_PATH/$wui_name;
-                index index.php;
-        }
+		root $WWW_PATH/$wui_name;
+		index index.php;
 
         location ~ \.php$ {
-                fastcgi_pass unix:/var/run/php5-fpm.sock;
-                #fastcgi_pass 127.0.0.1:9000;
-                fastcgi_index index.php;
-                include fastcgi_params;
-                fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$wui_name\$fastcgi_script_name;
+			include snippets/fastcgi-php.conf;
+			include fastcgi_params;
+			fastcgi_pass unix:/var/run/php5-fpm.sock;
+			fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$wui_name/$fastcgi_script_name;
         }
 
         # Disable viewing .htaccess & .htpassword & .db
@@ -1191,7 +1205,9 @@ server{
 server{
         listen 80;
         listen [::]:80 default_server ipv6only=on;
+        
         server_name $wui_name;
+        
         if (\$uri !~* ^.*provision.*$) {
                 rewrite ^(.*) https://\$host\$1 permanent;
                 break;
@@ -1220,16 +1236,14 @@ server{
         client_max_body_size $upload_size;
         client_body_buffer_size 128k;
 
-        location / {
-          root $WWW_PATH/$wui_name;
-          index index.php;
-        }
+		root $WWW_PATH/$wui_name;
+		index index.php;
 
         location ~ \.php$ {
-            fastcgi_pass unix:/var/run/php5-fpm.sock;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$wui_name\$fastcgi_script_name;
+			include snippets/fastcgi-php.conf;
+			include fastcgi_params;
+			fastcgi_pass unix:/var/run/php5-fpm.sock;
+			fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$wui_name/$fastcgi_script_name;
         }
 
         # Disable viewing .htaccess & .htpassword & .db
@@ -1247,13 +1261,11 @@ server{
 server{
         listen 443;
         listen [::]:443 default_server ipv6only=on;
+        
         server_name $wui_name;
-        ssl                     on;
-        ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;
-        ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key;
-        ssl_protocols           TLSv1 TLSv1.1 TLSv1.2;
-        ssl_session_timeout		5m;
-        ssl_ciphers     HIGH:!ADH:!MD5;
+        
+ 		include snippets/snakeoil.conf;
+		ssl  on;
 
 		#grandstream
         rewrite "^.*/provision/cfg([A-Fa-f0-9]{12})(\.(xml|cfg))?$" /app/provision/?mac=\$1;
@@ -1273,16 +1285,14 @@ server{
         client_max_body_size $upload_size;
         client_body_buffer_size 128k;
 
-        location / {
-          root $WWW_PATH/$wui_name;
-          index index.php;
-        }
+		root $WWW_PATH/$wui_name;
+		index index.php;
 
         location ~ \.php$ {
-            fastcgi_pass unix:/var/run/php5-fpm.sock;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$wui_name\$fastcgi_script_name;
+			include snippets/fastcgi-php.conf;
+			include fastcgi_params;
+			fastcgi_pass unix:/var/run/php5-fpm.sock;
+			fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$wui_name/$fastcgi_script_name;
         }
 
         # Disable viewing .htaccess & .htpassword & .db
@@ -1334,9 +1344,6 @@ http {
     ##
     # SSL Settings
     ##
-
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
-    ssl_prefer_server_ciphers on;
 
 	open_file_cache max=1000 inactive=20s;
 	open_file_cache_valid 30s;
@@ -1452,17 +1459,14 @@ apt-get update
 # Install default minimal fusionpbx pkgs
 ##########################################
 apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-calls-active fusionpbx-app-call-block \
-	fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
-	fusionpbx-app-dialplan-outbound fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
-	fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules fusionpbx-app-music-on-hold \
-	fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings \
-	fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions \
-	fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
-	fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced fusionpbx-music-default
-
-if [[ $fusionpbx_stable == "n" ]]; then
-	apt-get -y --force-yes install fusionpbx-operator-panel
-fi
+		fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
+		fusionpbx-app-dialplan-outbound fusionpbx-app-emails fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
+		fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules fusionpbx-app-music-on-hold \
+		fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings \
+		fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions \
+		fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
+		fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced fusionpbx-music-default \
+		fusionpbx-app-operator-panel
 
 ########################
 #set permissions on dir
@@ -1522,10 +1526,6 @@ if [[ $conference == "y" ]]; then
 		fi
 fi
 
-if [[ $content == "y" ]]; then
-	apt-get -y --force-yes install fusionpbx-app-content
-fi
-
 if [[ $edit == "y" ]]; then
 	apt-get -y --force-yes install fusionpbx-app-edit
 fi
@@ -1553,23 +1553,8 @@ if [[ $hot_desk == "y" ]]; then
 	apt-get -y --force-yes install fusionpbx-app-hot-desking
 fi
 
-if [[ $schemas == "y" ]]; then
-	apt-get -y --force-yes install fusionpbx-app-schemas
-fi
-
 if [[ $services == "y" ]]; then
 	apt-get -y --force-yes install fusionpbx-app-services
-fi
-
-if [[ $sipml5 == "y" ]]; then
-	apt-get -y --force-yes install fusionpbx-app-sipml5
-		if [[ -f /root/.fs_src ]] ; then
-			if [[ ! -f /usr/lib/freeswitch/mod/mod_rtmp ]] ; then
-				echo " Requires freeswitch mod_rtmp "
-			fi
-		else
-			apt-get -y --force-yes install freeswitch-mod-rtmp
-		fi
 fi
 
 if [[ $sql_query == "y" ]]; then
@@ -1639,9 +1624,9 @@ fi
 if [[ $all == "y" ]]; then
 	apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusionpbx-app-call-broadcast  \
 		fusionpbx-app-call-center fusionpbx-app-call-center-active fusionpbx-app-call-flows fusionpbx-app-conference-centers \
-		fusionpbx-app-conferences-active fusionpbx-app-meetings fusionpbx-app-conferences fusionpbx-app-content \
+		fusionpbx-app-conferences-active fusionpbx-app-emails fusionpbx-app-meetings fusionpbx-app-conferences \
 		fusionpbx-app-edit fusionpbx-app-exec fusionpbx-app-fifo fusionpbx-app-fifo-list ghostscript libreoffice-common \
-		fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-schemas fusionpbx-app-services fusionpbx-app-sipml5 \
+		fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-phrases fusionpbx-app-services \
 		fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-devices fusionpbx-app-provision \
 		fusionpbx-provisioning-template-aastra fusionpbx-provisioning-template-atcom fusionpbx-provisioning-template-cisco \
 		fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic \
