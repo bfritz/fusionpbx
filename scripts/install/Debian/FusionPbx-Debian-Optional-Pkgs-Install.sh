@@ -45,20 +45,18 @@ echo
 ########
 case $(uname -m) in armv[4-6]l)
 echo
-echo " ArmEL only supported in the build of freeswitch . "
+echo " ArmEL Not supported in this script. "
 echo
-echo " Do not attempt to use freeswitch debian pkgs. "
-echo
+exit
 esac
 ########
 # ARMHF
 ########
 case $(uname -m) in armv7l)
 echo
-echo " ArmHF only supported in the build of freeswitch "
+echo " ArmHF Not supported in this script"
 echo
-echo " Do not attempt to use freeswitch debian pkgs. "
-echo
+exit
 esac
 #############
 # Intel/AMD
@@ -67,7 +65,7 @@ case $(uname -m) in x86_64|i[4-6]86)
 echo
 echo " Intel / Amd  boards Spported"
 echo
-echo " You can either Build from Source or use the freeswitch Intel/AMD Debian pkgs. "
+echo " Install for freeswitch Intel/AMD Debian pkgs. "
 echo
 esac
 echo
@@ -207,209 +205,15 @@ echo
 ########################################
 #<------Start/Begin Edit HERE--------->
 ########################################
-
 ########################
 # Freeswitch Options
 ########################
-
-################################################################################
-# If you select to use the freeswitch pkgs it will use the prebuilt debian pkgs.
-# If you select not to use the freeswitch debian pkgs it will use git and pull
-# down all the build deps and and git the freeswitch src and build and install
-# from the freeswitch source code using the debian fhs lay out.
-################################################################################
-freeswitch_pkgs="y"
-
 #####################################################################################################
 # Set what language lang/say pkgs and language sound files to use. ( Only if pkgs install is selected )
 # en-ca=English/CA en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill
 # ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong
 #####################################################################################################
-freeswitch_sounds_language="en-us" #(other sounds are broken at min)
-
-################################################################################
-#Set what sounds to use when using the freeswitch source build.
-# cd sounds = 8k / 16k / 32k / 48k 
-# if you select not to use cd sounds it will use
-# hd sounds = 8k / 16k sounds only
-################################################################################
-freeswitch_cd_sounds=="y" 
-
-################################################################################
-# If you select not to use pkgs but to build from source. Here is a option to
-# set how many COU_CORES are used to compile with
-################################################################################
-multi_core="n"
-
-################################################################################
-# If you select not to use pkgs but to build from source. Here is a option to
-# pull and use the freeswitch contribs src for extra modules. (UNDER DEVELOPMENT)
-################################################################################
-#use_freeswitch_contrib="n"
-
-################################################################################
-# Enable / Build Freetdm into freeswitch (UNDER DEVELOPMENT)
-# Digium/openzap/rhino/sangoma card support
-# Requires you build from Source. Currently no packages.
-################################################################################
-#Digium/openzap card support
-use_mod_freetdm="n"
-
-#add sangoma support
-#sangoma_freetdm="n"
-
-#add rhino support
-#rhino_freetdm="n"
-
-################################################################################
-# Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
-# Supported devices : hauwii usb modems voice unlocked
-# Requires you build from Source. Currently no packages.
-################################################################################
-use_mod_gsmopen="n"
-
-################################################################################
-#Freeswutch Modules Selection
-################################################################################
-#use_optional_modules="n"
-
-################################################################################
-# Freeswitch Modules
-################################################################################
-#####################################################
-#Freeswitch Default Enabled Modules ( Required for base build )
-#####################################################
-#applications/mod_commands    #applications/mod_conference    #applications/mod_db
-#applications/mod_dptools     #applications/mod_enum          #applications/mod_esf
-#applications/mod_expr        #applications/mod_fifo          #applications/mod_fsv
-#applications/mod_hash        #applications/mod_httapi        #applications/mod_sms
-#applications/mod_spandsp     #applications/mod_valet_parking #applications/mod_voicemail
-#codecs/mod_amr               #codecs/mod_bv                  #codecs/mod_b64
-#codecs/mod_g723_1            #codecs/mod_g729                #codecs/mod_h26x
-#codecs/mod_vp8               #codecs/mod_opus                #dialplans/mod_dialplan_asterisk
-#dialplans/mod_dialplan_xml   #endpoints/mod_rtc              #endpoints/mod_verto
-#endpoints/mod_loopback       #endpoints/mod_skinny           #endpoints/mod_sofia
-#event_handlers/mod_cdr_csv   #event_handlers/mod_cdr_sqlite  #event_handlers/mod_event_socket
-#formats/mod_local_stream     #formats/mod_native_file        #formats/mod_portaudio_stream
-#formats/mod_sndfile          #formats/mod_tone_stream        #languages/mod_lua
-#loggers/mod_console          #loggers/mod_logfile            #loggers/mod_syslog
-#say/mod_say_en               #xml_int/mod_xml_cdr            #xml_int/mod_xml_rpc
-#xml_int/mod_xml_scgi
-
-#####################################################
-# Fusionpbx Default enabled Modules
-#####################################################
-#applications/mod_blacklist   #applications/mod_callcenter    #applications/mod_cidlookup
-#applications/mod_curl        #applications/mod_distributor   #applications/mod_esl
-#applications/mod_lcr         #applications/mod_memcache      #codecs/mod_amrwb
-#codecs/mod_celt              #codecs/mod_codec2              #codecs/mod_ilbc
-#codecs/mod_isac              #codecs/mod_silk                #codecs/mod_siren
-#codecs/mod_theora            #mod_portaudio                  #mod_portaudio_stream
-#mod_dingaling                #mod_spy                        #mod_translat
-#mod_flite                    #mod_pocketsphinx               #mod_tts_commandline
-#mod_event_multicast          #mod_event_test                 #mod_shout
-#mod_rtmp (sipml5)            #mod_random                     #languages/mod_v8
-
-################################################################################
-#Enable optional modules from list above here used for fusionpnbx build !!!!!!
-################################################################################
-#enable freetdm in the freeswitch /fusionpbx build
-if [[ $use_mod_freetdm == "y" ]]; then
-	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8\
-    		../../libs/freetdm/mod_freetdm )
-#enable gsmopen in the freeswitchch / fusionpbx build
-elif [[ $use_mod_gsmopen == "y" ]]; then
-	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
-     		mod_v8 gsmopen mod_siren mod_xml_curl )
-#use defualt set of modules for freeswitc/fusionpbx
-else
-	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8 )
-fi
-#############################
-# Optional Freeswitch Modules
-#############################
-#applications/mod_abstraction     #applications/mod_avmd            #applications/mod_bert
-#applications/mod_cluechoo        #applications/mod_directory       #applications/mod_easyroute
-#applications/mod_fsk             #applications/mod_http_cache      #applications/mod_ladspa
-#applications/mod_mongo           #applications/mod_mp4             #applications/mod_nibblebill
-#applications/mod_oreka           #applications/mod_osp             #applications/mod_prefix
-#applications/mod_rad_auth        #applications/mod_redis           #applications/mod_rss
-#applications/mod_sonar           #applications/mod_snapshot        #applications/mod_snipe_hunt
-#applications/mod_snom            #applications/mod_soundtouch      #applications/mod_stress
-#applications/mod_vmd             #applications/mod_voicemail_ivr   #applications/mod_random
-#asr_tts/mod_cepstral             #asr_tts/mod_unimrcp              #codecs/mod_com_g729
-#codecs/mod_dahdi_codec           #codecs/mod_mp4v                  #codecs/mod_sangoma_codec
-#dialplans/mod_dialplan_directory #directories/mod_ldap             #endpoints/mod_alsa
-#endpoints/mod_h323               #endpoints/mod_khomp              #endpoints/mod_opal
-#endpoints/mod_skypopen           #endpoints/mod_unicall            #event_handlers/mod_cdr_mongodb
-#event_handlers/mod_cdr_pg_csv    #event_handlers/mod_erlang_event  #event_handlers/mod_event_zmq
-#event_handlers/mod_format_cdr    #event_handlers/mod_json_cdr      #event_handlers/mod_radius_cdr
-#event_handlers/mod_odbc_cdr      #event_handlers/mod_rayo          #event_handlers/mod_snmp
-#formats/mod_shell_stream         #formats/mod_ssml                 #formats/mod_vlc
-#languages/mod_basic              #languages/mod_java               #languages/mod_managed
-#languages/mod_perl               #languages/mod_python
-#languages/mod_yaml               #loggers/mod_graylog2             #say/mod_say_de
-#say/mod_say_es                   #say/mod_say_es_ar                #say/mod_say_fa
-#say/mod_say_fr                   #say/mod_say_he                   #say/mod_say_hr
-#say/mod_say_hu                   #say/mod_say_it                   #say/mod_say_ja
-#say/mod_say_nl                   #say/mod_say_pl                   #say/mod_say_pt
-#say/mod_say_ru                   #say/mod_say_th                   #say/mod_say_zh
-#say/mod_say_sv                   #xml_int/mod_xml_ldap             #xml_int/mod_xml_radius
-#mod_posix_timer                  #mod_timerfd
-
-#../../libs/freetdm/mod_freetdm
-
-# Experimental Modules (don't cry if they're broken)
-#../../contrib/mod/xml_int/mod_xml_odbc
-
-################################################################################
-# Please Select from the optional modules above and put them in the ( ). Use only
-# the 2nd part of the name so like applications/mod_abstraction use only the
-# mod_abstraction part. (UNDER DEVELOPMENT )
-################################################################################
-###################################################
-# Add / Enable optional modules from list above here
-###################################################
-#if [[ $use_optional_modules == "y" ]]; then
-#	optional_modules_add=( )
-#fi
-
-#################################
-# Freeswitch Contrib Modules
-#################################
-
-#../../contrib/ledr/c/mod_odbc_
-
-#################################################################################
-# Options contrib modules (only if you selected to use the contribs git option )
-# (future Option) (UNDER DEVELOPMENT )
-#################################################################################
-#if [[ $use_freeswitch_contrib == "y" ]]; then
-#	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
-#fi
-
-###############################################################################
-#Enable optional modules from list above here used for fusionpnbx build !!!!!!
-################################################################################
-#if [[ $use_mod_freetdm == "y" ]]; then
-#	freetdm_modules_add=( ../../libs/freetdm/mod_freetdm )
-#fi
-
-################################################################################
-#Enable optional modules from list above here used for fusionpnbx build !!!!!!
-################################################################################
-#if [[ $use_gsmopen == "y" ]]; then
-#	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
-#fi
+freeswitch_sounds_language="en-us"
 
 ################################################################
 # Option to disable some loging execpt for  warnings and errors
@@ -419,16 +223,10 @@ logging_level="n"
 ####################
 # FUSIONPBX OPTIONS
 ####################
-########################################################
-# Select to use the Stable or Dev Branch of fusionpbx
-# Change the y to n to use the dev branch for fusionpbx
-########################################################
-fusionpbx_stable="y" #(head is broke use release only)
-
 #############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 #############################################################################
-keep_logs=5
+keep_logs="5"
 
 #######################################################################
 #Set mp3/wav file upload/post size limit ( Must Have the M on the end )
@@ -536,11 +334,6 @@ db_user_passwd=fusionpbx2015
 ###############################################################################
 xml_cdr_files="n"
 
-#######################################
-#Use for configuring odroid arm boards
-#######################################
-#odroid_boards="n"
-
 ################################################################
 #Install Ajenti Optional Admin Portal  Optional (Not Required)
 ################################################################
@@ -553,25 +346,6 @@ install_ajenti="n"
 ######################################################
 # Hard Set Varitables (Do Not EDIT) Freeswitch default
 ######################################################
-####################################################
-# Set Freeswitch version to us in the build/install
-######################################################
-if [[ $freeswitch_stable == "y" ]];then
-	fs_ver="v1.4"
-else
-	fs_ver="v1.5"
-fi
-
-###############################################
-# Set the freeswitch src path based on version
-###############################################
-fs_src_path="/usr/src/freeswitch-$fs_ver"
-
-################################################################
-#Used for pkg based installs for cp the base configs into place
-################################################################
-fs_conf_dir="/etc/freeswitch"
-fs_dflt_conf_dir="/usr/share/freeswitch/conf"
 ######################################################
 #Nginx default www dir
 ######################
@@ -629,16 +403,16 @@ DELIM
 else
 	lsb_release -c |grep -i jessie &> /dev/null 2>&1
 	if [ $? -eq 0 ]; then
-	echo "installing jessie release repo"
-	cat > "/etc/apt/sources.list" << DELIM
-	deb http://httpredir.debian.org/debian/ jessie main contrib non-free
-	deb-src http://httpredir.debian.org/debian/ jessie main contrib non-free
+		echo "installing jessie release repo"
+		cat > "/etc/apt/sources.list" << DELIM
+		deb http://httpredir.debian.org/debian/ jessie main contrib non-free
+		deb-src http://httpredir.debian.org/debian/ jessie main contrib non-free
 
-	deb http://httpredir.debian.org/debian/ jessie-updates main contrib non-free
-	deb-src http://httpredir.debian.org/debian/ jessie-updates main contrib non-free
+		deb http://httpredir.debian.org/debian/ jessie-updates main contrib non-free
+		deb-src http://httpredir.debian.org/debian/ jessie-updates main contrib non-free
 
-	deb http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
-	deb-src http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
+		deb http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
+		deb-src http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
 
 DELIM
 	fi
@@ -656,32 +430,30 @@ echo
 # Detect and Set Intel/AMD Repos
 # Set Release or devel repos
 ##############################
-if [[ $freeswitch_pkgs == "y" ]]; then
 case $(uname -m) in x86_64|i[4-6]86)
-		#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
-		echo " installing Intel/AMD64 Release/Stable repo "
-		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+	#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
+	echo " installing Intel/AMD64 Release/Stable repo "
+	lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		echo "installing wheezy release repo"
+		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+		deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
+DELIM
+	else
+		lsb_release -c |grep -i jessie &> /dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			echo "installing wheezy release repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
-			
+		echo "installing jessie release repo"
+		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+		deb http://files.freeswitch.org/repo/deb/debian/ jessie main
 DELIM
-		else
-			lsb_release -c |grep -i jessie &> /dev/null 2>&1
-			if [ $? -eq 0 ]; then
-			echo "installing jessie release repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://files.freeswitch.org/repo/deb/debian/ jessie main
-DELIM
-			fi
 		fi
+	fi
 esac
 
 ################################
 #adding key for freeswitch repo
 ################################
-echo 'fetcing repo key'
+echo " fetcing repo key "
 curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
 
 ##################################################
@@ -691,45 +463,19 @@ curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt
 echo " adding extra language sounds repo for freeswitch "
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
 if [ $? -eq 0 ]; then
-	echo "adding extra language sounds repo for freeswitch for debian wheezy"
-	cat > "/etc/apt/sources.list.d/freeswitch_lang_sounds.list" <<DELIM
-	deb http://repo.fusionpbx.com/freeswitch_lang_sounds/release/debian/ wheezy main
-	
+		echo "adding extra language sounds repo for freeswitch for debian wheezy"
+		cat > "/etc/apt/sources.list.d/freeswitch_lang_sounds.list" <<DELIM
+		deb http://repo.fusionpbx.com/freeswitch_lang_sounds/release/debian/ wheezy main
 DELIM
-	else
-		lsb_release -c |grep -i jessie &> /dev/null 2>&1
-		if [ $? -eq 0 ]; then
+else
+	lsb_release -c |grep -i jessie &> /dev/null 2>&1
+	if [ $? -eq 0 ]; then
 		echo "adding extra language sounds repo for freeswitch for debian jessie"
 		cat > "/etc/apt/sources.list.d/freeswitch_lang_sounds.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch_lang_sounds/release/debian/ jessie main
 DELIM
-		fi
+	fi
 fi
-
-##############################
-# Detect and Set ArmHF Repos
-# Set Release or devel repos
-##############################
-#case $(uname -m) in armv7l)
-#		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
-#		echo 'installing Freeswitch ARMHF Release/Stable repo'
-#		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
-#		if [ $? -eq 0 ]; then
-#			echo "installing wheezy release repo"
-#			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-#			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
-#DELIM
-#		else
-#			lsb_release -c |grep -i jessie &> /dev/null 2>&1
-#			if [ $? -eq 0 ]; then
-#			echo "installing jessie release repo"
-#			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-#			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ jessie main
-#DELIM
-#			fi
-#		fi
-#esac
-
 
 ###################################
 #----install ntpd time daemon-----
@@ -757,7 +503,7 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 		freeswitch-mod-event-multicast freeswitch-mod-event-socket freeswitch-mod-event-test freeswitch-mod-local-stream freeswitch-mod-native-file \
 		freeswitch-mod-sndfile freeswitch-mod-tone-stream freeswitch-mod-lua freeswitch-mod-console freeswitch-mod-logfile freeswitch-mod-syslog \
 		freeswitch-mod-say-en freeswitch-mod-posix-timer freeswitch-mod-timerfd freeswitch-mod-v8 freeswitch-mod-xml-cdr freeswitch-mod-xml-curl \
-		freeswitch-mod-xml-rpc freeswitch-conf-vanilla
+		freeswitch-mod-xml-rpc freeswitch-conf-vanilla 
 
 ############################
 # Intel/AMD gets mod_shout
@@ -765,13 +511,6 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 case $(uname -m) in x86_64|i[4-6]86)
 	apt-get -y install --force-yes freeswitch-mod-shout
 esac
-
-#############################
-# ArmHF gets mod_vlc
-#############################
-#case $(uname -m) in armv7l)
-#	apt-get -y install --force-yes freeswitch-mod-vlc
-#esac
 
 ######################################
 #setup language / sound files for use
@@ -833,309 +572,6 @@ service freeswitch restart
 ############################
 touch /root/.fs-pkgs
 
-####################################################
-#-------end of freeswitch pkg based install---------
-####################################################
-else
-#######################################################################
-#---- start of FreeSwitch Debian FHS source build based install ------
-#######################################################################
-################################
-# Install freeswitch build deps
-################################
-################################################
-# Check if using wheezy and install wheezy pkgs
-# else install jessie pkgs
-################################################
-lsb_release -c |grep -i wheezy > /dev/null
-if [ $? -eq 0 ]; then
-	apt-get -y install time ntp ssh vim git-core libjpeg-dev subversion build-essential \
-		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
-		python-dev pkg-config libtiff5-dev libldns-dev \
-		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
-		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
-		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
-		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
-		portaudio19-dev lame libldap2-dev lua5.2 liblua5.2-dev
-else
-	apt-get -y install time ntp ssh vim git-core libjpeg62-turbo-dev subversion build-essential \
-		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
-		python-dev pkg-config libtiff5-dev libldns-dev \
-		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
-		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
-		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
-		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
-		portaudio19-dev lame libldap2-dev lua5.2 liblua5.2-dev
-fi
-###################################
-# Install Freetdm Deps if selected
-###################################
-if [ $use_mod_freetdm == "y" ]; then
-	#add stuff for freetdm/dahdi
-	apt-get -y install linux-headers-"$(uname -r)"
-	#add the headers so dahdi can build the modules...
-	apt-get -y install libpri1.4 libpri-dev dahdi dahdi-linux dahdi-firmware-nonfree \
-		dahdi-source libtonezone-dev libtonezone2.0 libopenr2-3 libopenr2-bin libopenr2-dev
-	#running ldconfig to prep for freetdm build
-	pgrep -f ldconfig > /dev/null
-fi
-
-###################################
-# Install gsmopen Deps if selected
-###################################
-if [ $use_mod_gsmopen == "y" ]; then
-	#Install gsm resuirements
-	apt-get -y install libgsmsd7 libgsmsmme-dev libgsmme1c2a libgsm0710mux3 libgsm-tools \
-		libgsm1 libgsm1-dev libgsm0710-0 libgsm0710-dev
-	# Install usb mode switch requirements	 
-	apt-get -y installusb-modeswitch-data usb-modeswitch
-	#wget/build libctb
-	wget https://iftools.com/download/ctb/0.16/libctb-0.16.tar.gz
-	tar xzvf libctb-0.16.tar.gz -C /usr/src
-	cd /usr/src/libctb-0.16/build
-	make DEBUG=0 GPIB=0
-	make DEBUG=0 GPIB=0 install	
-	#running ldconfig to prep for freetdm build
-	pgrep -f ldconfig > /dev/null
-fi
-
-########################################################################################
-# grab the freeswitch 1.4 release src code from the freeswitch stache if stable selected
-# else grab the freeswitch 1.5 head branch for building.
-########################################################################################
-if [[ $freeswitch_stable == "y" ]];then
-	echo " Pulling freeswitch 1.4 stable branch from stache repo "
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$fs_ver" "$fs_src_path"
-else
-	echo " Pulling freeswitch 1.5 heaad branch from stache repo "
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$fs_src_path"
-fi
-
-#####################################################################
-#grap the freeswitch contrib src code from the freeswitch stache
-#####################################################################
-if [[ $use_freeswitch_contrib == "y" ]]; then
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch-contrib.git "$fs_src_path"/contrib
-fi
-
-#################################
-# add patches for updating builds
-##################################
-#fix mod_shout build
-sed -i "$fs_src_path/src/mod/formats/mod_shout/Makefile.in" -e 's|mpg123-1.13.2|mpg123-1.19.0|' 
-#Update ZMQ
-sed -i "$fs_src_path/src/mod/event_handlers/mod_event_zmq/Makefile.in" -e 's|2.1.9|4.0.5|' 
-
-#######################
-#bootstrap the srccode
-#######################
-cd "$fs_src_path"
-if [[ $multi_core == "y" ]]; then
-	./bootstrap.sh -j "$(nproc)"
-else
-	./bootstrap.sh
-fi
-echo
-
-########################
-#Configure modules.conf
-########################
-#Reads the $fs_src_path"/modules.conf and looks for lines without a # sign Default enabled modules.
-modules_comp_default=( $(grep -v ^$ "$fs_src_path"/modules.conf | grep -v ^# | tr '\n' ' ') )
-
-#Reads in the fusionpbx_modules_add list of modules to add and index's and counts them .
-module_count=`echo ${#fusionpbx_modules_add[@]}`
-#sets index to =
-index=0
-
-while [ "$index" -lt "$module_count" ]
-do
-modules_compile_add[$index]=$(grep "${fusionpbx_modules_add[$index]}" "$fs_src_path"/modules.conf | sed -e "s/#//g")
-let "index = $index + 1"
-done
-
-modules_compile=( ${modules_comp_default[*]} ${modules_compile_add[*]} )
-
-#Enable module in MODULES.CONF
-echo " Now enabling modules in $fs_src_path/modules.conf "
-index=0
-module_count=`echo ${#modules_compile[@]}`
-
-#get rid of unwanted spacing in modules.conf
-sed -i -e "s/ *//g" "$fs_src_path"/modules.conf
-
-while [ "$index" -lt "$module_count" ]
-do
-grep ${modules_compile[$index]} "$fs_src_path"/modules.conf > /dev/null
-if [ $? -eq 0 ]; then
-	#check if module is present in file. see if we need to enable it by removing the # at the start of the line
-		grep '#'${modules_compile[$index]} "$fs_src_path"/modules.conf > /dev/null
-	if [ $? -eq 0 ]; then
-		sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$fs_src_path"/modules.conf
-		#reads the index of the modules that where added and echo's it enabled the following modules
-		echo " [ENABLED] ${modules_compile[$index]}"
-	else
-		#reads the index of the modules that where added and echo's what modules where already enabled
-		echo " ${modules_compile[$index]} These selected modules are already enabled !"
-	fi
-else
-	#module is not present. Add to end of file
-	echo ${modules_compile[$index]} >> "$fs_src_path"/modules.conf
-	echo " [ADDED] ${modules_compile[$index]}"
-fi
-let "index = $index + 1"
-done
-
-###################################################################################
-# cd to the freeswitch src code and condifure it for proper dir layout and options.
-###################################################################################
-###################################################################################
-# Pulled from freeswitch/debain/rules files. Sets Dir in FHS Layout.....
-###################################################################################
-cd "$fs_src_path"
-if [[ $freeswitch_stable == "y" ]]; then
-./configure -C --with-gnu-ld --with-python --with-openssl \
---enable-core-odbc-support --enable-zrtp \
---enable-core-pgsql-support \
---prefix=/usr --localstatedir=/var \
---sysconfdir=/etc/freeswitch \
---with-modinstdir=/usr/lib/freeswitch/mod \
---with-rundir=/var/run/freeswitch \
---with-logfiledir=/var/log/freeswitch \
---with-dbdir=/var/lib/freeswitch/db \
---with-htdocsdir=/usr/share/freeswitch/htdocs \
---with-soundsdir=/usr/share/freeswitch/sounds \
---with-storagedir=/var/lib/freeswitch/storage \
---with-cachedir=/var/cache/freeswitch \
---with-grammardir=/usr/share/freeswitch/grammar \
---with-certsdir=/etc/freeswitch/tls \
---with-scriptdir=/var/lib/freeswitch/scripts \
---with-recordingsdir=/var/lib/freeswitch/recordings \
---enable-static-v8 --disable-parallel-build-v8 \
---with-libpri
-else
-./configure -C --with-gnu-ld --with-python --with-openssl \
---enable-core-odbc-support --enable-zrtp \
---enable-core-pgsql-support \
---prefix=/usr --localstatedir=/var \
---sysconfdir=/etc/freeswitch \
---with-modinstdir=/usr/lib/freeswitch/mod \
---with-rundir=/var/run/freeswitch \
---with-logfiledir=/var/log/freeswitch \
---with-dbdir=/var/lib/freeswitch/db \
---with-htdocsdir=/usr/share/freeswitch/htdocs \
---with-soundsdir=/usr/share/freeswitch/sounds \
---with-storagedir=/var/lib/freeswitch/storage \
---with-cachedir=/var/cache/freeswitch \
---with-grammardir=/usr/share/freeswitch/grammar \
---with-certsdir=/etc/freeswitch/tls \
---with-scriptdir=/var/lib/freeswitch/scripts \
---with-recordingsdir=/var/lib/freeswitch/recordings \
---enable-static-v8 --disable-parallel-build-v8 \
---enable-sytem-lua \
---with-libpri
-fi
-
-####################
-# BUILD fREESWITCH
-####################
-cd "$fs_src_path"
-if [[ $multi_core == "y" ]]; then
-	time make -j "$(nproc)" core
-	time make -j "$(nproc)"
-else
-	time make
-fi
-
-####################################
-#ADD Freeswitch user to users/groups
-####################################
-echo "adding freeswitch user / group"
-useradd --system -U freeswitch -Gaudio -d /var/lib/freeswitch -s /bin/false -e '' -c 'FreeSWITCH'
-
-#####################
-#Install Freeswitch
-#####################
-cd "$fs_src_path"
-if [[ $multi_core == "y" ]]; then
-	time make -j "$(nproc)" install
-else
-	time make install
-fi
-
-##########################################################################
-# Test / Set Freeswitch Default Permissions on the freeswitch directories.
-##########################################################################
- for x in \
-      /var/lib/freeswitch \
-      /var/lib/freeswitch/db \
-      /var/lib/freeswitch/recordings \
-      /var/lib/freeswitch/storage \
-      /var/log/freeswitch \
-      /var/run/freeswitch;
-    do
-      if ! test -d $x; then
-        mkdir -p $x
-        chown freeswitch:freeswitch $x
-        chmod o-rwx,g+u $x
-      fi
-    chown freeswitch:freeswitch $x
-    chmod o-rwx,g+u $x
-   done
-
-#################################################
-#Put Freeswitch init.d service script into place
-#################################################
-echo 
-cp "$fs_src_path"/debian/freeswitch-sysvinit.freeswitch.default /etc/default/freeswitch
-echo
-echo " Installing/Enabling init.d startup scripts for freeswitch"
-cp "$fs_src_path"/debian/freeswitch-sysvinit.freeswitch.init /etc/init.d/freeswitch
-echo
-echo "enabling FreeSWITCH to start at boot"
-chmod 755 /etc/init.d/freeswitch
-echo
-echo "Installing/ Enabling systemd init scripts for freeswitch"
-cp "$fs_src_path"/debian/freeswitch-systemd.freeswitch.service /lib/systemd/system/freeswitch.service
-echo
-
-#########################################
-#starting freeswitch for the first time
-#########################################
-service freeswitch restart
-
-##############################
-#installing freeswitch sounds.
-##############################
-if [[ $freeswitch_cd_sounds == "y" ]]; then
-	cd "$fs_src_path"
-	if [[ $multi_core == "y" ]]; then
-		time make -j "$(nproc)"	cd-sounds-install
-	else
-		time make cd-sounds-install
-	fi
-else
-	cd "$fs_src_path"
-	if [[ $multi_core == "y" ]]; then
-		time make -j "$(nproc)" hd-sounds-install
-	else
-		time make hd-sounds-install
-	fi
-fi
-
-#######################################
-#adding a built from source check file.
-#######################################
-touch /root/.fs_src
-
-fi
-#############################################################
-#---End / Finish Freeswitch FHS Source Build Install -------
-#############################################################
-
-#####################################################
-#---Start of nginx / php5 install --------
-#####################################################
 ##############################################################################
 #Install and configure  PHP + Nginx + sqlite3 for use with the fusionpbx gui.
 ##############################################################################
@@ -1421,16 +857,20 @@ adduser www-data dialout
 ######################
 #adding FusionPBX repo
 #######################
-if [[ $fusionpbx_stable == "y" ]]; then
-	echo 'installing fusionpbx Stabe/Release repo'
+lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+if [ $? -eq 0 ]; then
+	echo ' installing fusionpbx wheezy Stabe/Release repo '
 	cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 	deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
 DELIM
 else
-	echo 'installing fusionpbx head/devel repo'
-	cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-	deb http://repo.fusionpbx.com/fusionpbx/head/debian/ wheezy main
+	lsb_release -c |grep -i jessie &> /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		echo ' installing fusionpbx jessie Stabe/Release repo '
+		cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
+		deb http://repo.fusionpbx.com/fusionpbx/release/debian/ jessie main
 DELIM
+	fi
 fi
 echo
 #################################################
@@ -2165,80 +1605,6 @@ tmpfs	/tmp	tmpfs	defaults	0	0
 tmpfs	/var/lib/freeswitch/db	tmpfs	defaults	0	0
 tmpfs   /var/tmp	tmpfs	defaults	0	0
 DELIM
-
-######################################
-# Add in Odroid Preconfigure settings
-######################################
-#if [[ $odroid_boards == "y" ]]; then
-#cat > /etc/network/if-pre-up.d/pre-network-setup << DELIM
-##!/bin/bash
-#if [ ! -f /boot/.mac ]; then
-#        if [ -f /etc/smsc95xx_mac_addr ]; then
-#                rm /etc/smsc95xx_mac_addr
-#        fi
-#        # unloading nic driver
-#        rmmod smsc95xx
-#        #running modprobe on nic
-#        modprobe smsc95xx
-#        #placing holder file
-#        touch /boot/.mac
-#        #rebooting to load new mac
-#        reboot
-#fi
-
-#if [ ! -f /boot/.net ]; then
-#	if [ -f "/boot/configs/ip.txt" ]; then
-#        cp /boot/setup/ip.txt /etc/network/interfaces
-#	fi
-
-#	if [ -f "/boot/configs/resolv.txt" ]; then
-#		cp /boot/setup/resolv.txt /etc/resolv.conf
-#	fi
-
-#	if [ -f "/boot/configs/hostname.txt" ]; then
-#		cp /boot/setup/hostname.txt /etc/hostname
-#	fi
-
-#	if [ -f "/boot/configs/hosts.txt" ]; then
-#		cp /boot/setup/hosts.txt /etc/hosts
-#	fi
-#	touch /boot/.net
-#	reboot
-#fi
-#DELIM
-
-#cat >> /boot/setup/ip.txt.dflt<< DELIM
-# interfaces(5) file used by ifup(8) and ifdown(8)
-#Local loop back interface
-#auto lo
-#iface lo inet loopback
-
-#Static mac configuration
-#allow-hotplug eth0
-#iface eth0 inet static
-#address 10.0.0.2
-#netmask 255.0.0.0
-#gateway 10.0.0.1
-#DELIM
-
-#cat >> /boot/setup/hostname.txt.dflt << DELIM
-#Odroid
-#DELIM
-
-#cat > /boot/setup/hosts.txt.dflt << DELIM
-#127.0.0.1       localhost
-#::1     localhost       ip6-localhost   ip6-loopback
-#fe00::0 ip6-localnet
-#ff00::0 ip6-mcastprefix
-#ff02::1 ip6-allnodes
-#ff02::2 ip6-allrouters
-#127.0.0.1       Odroid
-#DELIM
-
-#cat >> //boot/setup/hostname.txt.dflt << DELIM
-#Odroid
-#DELIM
-#fi
 
 ###########################################################
 #Ajenti admin portal. Makes maintaining the system easier.
