@@ -891,14 +891,14 @@ apt-get update
 # Install default minimal fusionpbx pkgs
 ##########################################
 apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-calls-active fusionpbx-app-call-block \
-		fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
-		fusionpbx-app-dialplan-outbound fusionpbx-app-emails fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
-		fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules fusionpbx-app-music-on-hold \
-		fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings \
-		fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions \
-		fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
-		fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced fusionpbx-music-default \
-		fusionpbx-app-operator-panel
+			fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
+			fusionpbx-app-dialplan-outbound fusionpbx-app-emails fusionpbx-app-extensions fusionpbx-app-follow-me \
+			fusionpbx-app-gateways fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules \
+			fusionpbx-app-music-on-hold fusionpbx-app-operator-panel fusionpbx-app-phrases fusionpbx-app-recordings \
+			fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings fusionpbx-app-sip-profiles \
+			fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions fusionpbx-app-xml-cdr fusionpbx-app-vars \
+			fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb \
+			fusionpbx-theme-enhanced fusionpbx-music-default
 
 ########################
 #set permissions on dir
@@ -1054,22 +1054,22 @@ if [[ $minimized_theme == "y" ]]; then
 fi
 
 if [[ $all == "y" ]]; then
-	apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusionpbx-app-call-broadcast  \
-		fusionpbx-app-call-center fusionpbx-app-call-center-active fusionpbx-app-call-flows fusionpbx-app-conference-centers \
-		fusionpbx-app-conferences-active fusionpbx-app-emails fusionpbx-app-meetings fusionpbx-app-conferences \
-		fusionpbx-app-edit fusionpbx-app-exec fusionpbx-app-fifo fusionpbx-app-fifo-list ghostscript libreoffice-common \
-		fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-phrases fusionpbx-app-services \
-		fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-devices fusionpbx-app-provision \
-		fusionpbx-provisioning-template-aastra fusionpbx-provisioning-template-atcom fusionpbx-provisioning-template-cisco \
-		fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic \
-		fusionpbx-provisioning-template-polycom fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink \
-		fusionpbx-theme-accessible fusionpbx-theme-classic fusionpbx-theme-default fusionpbx-theme-minimized \
-		&& mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/* /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusionpbx-app-call-broadcast fusionpbx-app-call-center \
+			fusionpbx-app-call-center-active fusionpbx-app-call-flows fusionpbx-app-conference-centers fusionpbx-app-conferences-active \
+			fusionpbx-app-emails fusionpbx-app-meetings fusionpbx-app-conferences fusionpbx-app-edit fusionpbx-app-exec fusionpbx-app-fifo \
+			fusionpbx-app-fifo-list fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-phrases fusionpbx-app-services \
+			fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-devices fusionpbx-app-operator-panel fusionpbx-app-provision \
+			fusionpbx-provisioning-template-aastra fusionpbx-provisioning-template-atcom fusionpbx-provisioning-template-cisco \
+			fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic \
+			fusionpbx-provisioning-template-polycom fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink \
+			fusionpbx-theme-accessible fusionpbx-theme-classic fusionpbx-theme-default fusionpbx-theme-minimized \
+			&& mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/* /etc/fusionpbx/resources/templates/provision/
 
 	if [[ -f /root/.fs_src ]] ; then
 		echo " Requires freeswitch mod_callcenter mod_conference mod_fifo mod_rtmp mod_dingaling "
 	else
-		apt-get -y --force-yes install freeswitch-mod-callcenter freeswitch-mod-conference freeswitch-mod-fifo freeswitch-mod-rtmp
+		apt-get -y --force-yes install freeswitch-mod-callcenter freeswitch-mod-conference freeswitch-mod-fifo \
+					freeswitch-mod-rtmp ghostscript libreoffice-common
 	fi
 fi
 ########################################
