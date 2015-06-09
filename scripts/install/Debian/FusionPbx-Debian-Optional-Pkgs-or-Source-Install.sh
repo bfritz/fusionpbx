@@ -1,5 +1,5 @@
 #!/bin/bash
-#Date Jan 207 2015 19:20 CST
+#Date July 09 2015 11:45:00 CST
 ################################################################################
 # The MIT License (MIT)
 ################################################################################
@@ -55,9 +55,9 @@ esac
 ########
 case $(uname -m) in armv7l)
 echo
-echo " ArmHF arm v7 Supported "
+echo " ArmHF only supported in the build of freeswitch "
 echo
-echo " You can either Build from Source or use the freeswitch Armhf Debian pkgs. "
+echo " Do not attempt to use freeswitch debian pkgs. "
 echo
 esac
 #############
@@ -423,7 +423,7 @@ logging_level="n"
 # Select to use the Stable or Dev Branch of fusionpbx
 # Change the y to n to use the dev branch for fusionpbx
 ########################################################
-fusionpbx_stable="y" (head is broke use release only)
+fusionpbx_stable="y" #(head is broke use release only)
 
 #############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
@@ -542,7 +542,7 @@ xml_cdr_files="n"
 #######################################
 #Use for configuring odroid arm boards
 #######################################
-odroid_boards="n"
+#odroid_boards="n"
 
 ################################################################
 #Install Ajenti Optional Admin Portal  Optional (Not Required)
@@ -713,25 +713,25 @@ fi
 # Detect and Set ArmHF Repos
 # Set Release or devel repos
 ##############################
-case $(uname -m) in armv7l)
-		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
-		echo 'installing Freeswitch ARMHF Release/Stable repo'
-		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
-		if [ $? -eq 0 ]; then
-			echo "installing wheezy release repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
-DELIM
-		else
-			lsb_release -c |grep -i jessie &> /dev/null 2>&1
-			if [ $? -eq 0 ]; then
-			echo "installing jessie release repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ jessie main
-DELIM
-			fi
-		fi
-esac
+#case $(uname -m) in armv7l)
+#		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
+#		echo 'installing Freeswitch ARMHF Release/Stable repo'
+#		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+#		if [ $? -eq 0 ]; then
+#			echo "installing wheezy release repo"
+#			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+#			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
+#DELIM
+#		else
+#			lsb_release -c |grep -i jessie &> /dev/null 2>&1
+#			if [ $? -eq 0 ]; then
+#			echo "installing jessie release repo"
+#			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+#			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ jessie main
+#DELIM
+#			fi
+#		fi
+#esac
 
 
 ###################################
@@ -772,9 +772,9 @@ esac
 #############################
 # ArmHF gets mod_vlc
 #############################
-case $(uname -m) in armv7l)
-	apt-get -y install --force-yes freeswitch-mod-vlc
-esac
+#case $(uname -m) in armv7l)
+#	apt-get -y install --force-yes freeswitch-mod-vlc
+#esac
 
 ######################################
 #setup language / sound files for use
@@ -2172,76 +2172,76 @@ DELIM
 ######################################
 # Add in Odroid Preconfigure settings
 ######################################
-if [[ $odroid_boards == "y" ]]; then
-cat > /etc/network/if-pre-up.d/pre-network-setup << DELIM
-#!/bin/bash
-if [ ! -f /boot/.mac ]; then
-        if [ -f /etc/smsc95xx_mac_addr ]; then
-                rm /etc/smsc95xx_mac_addr
-        fi
-        # unloading nic driver
-        rmmod smsc95xx
-        #running modprobe on nic
-        modprobe smsc95xx
-        #placing holder file
-        touch /boot/.mac
-        #rebooting to load new mac
-        reboot
-fi
+#if [[ $odroid_boards == "y" ]]; then
+#cat > /etc/network/if-pre-up.d/pre-network-setup << DELIM
+##!/bin/bash
+#if [ ! -f /boot/.mac ]; then
+#        if [ -f /etc/smsc95xx_mac_addr ]; then
+#                rm /etc/smsc95xx_mac_addr
+#        fi
+#        # unloading nic driver
+#        rmmod smsc95xx
+#        #running modprobe on nic
+#        modprobe smsc95xx
+#        #placing holder file
+#        touch /boot/.mac
+#        #rebooting to load new mac
+#        reboot
+#fi
 
-if [ ! -f /boot/.net ]; then
-	if [ -f "/boot/configs/ip.txt" ]; then
-        cp /boot/setup/ip.txt /etc/network/interfaces
-	fi
+#if [ ! -f /boot/.net ]; then
+#	if [ -f "/boot/configs/ip.txt" ]; then
+#        cp /boot/setup/ip.txt /etc/network/interfaces
+#	fi
 
-	if [ -f "/boot/configs/resolv.txt" ]; then
-		cp /boot/setup/resolv.txt /etc/resolv.conf
-	fi
+#	if [ -f "/boot/configs/resolv.txt" ]; then
+#		cp /boot/setup/resolv.txt /etc/resolv.conf
+#	fi
 
-	if [ -f "/boot/configs/hostname.txt" ]; then
-		cp /boot/setup/hostname.txt /etc/hostname
-	fi
+#	if [ -f "/boot/configs/hostname.txt" ]; then
+#		cp /boot/setup/hostname.txt /etc/hostname
+#	fi
 
-	if [ -f "/boot/configs/hosts.txt" ]; then
-		cp /boot/setup/hosts.txt /etc/hosts
-	fi
-	touch /boot/.net
-	reboot
-fi
-DELIM
+#	if [ -f "/boot/configs/hosts.txt" ]; then
+#		cp /boot/setup/hosts.txt /etc/hosts
+#	fi
+#	touch /boot/.net
+#	reboot
+#fi
+#DELIM
 
-cat >> /boot/setup/ip.txt.dflt<< DELIM
+#cat >> /boot/setup/ip.txt.dflt<< DELIM
 # interfaces(5) file used by ifup(8) and ifdown(8)
 #Local loop back interface
-auto lo
-iface lo inet loopback
+#auto lo
+#iface lo inet loopback
 
 #Static mac configuration
-allow-hotplug eth0
-iface eth0 inet static
-address 10.0.0.2
-netmask 255.0.0.0
-gateway 10.0.0.1
-DELIM
+#allow-hotplug eth0
+#iface eth0 inet static
+#address 10.0.0.2
+#netmask 255.0.0.0
+#gateway 10.0.0.1
+#DELIM
 
-cat >> /boot/setup/hostname.txt.dflt << DELIM
-Odroid
-DELIM
+#cat >> /boot/setup/hostname.txt.dflt << DELIM
+#Odroid
+#DELIM
 
-cat > /boot/setup/hosts.txt.dflt << DELIM
-127.0.0.1       localhost
-::1     localhost       ip6-localhost   ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-127.0.0.1       Odroid
-DELIM
+#cat > /boot/setup/hosts.txt.dflt << DELIM
+#127.0.0.1       localhost
+#::1     localhost       ip6-localhost   ip6-loopback
+#fe00::0 ip6-localnet
+#ff00::0 ip6-mcastprefix
+#ff02::1 ip6-allnodes
+#ff02::2 ip6-allrouters
+#127.0.0.1       Odroid
+#DELIM
 
-cat >> //boot/setup/hostname.txt.dflt << DELIM
-Odroid
-DELIM
-fi
+#cat >> //boot/setup/hostname.txt.dflt << DELIM
+#Odroid
+#DELIM
+#fi
 
 ###########################################################
 #Ajenti admin portal. Makes maintaining the system easier.
@@ -2268,6 +2268,6 @@ fi
 echo " ########################################################################################## "
 echo " # The Freeswitch / Fusionpbx Install is now complete and your system is ready for use... # "
 echo " ########################################################################################## "
-echo " #                   Please send any feed back to r.neese@gmail.com                       # "
+echo " #                   Please send any feed back to Ian Oaks ian@                      # "
 echo " ########################################################################################## "
 
