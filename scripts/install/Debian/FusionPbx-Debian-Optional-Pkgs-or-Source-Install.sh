@@ -211,11 +211,6 @@ echo
 ########################
 # Freeswitch Options
 ########################
-############################################################
-# Select to use the Release or head branch of freeswitch
-# if you select to change y to n it will use 1.5 head branch
-############################################################
-freeswitch_stable="y" #(Head Is Broken)
 
 ################################################################################
 # If you select to use the freeswitch pkgs it will use the prebuilt debian pkgs.
@@ -428,7 +423,7 @@ logging_level="n"
 # Select to use the Stable or Dev Branch of fusionpbx
 # Change the y to n to use the dev branch for fusionpbx
 ########################################################
-fusionpbx_stable="y"
+fusionpbx_stable="y" (head is broke use release only)
 
 #############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
@@ -616,11 +611,11 @@ else
 	/bin/rm /tmp/index.google
 fi
 echo
+
 #######################################
 #Setup Main debian repo for right pkgs
 #######################################
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
-
 if [ $? -eq 0 ]; then
  	echo "installing wheezy release repo"
 	cat > "/etc/apt/sources.list" << DELIM
@@ -660,16 +655,12 @@ echo
 #######################################
 # Freeswitch pkg based install
 #######################################
-#######################################
-#--------adding in custom repos-------
-#######################################
 ##############################
 # Detect and Set Intel/AMD Repos
 # Set Release or devel repos
 ##############################
 if [[ $freeswitch_pkgs == "y" ]]; then
 case $(uname -m) in x86_64|i[4-6]86)
-	if [[ $freeswitch_stable == "y" ]]; then
 		#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 		echo " installing Intel/AMD64 Release/Stable repo "
 		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
@@ -680,34 +671,49 @@ case $(uname -m) in x86_64|i[4-6]86)
 			
 DELIM
 		else
+			lsb_release -c |grep -i jessie &> /dev/null 2>&1
+			if [ $? -eq 0 ]; then
 			echo "installing jessie release repo"
 			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 			deb http://files.freeswitch.org/repo/deb/debian/ jessie main
 DELIM
+			fi
 		fi
-	else
-		echo " installing Intel/AMD64 Head/Devel repo "
-		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
-		if [ $? -eq 0 ]; then
-			echo "installing wheezy head repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch/head/debian/ wheezy main
-DELIM
-		else
-			echo " installing jessie head repo "
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch/head/debian/ jessie main
-DELIM
-		fi
-	fi
 esac
+
+################################
+#adding key for freeswitch repo
+################################
+echo 'fetcing repo key'
+curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
+
+##################################################
+#adding extra language sounds repo for freeswitch
+##################################################
+ #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch_lang_sounds.lists
+echo " adding extra language sounds repo for freeswitch 
+lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+if [ $? -eq 0 ]; then
+	echo "adding extra language sounds repo for freeswitch for debian wheezy"
+	cat > "/etc/apt/sources.list.d/freeswitch_lang_sounds.list" <<DELIM
+	deb http://repo.fusionpbx.com/freeswitch_lang_sounds/release/debian/ wheezy main
+	
+DELIM
+	else
+		lsb_release -c |grep -i jessie &> /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+		echo "adding extra language sounds repo for freeswitch for debian jessie"
+		cat > "/etc/apt/sources.list.d/freeswitch_lang_sounds.list" <<DELIM
+		deb http://repo.fusionpbx.com/freeswitch_lang_sounds/release/debian/ jessie main
+DELIM
+		fi
+fi
 
 ##############################
 # Detect and Set ArmHF Repos
 # Set Release or devel repos
 ##############################
 case $(uname -m) in armv7l)
-	if [[ $freeswitch_stable == "y" ]]; then
 		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
 		echo 'installing Freeswitch ARMHF Release/Stable repo'
 		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
@@ -717,33 +723,16 @@ case $(uname -m) in armv7l)
 			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
 DELIM
 		else
+			lsb_release -c |grep -i jessie &> /dev/null 2>&1
+			if [ $? -eq 0 ]; then
 			echo "installing jessie release repo"
 			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 			deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ jessie main
 DELIM
+			fi
 		fi
-	else
-		echo "installing Freeswitch ARMHF Head/Devel repo"
-		lsb_release -c |grep -i wheezy &> /dev/null 2>&1
-		if [ $? -eq 0 ]; then
-			echo "installing wheezy head repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
-DELIM
-		else
-			echo "installing jessie head repo"
-			cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-			deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ jessie main
-DELIM
-		fi
-	fi
 esac
 
-################################
-#adding key for freeswitch repo
-################################
-#echo 'fetcing repo key'
-#curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
 
 ###################################
 #----install ntpd time daemon-----
