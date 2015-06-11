@@ -22,7 +22,7 @@ fusionpbx-core ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-core
 
- -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
+ -- FusionPBX <debian@fusionpbx.com>  $TIME -0600
 
 DELIM
 
@@ -32,7 +32,7 @@ fusionpbx-conf ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-conf
 
- -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
+ -- FusionPBX <debian@fusionpbx.com>  $TIME -0600
 
 DELIM
 
@@ -42,7 +42,7 @@ fusionpbx-scripts ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-scripts
 
- -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
+ -- FusionPBX <debian@fusionpbx.com>  $TIME -0600
 
 DELIM
 
@@ -53,7 +53,7 @@ fusionpbx-sqldb ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-sqldb
 
- -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
+ -- FusionPBX <debian@fusionpbx.com>  $TIME -0600
 
 DELIM
 
@@ -64,7 +64,7 @@ fusionpbx-provisioning-template-${i} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-provisioning-template-"${i//_/-}"
 
- -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
+ -- FusionPBX <debian@fusionpbx.com>  $TIME -0600
 
 DELIM
 done
@@ -76,7 +76,7 @@ fusionpbx-theme-${i} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-theme-"${i//_/-}"
 
- -- Ian Oaks <ian@terraenetworks.com>  $TIME -0600
+ -- FusionPBX <debian@fusionpbx.com>  $TIME -0600
 
 DELIM
 done

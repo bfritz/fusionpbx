@@ -1,7 +1,7 @@
 Source: fusionpbx-theme-accessible
 Section: user/www
 Priority: extra
-Maintainer: Ian Oaks <ian@terraenetworks.com>
+Maintainer: FusionPBX <debian@fusionpbx.com>
 Standards-Version: 3.7.2
 #XSBC-Bugtracker: mailto:r.neese@gmail.com
 

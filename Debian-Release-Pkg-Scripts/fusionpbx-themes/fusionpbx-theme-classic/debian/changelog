@@ -1,7 +1,7 @@
-fusionpbx-theme-classic (3.5-1) stable; urgency=low
+fusionpbx-theme-classic (3.8.4-1) stable; urgency=low
 
   * new deb pkg of this theme
 
- -- Ian Oaks <ian@terraenetworks.com>  Fri, 17 Dec 2014 06:30:00 -0500
+ -- FusionPBX <debian@fusionpbx.com>  Fri, 17 Dec 2014 06:30:00 -0500
 
 
