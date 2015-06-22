@@ -287,16 +287,6 @@
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach($result as $field) {
-					$sql2 = "select * from v_menu_languages ";
-					$sql2 .= "where menu_language = 'en-us' ";
-					$sql2 .= "and menu_item_uuid = '".$field['menu_item_uuid']."' ";
-					$prep_statement2 = $db->prepare(check_sql($sql2));
-					$prep_statement2->execute();
-					$result2 = $prep_statement2->fetchAll(PDO::FETCH_NAMED);
-					foreach($result2 as $field2) {
-						$menu_icon_name=$field2['menu_item_title'];
-					}
-					unset($prep_statement2, $sql2, $result2);
 
 					$menu_tags = '';
 					switch ($field['menu_item_category']) {
