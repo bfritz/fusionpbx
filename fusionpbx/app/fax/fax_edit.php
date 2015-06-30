@@ -418,7 +418,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 							$dialplan_detail_order = '050';
 							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
-						//<action application="set" data="fax_enable_t38_request=true"/>
+						//<action application="set" data="fax_enable_t38_request=false"/>
 							$dialplan_detail_tag = 'action'; //condition, action, antiaction
 							$dialplan_detail_type = 'set';
 							$dialplan_detail_data = 'fax_enable_t38_request=false';
@@ -616,7 +616,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</td>\n";
 	echo "	</tr>\n";
 
-	if (if_group("user")) {
+	if (!permission_exists('fax_extension_delete')) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
